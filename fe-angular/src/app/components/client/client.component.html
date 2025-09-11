@@ -1,49 +1,82 @@
-<h2>List of Clients</h2>
+<div class="container">
+  <div class="page-header">
+    <h2>List of Clients</h2>
+  </div>
 
-<table mat-table [dataSource]="data" class="mat-elevation-z1 full-width">
+  <div class="table-card">
+    <table mat-table [dataSource]="dataSource" matSort>
 
-  <!-- ID -->
-  <ng-container matColumnDef="id">
-    <th mat-header-cell *matHeaderCellDef> ID </th>
-    <td mat-cell *matCellDef="let c"> {{ c.id }} </td>
-  </ng-container>
+      <!-- Select -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="masterToggle()" [checked]="isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()" (change)="selection.toggle(row)"
+            [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+        </td>
+      </ng-container>
 
-  <!-- Full Name -->
-  <ng-container matColumnDef="fullName">
-    <th mat-header-cell *matHeaderCellDef> Full Name </th>
-    <td mat-cell *matCellDef="let c"> {{ c.fullName }} </td>
-  </ng-container>
+      <!-- Full Name -->
+      <ng-container matColumnDef="fullName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Full Name</th>
+        <td mat-cell *matCellDef="let row">{{ row.fullName }}</td>
+      </ng-container>
 
-  <!-- Display Name -->
-  <ng-container matColumnDef="displayName">
-    <th mat-header-cell *matHeaderCellDef> Display Name </th>
-    <td mat-cell *matCellDef="let c"> {{ c.displayName }} </td>
-  </ng-container>
+      <!-- Display Name -->
+      <ng-container matColumnDef="displayName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Display Name</th>
+        <td mat-cell *matCellDef="let row">{{ row.displayName }}</td>
+      </ng-container>
 
-  <!-- Email -->
-  <ng-container matColumnDef="email">
-    <th mat-header-cell *matHeaderCellDef> Email </th>
-    <td mat-cell *matCellDef="let c"> {{ c.email }} </td>
-  </ng-container>
+      <!-- Email -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+        <td mat-cell *matCellDef="let row">{{ row.email }}</td>
+      </ng-container>
 
-  <!-- Details -->
-  <ng-container matColumnDef="details">
-    <th mat-header-cell *matHeaderCellDef> Details </th>
-    <td mat-cell *matCellDef="let c"> {{ c.details }} </td>
-  </ng-container>
+      <!-- Details -->
+      <ng-container matColumnDef="details">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Details</th>
+        <td mat-cell *matCellDef="let row">{{ row.details }}</td>
+      </ng-container>
 
-  <!-- Active -->
-  <ng-container matColumnDef="active">
-    <th mat-header-cell *matHeaderCellDef> Active </th>
-    <td mat-cell *matCellDef="let c"> {{ c.active ? 'Yes' : 'No' }} </td>
-  </ng-container>
+      <!-- Active -->
+      <ng-container matColumnDef="active">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Active</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="chip" [ngClass]="row.active ? 'chip-active' : 'chip-inactive'">
+            {{ row.active ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+      </ng-container>
 
-  <!-- Location -->
-  <ng-container matColumnDef="location">
-    <th mat-header-cell *matHeaderCellDef> Location </th>
-    <td mat-cell *matCellDef="let c"> {{ c.location }} </td>
-  </ng-container>
+      <!-- Country -->
+      <ng-container matColumnDef="country">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Country</th>
+        <td mat-cell *matCellDef="let row">
+          <span class="fi" [ngClass]="'fi-' + iso(row.location)"></span>
+          {{ row.location }}
+        </td>
+      </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row        *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button matTooltip="Edit" (click)="edit(row)">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5,10,25]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>
