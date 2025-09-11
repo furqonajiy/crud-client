@@ -111,7 +111,8 @@ export class ClientComponent implements OnInit {
     this.dialog.open(ClientDetailsComponent, {
       data: row,
       width: '520px',
-      autoFocus: false
+      autoFocus: false,
+      panelClass: 'client-details-light'
     });
   }
 }
