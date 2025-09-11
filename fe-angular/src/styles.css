@@ -1,19 +1,4 @@
-:root{
-  --container-max: 1500px;   /* page width */
-  --side-padding: 40px;      /* space from edges */
-  --logo-col: 180px;         /* width reserved for the logo column */
-  --grid-gap: 32px;
-}
+/* You can add global styles to this file, and also import other style files */
 
-.container{
-  max-width: var(--container-max);
-  margin: 0 auto;
-  padding: 0 var(--side-padding);
-}
-
-.nav-grid{
-  display: grid;
-  grid-template-columns: var(--logo-col) 1fr auto; /* logo | menus | right side */
-  align-items: center;
-  column-gap: var(--grid-gap);
-}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
