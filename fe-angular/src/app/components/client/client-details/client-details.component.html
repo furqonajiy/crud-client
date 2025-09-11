@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>Client Details</h2>
+
+<mat-dialog-content>
+  <div class="grid">
+    <div class="label">Full Name</div>
+    <div class="value">{{ data.fullName }}</div>
+
+    <div class="label">Display Name</div>
+    <div class="value">{{ data.displayName }}</div>
+
+    <div class="label">Email</div>
+    <div class="value"><a [href]="'mailto:'+data.email">{{ data.email }}</a></div>
+
+    <div class="label">Details</div>
+    <div class="value">{{ data.details || '—' }}</div>
+
+    <div class="label">Active</div>
+    <div class="value">
+      <span class="chip" [ngClass]="data.active ? 'chip-active' : 'chip-inactive'">
+        {{ data.active ? 'Active' : 'Inactive' }}
+      </span>
+    </div>
+
+    <div class="label">Country</div>
+    <div class="value">
+      <span class="fi" [ngClass]="'fi-' + iso(data.location)"></span>
+      {{ data.location }}
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Close</button>
+</mat-dialog-actions>
