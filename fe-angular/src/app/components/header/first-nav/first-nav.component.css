@@ -1,0 +1,64 @@
+.first-nav {
+  background: #fff;
+  border-bottom: 1px solid #ececec;
+  font-size: 13px;
+  color: #4a4a4a;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.grid-4 {
+  display: grid;
+  /* [logo space] | [menu] | [prefs] | [login/extra]  */
+  grid-template-columns: var(--left-col) minmax(0,1fr) auto auto;
+  align-items: center;
+  gap: var(--grid-gap);
+  height: 42px;
+}
+
+/* put Personal/Business in column 2 and stick it left */
+.left-menu { grid-column: 1; justify-self: start; }
+
+/* put Preferences in column 3 and stick it right */
+.right-pref { grid-column: 4; justify-self: end; }
+
+.left-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 18px;
+}
+
+.left-menu a {
+  text-decoration: none;
+  color: #5a5a5a;
+  padding: 8px 2px;
+}
+
+.left-menu li.active a {
+  color: #0d2e87; /* Rabobank blue-ish */
+  border-bottom: 2px solid #0d2e87;
+}
+
+.left-menu a:hover { color: #0d2e87; }
+
+/* Preference Button */
+.pref-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  color: #5a5a5a;
+  cursor: pointer;
+  padding: 6px 8px;
+}
+
+.pref-btn:hover { color: #0d2e87; }
+
+.material-icons { font-size: 18px; line-height: 1; vertical-align: middle; }
