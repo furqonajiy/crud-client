@@ -9,7 +9,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { SelectionModel } from '@angular/cdk/collections';
+import { ClientDetailsComponent } from './client-details/client-details.component';
 
 export interface Client {
   id: number;
@@ -22,16 +24,16 @@ export interface Client {
 }
 
 const DATA: Client[] = [
-  { id: 1,  fullName: 'Yolando Luczki', displayName: 'Ioni Bowcher',   email: 'yolando@acme.io',  details: 'VIP account. Likes monthly summary.', active: true,  location: 'France' },
-  { id: 2,  fullName: 'Roxane Campain', displayName: 'Anna Fali',      email: 'roxane@acme.io',   details: 'Prefers email.',                       active: false, location: 'France' },
-  { id: 3,  fullName: 'Penney Weight',  displayName: 'Amy Elsner',     email: 'penney@acme.io',   details: '—',                                     active: true,  location: 'South Africa' },
-  { id: 4,  fullName: 'Nelida Sawchuk', displayName: 'Onyama Limba',   email: 'nelida@acme.io',   details: 'Key account',                           active: true,  location: 'South Africa' },
-  { id: 5,  fullName: 'Micaela Rhymes', displayName: 'Asiya Javayant', email: 'micaela@acme.io',  details: '—',                                     active: true,  location: 'France' },
-  { id: 6,  fullName: 'Melodie Knipp',  displayName: 'Asiya Javayant', email: 'melodie@acme.io',  details: '—',                                     active: true,  location: 'Finland' },
-  { id: 7,  fullName: 'Layla Springe',  displayName: 'Ioni Bowcher',   email: 'layla@acme.io',    details: '—',                                     active: false, location: 'South Africa' },
-  { id: 8,  fullName: 'Laticia Merced', displayName: 'Ivan Magalhaes', email: 'laticia@acme.io',  details: '—',                                     active: false, location: 'Burkina Faso' },
-  { id: 9,  fullName: 'Hillary Skulski',displayName: 'Bernardo Dominic',email:'hillary@acme.io',  details: '—',                                     active: false, location: 'France' },
-  { id:10,  fullName: 'Emerson Bowley', displayName: 'Stephen Shaw',   email: 'emerson@acme.io',  details: '—',                                     active: true,  location: 'Finland' },
+  { id: 1, fullName: 'Yolando Luczki', displayName: 'Ioni Bowcher', email: 'yolaasfasfsafsafasfasfndo@acme.io', details: 'VIP account. Likes monthly summary.', active: true, location: 'France' },
+  { id: 2, fullName: 'Roxane Campain', displayName: 'Anna Fali', email: 'roxane@acme.io', details: 'Prefers email.', active: false, location: 'France' },
+  { id: 3, fullName: 'Penney Weight', displayName: 'Amy Elsner', email: 'penney@acme.io', details: '—', active: true, location: 'South Africa' },
+  { id: 4, fullName: 'Nelida Sawchuk', displayName: 'Onyama Limba', email: 'nelida@acme.io', details: 'Key account', active: true, location: 'South Africa' },
+  { id: 5, fullName: 'Micaela Rhymes', displayName: 'Asiya Javayant', email: 'micaela@acme.io', details: '—', active: true, location: 'France' },
+  { id: 6, fullName: 'Melodie Knipp', displayName: 'Asiya Javayant', email: 'melodie@acme.io', details: '—', active: true, location: 'Finland' },
+  { id: 7, fullName: 'Layla Springe', displayName: 'Ioni Bowcher', email: 'layla@acme.io', details: '—', active: false, location: 'South Africa' },
+  { id: 8, fullName: 'Laticia Merced', displayName: 'Ivan Magalhaes', email: 'laticia@acme.io', details: '—', active: false, location: 'Burkina Faso' },
+  { id: 9, fullName: 'Hillary Skulski', displayName: 'Bernardo Dominic', email: 'hillary@acme.io', details: '—', active: false, location: 'France' },
+  { id: 10, fullName: 'Emerson Bowley', displayName: 'Stephen Shaw', email: 'emerson@acme.io', details: '—', active: true, location: 'Finland' },
 ];
 
 @Component({
@@ -41,13 +43,14 @@ const DATA: Client[] = [
     CommonModule,
     MatTableModule, MatSortModule, MatPaginatorModule,
     MatFormFieldModule, MatInputModule, MatIconModule,
-    MatCheckboxModule, MatButtonModule, MatTooltipModule
+    MatCheckboxModule, MatButtonModule, MatTooltipModule,
+    MatDialogModule,
   ],
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.css']
 })
 export class ClientComponent implements OnInit {
-  displayedColumns = ['select', 'fullName', 'displayName', 'email', 'details', 'active', 'country', 'actions'];
+  displayedColumns = ['select', 'displayName', 'active', 'country', 'actions'];
   dataSource = new MatTableDataSource<Client>(DATA);
   selection = new SelectionModel<Client>(true, []);
 
@@ -60,10 +63,7 @@ export class ClientComponent implements OnInit {
 
     this.dataSource.sortingDataAccessor = (row, col) => {
       switch (col) {
-        case 'fullName': return row.fullName.toLowerCase();
         case 'displayName': return row.displayName.toLowerCase();
-        case 'email': return row.email.toLowerCase();
-        case 'details': return row.details?.toLowerCase() ?? '';
         case 'active': return row.active ? 1 : 0;
         case 'country': return row.location.toLowerCase();
         default: return (row as any)[col];
@@ -72,7 +72,7 @@ export class ClientComponent implements OnInit {
 
     this.dataSource.filterPredicate = (row, filter) => {
       const text = (row.fullName + ' ' + row.displayName + ' ' + row.email + ' ' +
-                    row.details + ' ' + row.location + ' ' + (row.active ? 'active' : 'inactive')).toLowerCase();
+        row.details + ' ' + row.location + ' ' + (row.active ? 'active' : 'inactive')).toLowerCase();
       return text.includes(filter.trim().toLowerCase());
     };
   }
@@ -104,5 +104,14 @@ export class ClientComponent implements OnInit {
       'France': 'fr', 'Finland': 'fi', 'South Africa': 'za', 'Burkina Faso': 'bf'
     };
     return map[country] ?? 'xx';
+  }
+
+  constructor(private dialog: MatDialog) { }
+  openDetails(row: Client) {
+    this.dialog.open(ClientDetailsComponent, {
+      data: row,
+      width: '520px',
+      autoFocus: false
+    });
   }
 }

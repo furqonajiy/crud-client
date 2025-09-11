@@ -1,33 +1,49 @@
-.full-width { width: 100%; }
+/* ---------- Layout ---------- */
 h2 { margin: 0 0 12px; font-weight: 700; }
-
-.container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
+.container { max-width: 1280px; margin: 0 auto; padding: 0 16px; }
 
 /* ----- Client Table ----- */
-.table-card {
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 8px 8px 0;
+/* Card around the table */
+.table-card { 
+  background:#fff; 
+  border:1px solid #e5e7eb; 
+  border-radius:8px; 
+  padding:8px 8px 8px; 
+  box-shadow:0 1px 2px rgba(0,0,0,.03);
+  overflow: hidden;                 /* <-- important */
 }
 
-/* Row hover */
-.mat-mdc-row:hover { background: #f9fafb; }
-.mat-column-email { word-break: break-all; }
-
-.chip {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 999px;
-  display: inline-block;
+/* header row */
+.mat-mdc-header-row{
+  background:#f8fafc !important;
+  border-bottom:1px solid #e5e7eb;
 }
-.chip-active    { background: #dcfce7; color: #166534; }
-.chip-inactive  { background: #fee2e2; color: #991b1b; }
+.mat-mdc-header-cell{
+  color:#0f172a;
+  font-weight:700;
+}
 
-/* ----- Flag ----- */
-.fi { margin-right: 8px; }
+/* body rows */
+.mat-mdc-row{
+  background:#fff;
+  border-bottom:1px solid #000;
+}
+.mat-mdc-row:hover{ background:#f9fafb; }  /* subtle hover */
+:where(td.mat-mdc-cell){ padding:12px 8px; color:#111827; }
+
+/* Darker checkbox outline (unchecked) + slightly thicker */
+.table-card .mat-mdc-checkbox {
+  --mdc-checkbox-unselected-icon-color: #475569;   /* Slate-600 */
+  --mdc-checkbox-unselected-hover-icon-color: #334155;
+  --mdc-checkbox-unselected-focus-icon-color: #334155;
+  --mdc-checkbox-unselected-pressed-icon-color: #334155;
+  --mdc-checkbox-disabled-unselected-icon-color: #64748b;
+}
+
+/* ----- Flag & Chips ----- */
+.fi{ margin-right:8px; transform: translateY(1px); }
+.chip{
+  font-size:11px; font-weight:700; padding:4px 8px; border-radius:999px; display:inline-block;
+}
+.chip-active{ background:#dcfce7; color:#166534; }
+.chip-inactive{ background:#fee2e2; color:#991b1b; }
