@@ -45,3 +45,35 @@
   margin-right: 8px;
   transform: translateY(1px);
 }
+
+/* ----- Client Details Dialog ----- */
+::ng-deep .cdk-overlay-pane.client-details-light .mat-mdc-dialog-surface,
+::ng-deep .cdk-overlay-pane.client-details-light .mdc-dialog__surface {
+  --mdc-dialog-container-color: #ffffff;
+  --mat-dialog-container-text-color: #0f172a;
+
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .18);
+}
+
+::ng-deep .cdk-overlay-pane.client-details-light .mat-mdc-dialog-title {
+  color: #0f172a !important;
+  font-weight: 700;
+}
+
+::ng-deep .cdk-overlay-pane.client-details-light .mat-mdc-dialog-content {
+  color: #111827 !important;
+}
+
+::ng-deep .cdk-overlay-pane.client-details-light .mat-mdc-dialog-actions {
+  background: #fff;
+  border-top: 1px solid #f1f5f9;
+  padding: 8px 16px;
+}
+
+::ng-deep .cdk-overlay-pane.client-details-light .mat-mdc-button {
+  color: #0f172a !important;
+}
