@@ -2,16 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-
-export interface Client {
-  id: number;
-  fullName: string;
-  displayName: string;
-  email: string;
-  details: string;
-  active: boolean;
-  location: string;
-}
+import { Client } from '../client.component';
 
 @Component({
   selector: 'app-client-details',
