@@ -13,6 +13,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MAT_SELECT_CONFIG } from '@angular/material/select';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ClientDetailsComponent } from './client-details/client-details.component';
+import { ClientEditComponent } from './client-edit/client-edit.component';
 
 export interface Client {
   id: number;
@@ -52,7 +53,7 @@ const DATA: Client[] = [
   ],
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.css']
-  
+
 })
 export class ClientComponent implements OnInit {
   displayedColumns = ['select', 'displayName', 'active', 'country', 'actions'];
@@ -100,7 +101,22 @@ export class ClientComponent implements OnInit {
   }
 
   edit(row: Client) {
-    alert(`Edit: ${row.fullName} (${row.email})`);
+    const ref = this.dialog.open(ClientEditComponent, {
+      width: '640px',
+      data: row,
+      disableClose: true
+    });
+
+    ref.afterClosed().subscribe((updated?: Client) => {
+      if (!updated) return;
+      // Replace the row in the data source
+      const copy = this.dataSource.data.slice();
+      const i = copy.findIndex(c => c.id === updated.id);
+      if (i > -1) {
+        copy[i] = updated;
+        this.dataSource.data = copy;
+      }
+    });
   }
 
   // country → ISO2 for flag-icons
