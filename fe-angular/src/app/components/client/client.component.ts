@@ -16,6 +16,13 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { ClientDetailsComponent } from './client-details/client-details.component';
 import { ClientEditComponent } from './client-edit/client-edit.component';
 
+import wc from 'world-countries';
+
+// Build once: "France" -> "fr", "Solomon Islands" -> "sb", etc.
+const COUNTRY_CODE_BY_NAME = new Map(
+  wc.map(c => [c.name.common, c.cca2.toLowerCase()])
+);
+
 export interface Client {
   id: number;
   fullName: string;
@@ -102,16 +109,12 @@ export class ClientComponent implements OnInit {
   }
 
   edit(row: Client) {
-    // wherever you open the dialog
-    const ref = // where you open the dialog
-      this.dialog.open(ClientEditComponent, {
-        width: '720px',
-        data: row,
-        disableClose: true,
-        panelClass: 'client-dialog-white'
-      });
-
-
+    const ref = this.dialog.open(ClientEditComponent, {
+      width: '720px',
+      data: row,
+      disableClose: true,
+      panelClass: 'client-edit-light'
+    });
 
     ref.afterClosed().subscribe((updated?: Client) => {
       if (!updated) return;
@@ -126,14 +129,12 @@ export class ClientComponent implements OnInit {
   }
 
   // country → ISO2 for flag-icons
-  iso(country: string): string {
-    const map: Record<string, string> = {
-      'France': 'fr', 'Finland': 'fi', 'South Africa': 'za', 'Burkina Faso': 'bf'
-    };
-    return map[country] ?? 'xx';
-  }
+  iso(country?: string): string {
+  return country ? (COUNTRY_CODE_BY_NAME.get(country) ?? 'xx') : 'xx';
+}
 
   constructor(private dialog: MatDialog) { }
+  
   openDetails(row: Client) {
     this.dialog.open(ClientDetailsComponent, {
       data: row,
