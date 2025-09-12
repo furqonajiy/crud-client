@@ -9,14 +9,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { Client } from '../client.component';
-import { getNames } from 'country-list';
 
+// Countries with common names like "Netherlands"
 import wc from 'world-countries';
 type CountryOption = { code: string; name: string };
 
 @Component({
   selector: 'app-client-edit',
   standalone: true,
+  // keep default encapsulation (no ViewEncapsulation.None)
   imports: [
     CommonModule,
     MatDialogModule,
@@ -37,26 +38,31 @@ export class ClientEditComponent {
   data = inject<Client>(MAT_DIALOG_DATA);
 
   countries: CountryOption[] = wc
-    .map(c => ({ code: c.cca2, name: c.name.common })) // e.g. "NL" -> "Netherlands"
+    .map(c => ({ code: c.cca2.toLowerCase(), name: c.name.common }))
     .sort((a, b) => a.name.localeCompare(b.name));
+  private codeByName = new Map(this.countries.map(c => [c.name, c.code]));
 
+  iso(name: string | null | undefined): string {
+    return name ? (this.codeByName.get(name) ?? '') : '';
+  }
 
-  // Edit all values EXCEPT id (we keep id outside the form)
   form = this.fb.group({
     fullName: this.fb.control(this.data.fullName, { validators: [Validators.required, Validators.maxLength(120)] }),
     displayName: this.fb.control(this.data.displayName, { validators: [Validators.required, Validators.maxLength(80)] }),
     email: this.fb.control(this.data.email, { validators: [Validators.required, Validators.email] }),
-    details: this.fb.control(this.data.details ?? ''),
+    details: this.fb.control(this.data.details ?? '', { validators: [Validators.maxLength(500)] }),
     active: this.fb.control(this.data.active),
-    country: this.fb.control(this.data.country, { validators: [Validators.required] })
+    country: this.fb.control(this.data.country ?? '', { validators: [Validators.required] })
   });
 
   cancel() { this.dialogRef.close(); }
 
   save() {
-    if (this.form.invalid) return;
-    const values = this.form.getRawValue(); // types are now string/boolean, not nullable
-    const updated: Client = { ...this.data, ...values }; // ✅ compiles
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const updated: Client = { ...this.data, ...this.form.getRawValue() };
     this.dialogRef.close(updated);
   }
 }

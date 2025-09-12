@@ -32,3 +32,13 @@ body {
 .client-details-light .mat-mdc-button {
   color: #0f172a !important;
 }
+
+.client-dialog-white .mat-mdc-dialog-surface {
+  background: #ffffff !important;
+  color: #1f2937;
+}
+.client-dialog-white .mat-mdc-dialog-content { padding-top: 6px; }
+.client-dialog-white .mat-mdc-dialog-actions {
+  border-top: 1px solid #eee;
+  padding-top: 12px;
+}

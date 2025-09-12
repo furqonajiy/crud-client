@@ -102,12 +102,16 @@ export class ClientComponent implements OnInit {
   }
 
   edit(row: Client) {
-    const ref = this.dialog.open(ClientEditComponent, {
-      width: '720px',
-      data: row,
-      disableClose: true,
-      panelClass: 'client-dialog-light'
-    });
+    // wherever you open the dialog
+    const ref = // where you open the dialog
+      this.dialog.open(ClientEditComponent, {
+        width: '720px',
+        data: row,
+        disableClose: true,
+        panelClass: 'client-dialog-white'
+      });
+
+
 
     ref.afterClosed().subscribe((updated?: Client) => {
       if (!updated) return;

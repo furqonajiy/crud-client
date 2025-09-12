@@ -1,6 +1,27 @@
-.form-grid {
+/* ----- Layout ----- */
+.grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: 140px 1fr;
+  gap: 10px 16px;
+  padding-top: 6px;
 }
-.col-span-2 { grid-column: span 2; }
+
+.label {
+  color: #000;
+  font-weight: 600;
+}
+
+/* form fields take full width in value column */
+.value .mat-mdc-form-field { width: 100%; }
+.value.id { padding-top: 10px; }
+.value.checkbox { display: flex; align-items: center; }
+
+/* keep link behavior consistent if any appear */
+.value a { color: inherit; text-decoration: none; }
+.value a:hover { text-decoration: underline; }
+
+/* ----- Flag ----- */
+.fi {
+  margin-right: 8px;
+  transform: translateY(1px);
+}
