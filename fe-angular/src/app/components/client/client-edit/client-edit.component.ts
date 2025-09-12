@@ -10,14 +10,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { Client } from '../client.component';
 
-// Countries with common names like "Netherlands"
-import wc from 'world-countries';
-type CountryOption = { code: string; name: string };
+import { countriesList, isoFromName, Country } from '../../../utils/country'; // path from client-edit/
 
 @Component({
   selector: 'app-client-edit',
   standalone: true,
-  // keep default encapsulation (no ViewEncapsulation.None)
   imports: [
     CommonModule,
     MatDialogModule,
@@ -37,13 +34,10 @@ export class ClientEditComponent {
   private dialogRef = inject(MatDialogRef<ClientEditComponent, Client>);
   data = inject<Client>(MAT_DIALOG_DATA);
 
-  countries: CountryOption[] = wc
-    .map(c => ({ code: c.cca2.toLowerCase(), name: c.name.common }))
-    .sort((a, b) => a.name.localeCompare(b.name));
-  private codeByName = new Map(this.countries.map(c => [c.name, c.code]));
+  countries: Country[] = countriesList();
 
-  iso(name: string | null | undefined): string {
-    return name ? (this.codeByName.get(name) ?? '') : '';
+  iso(name?: string) {
+    return isoFromName(name);
   }
 
   form = this.fb.group({
@@ -58,10 +52,7 @@ export class ClientEditComponent {
   cancel() { this.dialogRef.close(); }
 
   save() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     const updated: Client = { ...this.data, ...this.form.getRawValue() };
     this.dialogRef.close(updated);
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -15,13 +15,7 @@ import { MAT_SELECT_CONFIG } from '@angular/material/select';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ClientDetailsComponent } from './client-details/client-details.component';
 import { ClientEditComponent } from './client-edit/client-edit.component';
-
-import wc from 'world-countries';
-
-// Build once: "France" -> "fr", "Solomon Islands" -> "sb", etc.
-const COUNTRY_CODE_BY_NAME = new Map(
-  wc.map(c => [c.name.common, c.cca2.toLowerCase()])
-);
+import { isoFromName } from '../../utils/country';
 
 export interface Client {
   id: number;
@@ -130,11 +124,11 @@ export class ClientComponent implements OnInit {
 
   // country → ISO2 for flag-icons
   iso(country?: string): string {
-  return country ? (COUNTRY_CODE_BY_NAME.get(country) ?? 'xx') : 'xx';
-}
+    return isoFromName(country);
+  }
 
   constructor(private dialog: MatDialog) { }
-  
+
   openDetails(row: Client) {
     this.dialog.open(ClientDetailsComponent, {
       data: row,

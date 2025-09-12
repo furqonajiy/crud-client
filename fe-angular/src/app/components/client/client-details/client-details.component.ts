@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { Client } from '../client.component';
+import { isoFromName } from '../../../utils/country'; // path from client-details/
 
 @Component({
   selector: 'app-client-details',
@@ -18,10 +19,7 @@ export class ClientDetailsComponent {
   ) { }
 
   iso(country: string): string {
-    const map: Record<string, string> = {
-      'France': 'fr', 'Finland': 'fi', 'South Africa': 'za', 'Burkina Faso': 'bf'
-    };
-    return map[country] ?? 'xx';
+    return isoFromName(country);
   }
 
   close() { this.dialogRef.close(); }
