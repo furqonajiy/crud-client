@@ -1,0 +1,50 @@
+<div class="second-nav">
+  <div class="container grid-4">
+    <!-- 1) Logo (Align Right) -->
+    <div class="logo cell-right">
+      <a href="/" class="logo-link" aria-label="Rabobank Home">
+        <img src="assets/logo/dummy-logo.svg" alt="dummy-logo" />
+      </a>
+    </div>
+
+    <!-- 2) Menu (Align Left) -->
+    <div>
+      <nav class="main-menu cell-left" aria-label="Main">
+        <ul>
+          <li>
+            <a routerLink="/client" routerLinkActive="active" [attr.routerLinkActiveOptions]="{ exact: true }">
+              <span>Client</span>
+              <span class="material-icons caret">expand_more</span>
+            </a>
+          </li>
+          <li>
+            <a href="#"><span>Themes</span><span class="material-icons caret">expand_more</span></a>
+          </li>
+          <li>
+            <a href="#"><span>Our Bank</span><span class="material-icons caret">expand_more</span></a>
+          </li>
+          <li>
+            <a href="#"><span>Help</span><span class="material-icons caret">expand_more</span></a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- 3) Search (Align Right) -->
+    <div class="search cell-right">
+      <mat-form-field appearance="outline" class="search-field">
+        <!-- no <mat-label> so the placeholder stays large inside -->
+        <input matInput type="search" [(ngModel)]="q" placeholder="Search" aria-label="Search" />
+        <button mat-icon-button matSuffix class="search-btn" (click)="onSearch()" aria-label="Run search">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+
+    <!-- 4) Login (Align Left) -->
+    <div class="login cell-left">
+      <button mat-stroked-button class="login-btn">Log in</button>
+    </div>
+  </div>
+</div>

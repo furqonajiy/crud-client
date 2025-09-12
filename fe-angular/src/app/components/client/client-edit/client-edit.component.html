@@ -1,0 +1,75 @@
+<h2 mat-dialog-title>{{ isNew ? 'Add Client' : 'Edit Client' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()" novalidate>
+  <mat-dialog-content>
+    <div class="grid">
+      <!-- ID row only for edit -->
+      <div class="label" *ngIf="!isNew">ID {{isNew}}</div>
+      <div class="value id" *ngIf="!isNew">{{ data.id }}</div>
+
+      <div class="label">Full Name</div>
+      <div class="value">
+        <mat-form-field appearance="fill">
+          <input matInput formControlName="fullName" required />
+          <mat-error *ngIf="form.get('fullName')?.hasError('required')">Full name is required</mat-error>
+          <mat-error *ngIf="form.get('fullName')?.hasError('maxlength')">Max 120 characters</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="label">Display Name</div>
+      <div class="value">
+        <mat-form-field appearance="fill">
+          <input matInput formControlName="displayName" required />
+          <mat-error *ngIf="form.get('displayName')?.hasError('required')">Display name is required</mat-error>
+          <mat-error *ngIf="form.get('displayName')?.hasError('maxlength')">Max 80 characters</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="label">Email</div>
+      <div class="value">
+        <mat-form-field appearance="fill">
+          <input matInput type="email" formControlName="email" required />
+          <mat-error *ngIf="form.get('email')?.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="form.get('email')?.hasError('email')">Enter a valid email</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="label">Details</div>
+      <div class="value">
+        <mat-form-field appearance="fill">
+          <textarea matInput rows="3" formControlName="details" maxlength="500"></textarea>
+          <mat-hint align="end">{{ form.get('details')?.value?.length || 0 }}/500</mat-hint>
+          <mat-error *ngIf="form.get('details')?.hasError('maxlength')">Max 500 characters</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="label">Active</div>
+      <div class="value checkbox">
+        <mat-checkbox formControlName="active" aria-label="Active"></mat-checkbox>
+      </div>
+
+      <div class="label">Country</div>
+      <div class="value">
+        <mat-form-field appearance="fill">
+          <mat-label>Country</mat-label>
+          <mat-select formControlName="country" required>
+            <mat-select-trigger>
+              <span class="fi" [ngClass]="'fi-' + iso(form.value.country)"></span>
+              {{ form.value.country }}
+            </mat-select-trigger>
+            <mat-option *ngFor="let c of countries" [value]="c.name">
+              <span class="fi" [ngClass]="'fi-' + c.code"></span>
+              {{ c.name }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('country')?.hasError('required')">Country is required</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="cancel()">Cancel</button>
+    <button mat-flat-button class="btn-save" type="submit" [disabled]="form.invalid">Save</button>
+  </mat-dialog-actions>
+</form>

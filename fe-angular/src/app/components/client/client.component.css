@@ -1,0 +1,170 @@
+/* ----- Layout ----- */
+h2 {
+  font-weight: 700;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ----- Page Client Header ----- */
+.page-header {
+  display: grid;
+  grid-template-columns: 1fr auto;  /* title | actions */
+  align-items: center;               /* vertical centering */
+  gap: 12px;
+  padding: 8px 0;                    /* give the row some breathing room */
+  min-height: 44px;                  /* ≈ button height so they align */
+}
+
+.page-header .title{
+  margin: 0;                         /* kill default h2 margins */
+  line-height: 1.2;                  /* nicer vertical balance */
+  display: flex;
+  align-items: center;               /* vertically center the text baseline */
+}
+
+.header-actions {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 8px;
+  justify-self: end; /* push to far right */
+}
+
+/* ----- Add Button ----- */
+.page-header .btn-add.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: #16a34a;
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+/* ----- Delete Button ----- */
+/* Keep disabled header buttons visible */
+.page-header .mat-mdc-button.mat-mdc-button-disabled {
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* FLAT (mat-flat-button) — disabled red style */
+.page-header .mat-mdc-unelevated-button {
+  --mdc-filled-button-disabled-container-color: #fee2e2;
+  --mdc-filled-button-disabled-label-text-color: #b5b5b5;
+}
+
+/* ----- Client Table ----- */
+/* Card around the table */
+.table-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 8px 8px;
+}
+
+/* header row */
+.mat-mdc-header-row {
+  background: #f8fafc !important;
+}
+
+.mat-mdc-header-cell {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+/* body rows */
+.mat-mdc-row {
+  background: #fff;
+}
+
+.mat-mdc-row:hover {
+  background: #f9fafb;
+}
+
+:where(td.mat-mdc-cell) {
+  color: #111827;
+}
+
+/* Darker checkbox outline (unchecked) + slightly thicker */
+.table-card .mat-mdc-checkbox {
+  --mdc-checkbox-unselected-icon-color: #475569;
+  --mdc-checkbox-unselected-hover-icon-color: #334155;
+  --mdc-checkbox-unselected-focus-icon-color: #334155;
+  --mdc-checkbox-unselected-pressed-icon-color: #334155;
+  --mdc-checkbox-disabled-unselected-icon-color: #64748b;
+}
+
+/* ----- Flag & Chips ----- */
+.fi {
+  margin-right: 8px;
+}
+
+.chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.chip-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.chip-inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ----- Pagination ----- */
+/* pierce Material internals rendered deep inside components */
+::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__leading,
+::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__notch,
+::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__trailing {
+  border-color: #fff !important;
+}
+
+/* dropdown arrow inside the select */
+::ng-deep .table-card .mat-mdc-paginator .mat-mdc-select-arrow {
+  color: #fff !important;
+}
+
+/* Stop auto-resizing by content */
+table[mat-table] {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Fixed widths per column (tweak to taste) */
+th.col-select,
+td.col-select {
+  width: 48px;
+  min-width: 48px;
+  max-width: 48px;
+}
+
+th.col-display,
+td.col-display {
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+}
+
+th.col-active,
+td.col-active {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+}
+
+th.col-country,
+td.col-country {
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+}
+
+th.col-actions,
+td.col-actions {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+}
