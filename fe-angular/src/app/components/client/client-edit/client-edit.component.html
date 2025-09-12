@@ -1,10 +1,11 @@
-<h2 mat-dialog-title>Edit client</h2>
+<h2 mat-dialog-title>{{ isNew ? 'Add Client' : 'Edit Client' }}</h2>
 
 <form [formGroup]="form" (ngSubmit)="save()" novalidate>
   <mat-dialog-content>
     <div class="grid">
-      <div class="label">ID</div>
-      <div class="value id">{{ data.id }}</div>
+      <!-- ID row only for edit -->
+      <div class="label" *ngIf="!isNew">ID {{isNew}}</div>
+      <div class="value id" *ngIf="!isNew">{{ data.id }}</div>
 
       <div class="label">Full Name</div>
       <div class="value">
@@ -69,6 +70,6 @@
 
   <mat-dialog-actions align="end">
     <button mat-button type="button" (click)="cancel()">Cancel</button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">Save</button>
+    <button mat-flat-button class="btn-save" type="submit" [disabled]="form.invalid">Save</button>
   </mat-dialog-actions>
 </form>

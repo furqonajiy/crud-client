@@ -12,6 +12,7 @@
   padding-top: 8px;
 }
 
+/* ----- Client Table ----- */
 /* form fields take full width in value column */
 .value .mat-mdc-form-field {
   width: 100%;
@@ -123,4 +124,18 @@
   --mdc-checkbox-unselected-focus-icon-color: #334155;
   --mdc-checkbox-unselected-pressed-icon-color: #334155;
   --mdc-checkbox-disabled-unselected-icon-color: #64748b;
+}
+
+/* Save = green; Disabled Save = soft green */
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-save.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: #16a34a;            /* enabled bg */
+  --mdc-filled-button-label-text-color: #ffffff;           /* enabled text */
+  --mdc-filled-button-disabled-container-color: #dcfce7;   /* disabled bg */
+  --mdc-filled-button-disabled-label-text-color: #b5b5b5;  /* disabled text */
+}
+
+/* ----- Save Button ----- */
+::ng-deep .cdk-overlay-pane.client-edit-light
+  .btn-save.mat-mdc-unelevated-button.mat-mdc-button-disabled {
+  opacity: 1;
 }

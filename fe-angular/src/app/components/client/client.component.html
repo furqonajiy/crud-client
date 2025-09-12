@@ -1,11 +1,21 @@
 <div class="container">
   <div class="page-header">
-    <h2>List of Clients</h2>
+    <h2 class="title">List of Clients</h2>
+
+    <div class="header-actions">
+      <button mat-flat-button class="btn-add" (click)="addClient()">
+        Add
+      </button>
+
+      <button mat-flat-button color="warn" class="btn-remove" (click)="deleteSelected()"
+        [disabled]="!selection.hasValue()">
+        Remove<span *ngIf="selection.selected.length"> ({{ selection.selected.length }})</span>
+      </button>
+    </div>
   </div>
 
   <div class="table-card">
     <table mat-table [dataSource]="dataSource" matSort>
-
       <!-- Checkbox -->
       <ng-container matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef class="col-select">
@@ -22,7 +32,9 @@
 
       <!-- Display Name (fixed width) -->
       <ng-container matColumnDef="displayName">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-display">Display Name</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-display">
+          Display Name
+        </th>
         <td mat-cell *matCellDef="let row" class="col-display" [title]="row.displayName">
           {{ row.displayName }}
         </td>
@@ -30,17 +42,21 @@
 
       <!-- Active -->
       <ng-container matColumnDef="active">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-active">Active</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-active">
+          Active
+        </th>
         <td mat-cell *matCellDef="let row" class="col-active">
           <span class="chip" [ngClass]="row.active ? 'chip-active' : 'chip-inactive'">
-            {{ row.active ? 'Active' : 'Inactive' }}
+            {{ row.active ? "Active" : "Inactive" }}
           </span>
         </td>
       </ng-container>
 
       <!-- Country -->
       <ng-container matColumnDef="country">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-country">Country</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-country">
+          Country
+        </th>
         <td mat-cell *matCellDef="let row" class="col-country" [title]="row.country">
           <span class="fi" [ngClass]="'fi-' + iso(row.country)"></span>
           {{ row.country }}
@@ -59,11 +75,10 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="row-clickable" (click)="openDetails(row)"
-        tabindex="0" (keydown.enter)="openDetails(row)" (keydown.space)="openDetails(row)">
-      </tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns" class="row-clickable" (click)="openDetails(row)"
+        tabindex="0" (keydown.enter)="openDetails(row)" (keydown.space)="openDetails(row)"></tr>
     </table>
 
-    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5,10,25]" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
   </div>
 </div>

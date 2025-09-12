@@ -16,6 +16,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { ClientDetailsComponent } from './client-details/client-details.component';
 import { ClientEditComponent } from './client-edit/client-edit.component';
 import { isoFromName } from '../../utils/country.util';
+import { SecondNavComponent } from '../header/second-nav/second-nav.component';
 
 export interface Client {
   id: number;
@@ -48,7 +49,7 @@ const DATA: Client[] = [
     MatTableModule, MatSortModule, MatPaginatorModule,
     MatFormFieldModule, MatInputModule, MatIconModule,
     MatCheckboxModule, MatButtonModule, MatTooltipModule,
-    MatDialogModule, MatOptionModule
+    MatDialogModule, MatOptionModule, SecondNavComponent
   ],
   providers: [
     { provide: MAT_SELECT_CONFIG, useValue: { overlayPanelClass: 'client-select-panel' } }
@@ -90,7 +91,6 @@ export class ClientComponent implements OnInit {
     if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
   }
 
-  // selection
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
@@ -137,4 +137,57 @@ export class ClientComponent implements OnInit {
       panelClass: 'client-details-light'
     });
   }
+
+  addClient() {
+    const nextId =
+      (this.dataSource.data.reduce((m, c) => Math.max(m, c.id), 0) || 0) + 1;
+
+    const draft: Client = {
+      id: nextId,
+      fullName: '',
+      displayName: '',
+      email: '',
+      details: '',
+      active: false,
+      country: ''
+    };
+
+    const ref = this.dialog.open(ClientEditComponent, {
+      width: '720px',
+      data: { ...draft, isNew: true },
+      disableClose: true,
+      panelClass: 'client-edit-light'
+    });
+
+    ref.afterClosed().subscribe((created?: Client) => {
+      if (!created) return;
+      // append the new row
+      this.dataSource.data = [...this.dataSource.data, created];
+      // optional: jump to last page if paginator exists
+      if (this.dataSource.paginator) {
+        const p = this.dataSource.paginator;
+        setTimeout(() => p.lastPage());
+      }
+    });
+  }
+
+
+  deleteSelected() {
+    const count = this.selection.selected.length;
+    if (count === 0) return;
+
+    const ok = confirm(count === 1
+      ? 'Delete the selected client?'
+      : `Delete ${count} selected clients?`);
+    if (!ok) return;
+
+    const toDelete = new Set(this.selection.selected.map(c => c.id));
+    this.dataSource.data = this.dataSource.data.filter(c => !toDelete.has(c.id));
+    this.selection.clear();
+
+    if (this.paginator && this.paginator.pageIndex > 0 && this.paginator.pageIndex >= this.paginator.getNumberOfPages()) {
+      this.paginator.previousPage();
+    }
+  }
+
 }

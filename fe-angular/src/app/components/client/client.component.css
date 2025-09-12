@@ -1,4 +1,4 @@
-/* ---------- Layout ---------- */
+/* ----- Layout ----- */
 h2 {
   font-weight: 700;
 }
@@ -6,6 +6,49 @@ h2 {
 .container {
   max-width: 1280px;
   margin: 0 auto;
+}
+
+/* ----- Page Client Header ----- */
+.page-header {
+  display: grid;
+  grid-template-columns: 1fr auto;  /* title | actions */
+  align-items: center;               /* vertical centering */
+  gap: 12px;
+  padding: 8px 0;                    /* give the row some breathing room */
+  min-height: 44px;                  /* ≈ button height so they align */
+}
+
+.page-header .title{
+  margin: 0;                         /* kill default h2 margins */
+  line-height: 1.2;                  /* nicer vertical balance */
+  display: flex;
+  align-items: center;               /* vertically center the text baseline */
+}
+
+.header-actions {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 8px;
+  justify-self: end; /* push to far right */
+}
+
+/* ----- Add Button ----- */
+.page-header .btn-add.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: #16a34a;
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+/* ----- Delete Button ----- */
+/* Keep disabled header buttons visible */
+.page-header .mat-mdc-button.mat-mdc-button-disabled {
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* FLAT (mat-flat-button) — disabled red style */
+.page-header .mat-mdc-unelevated-button {
+  --mdc-filled-button-disabled-container-color: #fee2e2;
+  --mdc-filled-button-disabled-label-text-color: #b5b5b5;
 }
 
 /* ----- Client Table ----- */
