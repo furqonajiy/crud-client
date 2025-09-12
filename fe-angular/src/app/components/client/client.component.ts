@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -21,20 +21,20 @@ export interface Client {
   email: string;
   details: string;
   active: boolean;
-  location: string;
+  country: string;
 }
 
 const DATA: Client[] = [
-  { id: 1, fullName: 'Yolando Luczki', displayName: 'Ioni Bowcher', email: 'yolaasfasfsafsafasfasfndo@acme.io', details: 'VIP account. Likes monthly summary.', active: true, location: 'France' },
-  { id: 2, fullName: 'Roxane Campain', displayName: 'Anna Fali', email: 'roxane@acme.io', details: 'Prefers email.', active: false, location: 'France' },
-  { id: 3, fullName: 'Penney Weight', displayName: 'Amy Elsner', email: 'penney@acme.io', details: '—', active: true, location: 'South Africa' },
-  { id: 4, fullName: 'Nelida Sawchuk', displayName: 'Onyama Limba', email: 'nelida@acme.io', details: 'Key account', active: true, location: 'South Africa' },
-  { id: 5, fullName: 'Micaela Rhymes', displayName: 'Asiya Javayant', email: 'micaela@acme.io', details: '—', active: true, location: 'France' },
-  { id: 6, fullName: 'Melodie Knipp', displayName: 'Asiya Javayant', email: 'melodie@acme.io', details: '—', active: true, location: 'Finland' },
-  { id: 7, fullName: 'Layla Springe', displayName: 'Ioni Bowcher', email: 'layla@acme.io', details: '—', active: false, location: 'South Africa' },
-  { id: 8, fullName: 'Laticia Merced', displayName: 'Ivan Magalhaes', email: 'laticia@acme.io', details: '—', active: false, location: 'Burkina Faso' },
-  { id: 9, fullName: 'Hillary Skulski', displayName: 'Bernardo Dominic', email: 'hillary@acme.io', details: '—', active: false, location: 'France' },
-  { id: 10, fullName: 'Emerson Bowley', displayName: 'Stephen Shaw', email: 'emerson@acme.io', details: '—', active: true, location: 'Finland' },
+  { id: 1, fullName: 'Yolando Luczki', displayName: 'Ioni Bowcher', email: 'yolaasfasfsafsafasfasfndo@acme.io', details: 'VIP account. Likes monthly summary.', active: true, country: 'France' },
+  { id: 2, fullName: 'Roxane Campain', displayName: 'Anna Fali', email: 'roxane@acme.io', details: 'Prefers email.', active: false, country: 'France' },
+  { id: 3, fullName: 'Penney Weight', displayName: 'Amy Elsner', email: 'penney@acme.io', details: '—', active: true, country: 'South Africa' },
+  { id: 4, fullName: 'Nelida Sawchuk', displayName: 'Onyama Limba', email: 'nelida@acme.io', details: 'Key account', active: true, country: 'South Africa' },
+  { id: 5, fullName: 'Micaela Rhymes', displayName: 'Asiya Javayant', email: 'micaela@acme.io', details: '—', active: true, country: 'France' },
+  { id: 6, fullName: 'Melodie Knipp', displayName: 'Asiya Javayant', email: 'melodie@acme.io', details: '—', active: true, country: 'Finland' },
+  { id: 7, fullName: 'Layla Springe', displayName: 'Ioni Bowcher', email: 'layla@acme.io', details: '—', active: false, country: 'South Africa' },
+  { id: 8, fullName: 'Laticia Merced', displayName: 'Ivan Magalhaes', email: 'laticia@acme.io', details: '—', active: false, country: 'Burkina Faso' },
+  { id: 9, fullName: 'Hillary Skulski', displayName: 'Bernardo Dominic', email: 'hillary@acme.io', details: '—', active: false, country: 'France' },
+  { id: 10, fullName: 'Emerson Bowley', displayName: 'Stephen Shaw', email: 'emerson@acme.io', details: '—', active: true, country: 'Finland' },
 ];
 
 @Component({
@@ -52,6 +52,7 @@ const DATA: Client[] = [
   ],
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.css']
+  
 })
 export class ClientComponent implements OnInit {
   displayedColumns = ['select', 'displayName', 'active', 'country', 'actions'];
@@ -69,14 +70,14 @@ export class ClientComponent implements OnInit {
       switch (col) {
         case 'displayName': return row.displayName.toLowerCase();
         case 'active': return row.active ? 1 : 0;
-        case 'country': return row.location.toLowerCase();
+        case 'country': return row.country.toLowerCase();
         default: return (row as any)[col];
       }
     };
 
     this.dataSource.filterPredicate = (row, filter) => {
       const text = (row.fullName + ' ' + row.displayName + ' ' + row.email + ' ' +
-        row.details + ' ' + row.location + ' ' + (row.active ? 'active' : 'inactive')).toLowerCase();
+        row.details + ' ' + row.country + ' ' + (row.active ? 'active' : 'inactive')).toLowerCase();
       return text.includes(filter.trim().toLowerCase());
     };
   }
