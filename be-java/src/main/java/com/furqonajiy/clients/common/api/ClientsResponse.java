@@ -2,5 +2,5 @@ package com.furqonajiy.clients.common.api;
 
 import java.util.List;
 
-public record ApiResponse<T>(List<T> clients) {
+public record ClientsResponse<T>(List<T> clients) {
 }

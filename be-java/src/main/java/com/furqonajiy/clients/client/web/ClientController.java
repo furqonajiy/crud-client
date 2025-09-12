@@ -2,7 +2,7 @@ package com.furqonajiy.clients.client.web;
 
 import com.furqonajiy.clients.client.dto.ClientDto;
 import com.furqonajiy.clients.client.service.ClientService;
-import com.furqonajiy.clients.common.api.ApiResponse;
+import com.furqonajiy.clients.common.api.ClientsResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +29,6 @@ public class ClientController {
         log.debug("Execute Get All Clients");
 
         List<ClientDto> data = clientService.getAllClients();
-        return new ApiResponse<>(data);
+        return new ClientsResponse<>(data);
     }
 }
