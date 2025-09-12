@@ -16,7 +16,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { ClientDetailsComponent } from './client-details/client-details.component';
 import { ClientEditComponent } from './client-edit/client-edit.component';
 import { isoFromName } from '../../utils/country.util';
-import { SecondNavComponent } from '../header/second-nav/second-nav.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 export interface Client {
   id: number;
@@ -25,21 +25,13 @@ export interface Client {
   email: string;
   details: string;
   active: boolean;
+  location: string;
   country: string;
 }
 
-const DATA: Client[] = [
-  { id: 1, fullName: 'Yolando Luczki', displayName: 'Ioni Bowcher', email: 'yolaasfasfsafsafasfasfndo@acme.io', details: 'VIP account. Likes monthly summary.', active: true, country: 'France' },
-  { id: 2, fullName: 'Roxane Campain', displayName: 'Anna Fali', email: 'roxane@acme.io', details: 'Prefers email.', active: false, country: 'France' },
-  { id: 3, fullName: 'Penney Weight', displayName: 'Amy Elsner', email: 'penney@acme.io', details: '—', active: true, country: 'South Africa' },
-  { id: 4, fullName: 'Nelida Sawchuk', displayName: 'Onyama Limba', email: 'nelida@acme.io', details: 'Key account', active: true, country: 'South Africa' },
-  { id: 5, fullName: 'Micaela Rhymes', displayName: 'Asiya Javayant', email: 'micaela@acme.io', details: '—', active: true, country: 'France' },
-  { id: 6, fullName: 'Melodie Knipp', displayName: 'Asiya Javayant', email: 'melodie@acme.io', details: '—', active: true, country: 'Finland' },
-  { id: 7, fullName: 'Layla Springe', displayName: 'Ioni Bowcher', email: 'layla@acme.io', details: '—', active: false, country: 'South Africa' },
-  { id: 8, fullName: 'Laticia Merced', displayName: 'Ivan Magalhaes', email: 'laticia@acme.io', details: '—', active: false, country: 'Burkina Faso' },
-  { id: 9, fullName: 'Hillary Skulski', displayName: 'Bernardo Dominic', email: 'hillary@acme.io', details: '—', active: false, country: 'France' },
-  { id: 10, fullName: 'Emerson Bowley', displayName: 'Stephen Shaw', email: 'emerson@acme.io', details: '—', active: true, country: 'Finland' },
-];
+interface ClientsResponse {
+  clients: Client[];
+}
 
 @Component({
   selector: 'app-client',
@@ -49,7 +41,7 @@ const DATA: Client[] = [
     MatTableModule, MatSortModule, MatPaginatorModule,
     MatFormFieldModule, MatInputModule, MatIconModule,
     MatCheckboxModule, MatButtonModule, MatTooltipModule,
-    MatDialogModule, MatOptionModule, SecondNavComponent
+    MatDialogModule, MatOptionModule, HttpClientModule
   ],
   providers: [
     { provide: MAT_SELECT_CONFIG, useValue: { overlayPanelClass: 'client-select-panel' } }
@@ -60,11 +52,15 @@ const DATA: Client[] = [
 })
 export class ClientComponent implements OnInit {
   displayedColumns = ['select', 'displayName', 'active', 'country', 'actions'];
-  dataSource = new MatTableDataSource<Client>(DATA);
+  dataSource = new MatTableDataSource<Client>();
   selection = new SelectionModel<Client>(true, []);
 
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+
+  private readonly API = 'http://localhost:8080/api/v1/clients';
+
+  constructor(private dialog: MatDialog, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.dataSource.sort = this.sort;
@@ -84,6 +80,23 @@ export class ClientComponent implements OnInit {
         row.details + ' ' + row.country + ' ' + (row.active ? 'active' : 'inactive')).toLowerCase();
       return text.includes(filter.trim().toLowerCase());
     };
+
+    this.loadClients();
+  }
+
+  private loadClients(): void {
+    this.http.get<ClientsResponse>(this.API).subscribe({
+      next: (res) => {
+        // If backend sends extra fields (e.g., location), TS will ignore them (structural typing)
+        this.dataSource.data = res?.clients ?? [];
+        // Keep paginator in a valid page after refresh
+        if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
+      },
+      error: (err) => {
+        console.error('Failed to load clients', err);
+        // optional: show a toast/snackbar here
+      }
+    });
   }
 
   applyFilter(value: string) {
@@ -127,8 +140,6 @@ export class ClientComponent implements OnInit {
     return isoFromName(country);
   }
 
-  constructor(private dialog: MatDialog) { }
-
   openDetails(row: Client) {
     this.dialog.open(ClientDetailsComponent, {
       data: row,
@@ -149,6 +160,7 @@ export class ClientComponent implements OnInit {
       email: '',
       details: '',
       active: false,
+      location: '',
       country: ''
     };
 
