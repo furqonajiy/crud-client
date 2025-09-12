@@ -1,13 +1,16 @@
 package com.furqonajiy.clients.client.web;
 
 import com.furqonajiy.clients.client.dto.ClientDto;
+import com.furqonajiy.clients.client.dto.DeleteClientsRequest;
+import com.furqonajiy.clients.client.dto.DeleteClientsResponse;
 import com.furqonajiy.clients.client.service.ClientService;
+import com.furqonajiy.clients.client.service.ClientServiceImpl;
 import com.furqonajiy.clients.common.api.ClientResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,9 +19,11 @@ import java.util.List;
 @RequestMapping("/api/v1/clients")
 public class ClientController {
     private final ClientService clientService;
+    private final ClientServiceImpl clientServiceImpl;
 
-    public ClientController(ClientService clientService) {
+    public ClientController(ClientService clientService, ClientServiceImpl clientServiceImpl) {
         this.clientService = clientService;
+        this.clientServiceImpl = clientServiceImpl;
     }
 
     @Operation(
@@ -30,5 +35,11 @@ public class ClientController {
 
         List<ClientDto> data = clientService.getAllClients();
         return new ClientResponse<>(data);
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    public DeleteClientsResponse deleteMany(@Valid @RequestBody DeleteClientsRequest req) {
+        return clientServiceImpl.deleteMany(req);
     }
 }
