@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { Client } from '../client.component';
-import { isoFromName } from '../../../utils/country'; // path from client-details/
+import { isoFromName } from '../../../utils/country.util'; // path from client-details/
 
 @Component({
   selector: 'app-client-details',

@@ -15,7 +15,7 @@ import { MAT_SELECT_CONFIG } from '@angular/material/select';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ClientDetailsComponent } from './client-details/client-details.component';
 import { ClientEditComponent } from './client-edit/client-edit.component';
-import { isoFromName } from '../../utils/country';
+import { isoFromName } from '../../utils/country.util';
 
 export interface Client {
   id: number;

@@ -10,7 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { Client } from '../client.component';
 
-import { countriesList, isoFromName, Country } from '../../../utils/country'; // path from client-edit/
+import { countriesList, isoFromName, Country } from '../../../utils/country.util'; // path from client-edit/
 
 @Component({
   selector: 'app-client-edit',
