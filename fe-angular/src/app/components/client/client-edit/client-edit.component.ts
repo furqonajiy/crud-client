@@ -1,12 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormBuilder, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 import { Client } from '../client.component';
+import { getNames } from 'country-list';
+
+import wc from 'world-countries';
+type CountryOption = { code: string; name: string };
 
 @Component({
   selector: 'app-client-edit',
@@ -18,7 +24,9 @@ import { Client } from '../client.component';
     MatFormFieldModule,
     MatInputModule,
     MatCheckboxModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule,
+    MatOptionModule
   ],
   templateUrl: './client-edit.component.html',
   styleUrls: ['./client-edit.component.css']
@@ -27,6 +35,11 @@ export class ClientEditComponent {
   private fb = inject(NonNullableFormBuilder);
   private dialogRef = inject(MatDialogRef<ClientEditComponent, Client>);
   data = inject<Client>(MAT_DIALOG_DATA);
+
+  countries: CountryOption[] = wc
+    .map(c => ({ code: c.cca2, name: c.name.common })) // e.g. "NL" -> "Netherlands"
+    .sort((a, b) => a.name.localeCompare(b.name));
+
 
   // Edit all values EXCEPT id (we keep id outside the form)
   form = this.fb.group({

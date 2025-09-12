@@ -10,6 +10,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatOptionModule } from '@angular/material/core';
 import { MAT_SELECT_CONFIG } from '@angular/material/select';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ClientDetailsComponent } from './client-details/client-details.component';
@@ -46,7 +47,7 @@ const DATA: Client[] = [
     MatTableModule, MatSortModule, MatPaginatorModule,
     MatFormFieldModule, MatInputModule, MatIconModule,
     MatCheckboxModule, MatButtonModule, MatTooltipModule,
-    MatDialogModule,
+    MatDialogModule, MatOptionModule
   ],
   providers: [
     { provide: MAT_SELECT_CONFIG, useValue: { overlayPanelClass: 'client-select-panel' } }
@@ -102,9 +103,10 @@ export class ClientComponent implements OnInit {
 
   edit(row: Client) {
     const ref = this.dialog.open(ClientEditComponent, {
-      width: '640px',
+      width: '720px',
       data: row,
-      disableClose: true
+      disableClose: true,
+      panelClass: 'client-dialog-light'
     });
 
     ref.afterClosed().subscribe((updated?: Client) => {
