@@ -83,3 +83,45 @@ h2 {
 ::ng-deep .table-card .mat-mdc-paginator .mat-mdc-select-arrow {
   color: #fff !important;
 }
+
+/* Stop auto-resizing by content */
+table[mat-table] {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Fixed widths per column (tweak to taste) */
+th.col-select,
+td.col-select {
+  width: 48px;
+  min-width: 48px;
+  max-width: 48px;
+}
+
+th.col-display,
+td.col-display {
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+}
+
+th.col-active,
+td.col-active {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+}
+
+th.col-country,
+td.col-country {
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+}
+
+th.col-actions,
+td.col-actions {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+}
