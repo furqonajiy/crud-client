@@ -6,23 +6,36 @@
 .container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 16px;
 }
 
 .grid-4 {
   display: grid;
   /* [logo] | [menu] | [search] | [login] */
-  grid-template-columns: var(--left-col) minmax(0,1fr) auto auto;
   align-items: center;
-  gap: var(--grid-gap);
   height: 72px;
 }
 
 /* explicit column placement (optional but clear) */
-.logo   { grid-column: 1; justify-self: start;}      /* align as you like: start/end */
-.main-menu { grid-column: 2; justify-self: start; }
-.search { grid-column: 3; justify-self: end; }
-.login  { grid-column: 4; justify-self: end;}
+.logo {
+  grid-column: 1;
+  justify-self: start;
+}
+
+/* align as you like: start/end */
+.main-menu {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.search {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.login {
+  grid-column: 4;
+  justify-self: end;
+}
 
 /* Don’t wrap item labels */
 .main-menu li,
@@ -51,19 +64,24 @@
   text-decoration: none;
   color: #2d2d2d;
   font-weight: 500;
-  padding: 6px 0;
 }
 
-.main-menu a:hover { color: #0d2e87; }
-.caret { font-size: 18px; line-height: 1; }
+.main-menu a:hover {
+  color: #0d2e87;
+}
+
+.caret {
+  font-size: 18px;
+  line-height: 1;
+}
 
 /* Search */
 /* Container look: large, rounded, light grey outline */
 .search-field {
   width: 300px;
-  --mdc-outlined-text-field-container-shape: 12px;  /* rounded corners */
-  --mdc-outlined-text-field-outline-color: #e6e6e6;         /* default border */
-  --mdc-outlined-text-field-hover-outline-color: #dfdfe0;
+  --mdc-outlined-text-field-container-shape: 12px; /* rounded corners */
+  --mdc-outlined-text-field-outline-color: #e6e6e6; /* default border */
+  --mdc-outlined-text-field-hover-outline-color: #dfdfe0; /* outline when hover */
   --mdc-outlined-text-field-focus-outline-color: #0d2e87; /* blue when focused */
 }
 
@@ -75,8 +93,8 @@
 
 /* Black caret + black typed text when focused/clicked */
 .search-field .mat-mdc-input-element {
-  color: #000;         /* typed text */
-  caret-color: #8a8a8a;   /* blinking caret */
+  color: #000; /* typed text */
+  caret-color: #8a8a8a; /* blinking caret */
 }
 
 /* Keep placeholder grey */
@@ -102,11 +120,11 @@
 /* Hover/Focus: blue fill + white text */
 .login-btn.mat-mdc-outlined-button:hover,
 .login-btn.mat-mdc-outlined-button:focus-visible {
-  background-color: #0d2e87;                      /* fallback */
+  background-color: #0d2e87; /* fallback */
   --mdc-outlined-button-container-color: #0d2e87; /* MDC var */
-  color: #fff;                                    /* fallback */
-  --mdc-outlined-button-label-text-color: #fff;   /* MDC var */
-  --mdc-outlined-button-outline-color: #0d2e87;   /* keep border blue */
+  color: #fff; /* fallback */
+  --mdc-outlined-button-label-text-color: #fff; /* MDC var */
+  --mdc-outlined-button-outline-color: #0d2e87; /* keep border blue */
 }
 
 /* Ensure label turns white even if theme overrides */

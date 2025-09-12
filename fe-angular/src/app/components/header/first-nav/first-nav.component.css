@@ -8,21 +8,25 @@
 .container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 16px;
 }
 
 /* ----- First Navigation Grid ----- */
 .grid-4 {
   display: grid;
   /* [empty] | [menu] | [preference button] | [empty]  */
-  grid-template-columns: var(--left-col) minmax(0,1fr) auto auto;
   align-items: center;
-  gap: var(--grid-gap);
   height: 42px;
 }
 
-.left-menu { grid-column: 2; justify-self: start; }
-.right-pref { grid-column: 4; justify-self: end; }
+.left-menu {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.right-pref {
+  grid-column: 4;
+  justify-self: end;
+}
 
 /* First Nav Bar Menu */
 .left-menu ul {
@@ -44,7 +48,9 @@
   border-bottom: 2px solid #0d2e87;
 }
 
-.left-menu a:hover { color: #0d2e87; }
+.left-menu a:hover {
+  color: #0d2e87;
+}
 
 /* ----- Preference Button ---- */
 .pref-btn {
@@ -58,4 +64,6 @@
   padding: 6px 8px;
 }
 
-.pref-btn:hover { color: #0d2e87; }
+.pref-btn:hover {
+  color: #0d2e87;
+}
