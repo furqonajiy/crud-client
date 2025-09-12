@@ -47,3 +47,32 @@ h2 { margin: 0 0 12px; font-weight: 700; }
 }
 .chip-active{ background:#dcfce7; color:#166534; }
 .chip-inactive{ background:#fee2e2; color:#991b1b; }
+
+/* ----- Pagination ----- */
+/* pierce Material internals rendered deep inside components */
+:host ::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field
+  .mdc-text-field--outlined .mdc-notched-outline__leading,
+:host ::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field
+  .mdc-text-field--outlined .mdc-notched-outline__notch,
+:host ::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field
+  .mdc-text-field--outlined .mdc-notched-outline__trailing {
+  border-color: #fff !important;
+}
+
+/* dropdown arrow inside the select */
+:host ::ng-deep .table-card .mat-mdc-paginator .mat-mdc-select-arrow {
+  color: #fff !important;
+}
+
+:host ::ng-deep .client-select-panel {
+  /* token override for MDC v17 */
+  --mat-option-selected-state-label-text-color: #fff;
+}
+
+/* hard override to beat theme color */
+:host ::ng-deep .client-select-panel
+  .mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text,
+:host ::ng-deep .client-select-panel
+  .mat-mdc-option.mdc-list-item--activated .mdc-list-item__primary-text {
+  color: #fff !important;
+}

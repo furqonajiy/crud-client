@@ -10,6 +10,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MAT_SELECT_CONFIG } from '@angular/material/select';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ClientDetailsComponent } from './client-details/client-details.component';
 
@@ -45,6 +46,9 @@ const DATA: Client[] = [
     MatFormFieldModule, MatInputModule, MatIconModule,
     MatCheckboxModule, MatButtonModule, MatTooltipModule,
     MatDialogModule,
+  ],
+  providers: [
+    { provide: MAT_SELECT_CONFIG, useValue: { overlayPanelClass: 'client-select-panel' } }
   ],
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.css']
