@@ -57,6 +57,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
   readonly displayedColumns: string[] = ['select', 'id', 'displayName', 'active', 'country', 'actions'];
   readonly dataSource = new MatTableDataSource<Client>([]);
   readonly selection = new SelectionModel<Client>(true, []);
+  deleting = false;
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -136,11 +137,21 @@ export class ClientComponent implements OnInit, AfterViewInit {
     return haystack.includes(filter);
   }
 
+  private get renderedRows(): Client[] {
+    const full = this.dataSource.filteredData.length
+      ? this.dataSource.filteredData
+      : this.dataSource.data;
+
+    if (!this.paginator) return full;
+
+    const start = this.paginator.pageIndex * this.paginator.pageSize;
+    const end = start + this.paginator.pageSize;
+    return full.slice(start, end);
+  }
+
   isAllSelected(): boolean {
-    const numSelected = this.selection.selected.length;
-    // Use filteredData so "Select all" acts on the visible rows
-    const numRows = this.dataSource.filteredData.length || this.dataSource.data.length;
-    return numSelected === numRows && numRows > 0;
+    const rows = this.renderedRows;
+    return rows.length > 0 && rows.every(r => this.selection.isSelected(r));
   }
 
   masterToggle(): void {
@@ -191,18 +202,29 @@ export class ClientComponent implements OnInit, AfterViewInit {
     const count = this.selection.selected.length;
     if (!count) return;
 
-    const ok = confirm(count === 1 ? 'Delete the selected client?' : `Delete ${count} selected clients?`);
+    const ok = confirm(count === 1
+      ? 'Delete the selected client?'
+      : `Delete ${count} selected clients?`);
     if (!ok) return;
 
-    const ids = new Set(this.selection.selected.map(c => c.id));
-    this.dataSource.data = this.dataSource.data.filter(c => !ids.has(c.id));
-    this.selection.clear();
+    const ids = this.selection.selected.map(c => c.id);
 
-    // Keep paginator on a valid page
-    const p = this.paginator;
-    if (p && p.pageIndex > 0 && p.pageIndex >= p.getNumberOfPages()) p.previousPage();
+    this.http.delete<void>(this.API, { body: { ids } }).subscribe({
+      next: () => {
+        const idSet = new Set(ids);
+        this.dataSource.data = this.dataSource.data.filter(c => !idSet.has(c.id));
+        this.selection.clear();
+
+        // Keep paginator on a valid page
+        const p = this.paginator;
+        if (p && p.pageIndex > 0 && p.pageIndex >= p.getNumberOfPages()) p.previousPage();
+      },
+      error: (err) => {
+        console.error('Failed to delete clients', err);
+        alert('Failed to delete. Please try again.');
+      }
+    });
   }
-
   // ----- Utils -----
   readonly iso = isoFromName;
 }

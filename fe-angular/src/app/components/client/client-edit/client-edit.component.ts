@@ -75,7 +75,7 @@ export class ClientEditComponent {
     email: this.data.email ?? '',
     details: this.data.details ?? '',
     active: this.data.active ?? false,
-    location: this.data.location ?? '', // ✅ fixed
+    location: this.data.location ?? '',
     country: this.data.country ?? '',
   };
 
