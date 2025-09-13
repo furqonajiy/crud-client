@@ -177,32 +177,16 @@ td.col-actions {
   color: #991b1b;
 }
 
-/* ========== Paginator (deep) ========== */
-.table-card .mat-mdc-paginator .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__leading,
-.table-card .mat-mdc-paginator .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__notch,
-.table-card .mat-mdc-paginator .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__trailing {
-  border-color: #fff !important;
-}
-
-.table-card .mat-mdc-paginator .mat-mdc-select-arrow {
-  color: #fff !important;
-}
-
-:host ::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field {
-  /* outline/border */
+/* ========== Paginator — Trigger ========== */
+::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field {
   --mdc-outlined-text-field-outline-color: #e5e7eb;
-  --mdc-outlined-text-field-hover-outline-color: #cbd5e1;
-  --mdc-outlined-text-field-focus-outline-color: #cbd5e1; /* <- focus color */
-
-  /* text/arrow in the trigger */
-  --mat-select-trigger-text-color: #0f172a;
+  --mdc-outlined-text-field-focus-outline-color: #cbd5e1;
 }
-:host ::ng-deep .table-card .mat-mdc-paginator .mat-mdc-select-arrow {
+::ng-deep .table-card .mat-mdc-paginator .mat-mdc-select-arrow {
   color: #cbd5e1 !important;
 }
 
-/* (Optional) also shift the panel's "primary" token for safety */
+/* ========== Paginator — Dropdown ========== */
 ::ng-deep .client-select-panel .mat-mdc-select-panel {
-  --mdc-theme-primary: #16a34a !important;
-  --mat-option-selected-state-label-text-color: #16a34a !important;
+  --mat-option-selected-state-label-text-color: #cacaca !important;
 }
