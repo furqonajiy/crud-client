@@ -138,15 +138,10 @@ export class ClientComponent implements OnInit, AfterViewInit {
   }
 
   private get renderedRows(): Client[] {
-    const full = this.dataSource.filteredData.length
-      ? this.dataSource.filteredData
-      : this.dataSource.data;
-
-    if (!this.paginator) return full;
-
+    const list = this.dataSource.filteredData.length ? this.dataSource.filteredData : this.dataSource.data;
+    if (!this.paginator) return list;
     const start = this.paginator.pageIndex * this.paginator.pageSize;
-    const end = start + this.paginator.pageSize;
-    return full.slice(start, end);
+    return list.slice(start, start + this.paginator.pageSize);
   }
 
   isAllSelected(): boolean {
@@ -154,9 +149,14 @@ export class ClientComponent implements OnInit, AfterViewInit {
     return rows.length > 0 && rows.every(r => this.selection.isSelected(r));
   }
 
+  pageHasSelection(): boolean {
+    return this.renderedRows.some(r => this.selection.isSelected(r));
+  }
+
   masterToggle(): void {
-    const rows = this.dataSource.filteredData.length ? this.dataSource.filteredData : this.dataSource.data;
-    this.isAllSelected() ? this.selection.clear() : rows.forEach(r => this.selection.select(r));
+    const rows = this.renderedRows;
+    const allSelected = rows.length > 0 && rows.every(r => this.selection.isSelected(r));
+    rows.forEach(r => allSelected ? this.selection.deselect(r) : this.selection.select(r));
   }
 
   // ----- Row actions -----
