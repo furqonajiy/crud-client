@@ -2,7 +2,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { finalize } from 'rxjs/operators';
 
 // ===== Angular Material =====
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -46,6 +48,7 @@ type UpdateClientPayload = Client;
     MatButtonModule,
     MatSelectModule,
     MatOptionModule,
+    MatSnackBarModule,
   ],
   templateUrl: './client-edit.component.html',
   styleUrls: ['./client-edit.component.css'],
@@ -56,13 +59,14 @@ export class ClientEditComponent {
   private readonly http = inject(HttpClient);
   private readonly dialogRef = inject(MatDialogRef<ClientEditComponent, Client>);
   readonly data = inject<ClientEditData>(MAT_DIALOG_DATA);
+  private readonly snackBar = inject(MatSnackBar);
 
   // ===== Data for UI =====
   readonly countries: Country[] = countriesList();
   readonly iso = isoFromName;
 
-  // ===== API base =====
-  private readonly baseUrl = '/api/v1/clients';
+  // ===== API =====
+  private readonly API = 'http://localhost:8080/api/v1/clients';
 
   // ===== Form =====
   private readonly initial: FormModel = {
@@ -104,33 +108,36 @@ export class ClientEditComponent {
 
     if (this.data.isNew) {
       // POST /api/v1/clients
-      this.http.post<Client>(this.baseUrl, bodyNoId).subscribe({
-        next: (created) => {
-          this.submitting = false;
-          this.dialogRef.close(created);
-        },
-        error: (err) => {
-          console.error('Create client failed', err);
-          this.submitting = false;
-        },
-      });
+      this.http.post<Client>(this.API, bodyNoId)
+        .pipe(finalize(() => (this.submitting = false)))
+        .subscribe({
+          next: (created) => this.dialogRef.close(created),
+          error: (err) => this.showError(err),
+        });
     } else {
-      // PUT /api/v1/clients (with id in body)
-      const bodyWithId: UpdateClientPayload = {
-        id: this.data.id!, // assume dialog only opens in edit with valid id
-        ...bodyNoId,
-      };
+      // PUT /api/v1/clients
+      const bodyWithId: Client = { id: this.data.id!, ...bodyNoId };
 
-      this.http.put<Client>(this.baseUrl, bodyWithId).subscribe({
-        next: (updated) => {
-          this.submitting = false;
-          this.dialogRef.close(updated);
-        },
-        error: (err) => {
-          console.error('Update client failed', err);
-          this.submitting = false;
-        },
-      });
+      this.http.put<Client>(this.API, bodyWithId)
+        .pipe(finalize(() => (this.submitting = false)))
+        .subscribe({
+          next: (updated) => this.dialogRef.close(updated),
+          error: (err) => this.showError(err),
+        });
     }
+  }
+
+  private getErrorMessage(err: unknown): string {
+    const http = err as HttpErrorResponse;
+    if (http?.error) {
+      if (typeof http.error === 'string') return http.error;
+      if (typeof http.error?.message === 'string') return http.error.message;
+    }
+    if (typeof http?.message === 'string') return http.message;
+    return 'Unexpected error. Please try again.';
+  }
+
+  private showError(err: unknown): void {
+    this.snackBar.open(this.getErrorMessage(err), 'Dismiss', { duration: 6000 });
   }
 }

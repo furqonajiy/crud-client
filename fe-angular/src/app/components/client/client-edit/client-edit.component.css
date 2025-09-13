@@ -151,3 +151,7 @@
 ::ng-deep .cdk-overlay-pane.client-edit-light .btn-save.mat-mdc-unelevated-button.mat-mdc-button-disabled {
   opacity: 1;
 }
+
+::ng-deep .mat-mdc-snack-bar-label {
+  white-space: pre-line;
+}
