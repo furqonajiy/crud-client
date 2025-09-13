@@ -3,9 +3,16 @@
     <h2 class="title">List of Clients</h2>
 
     <div class="header-actions">
-      <button mat-flat-button class="btn-add" (click)="addClient()">
-        Add
-      </button>
+      <form (ngSubmit)="onSearch()" class="search">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
+          <input matInput type="search" name="q" [(ngModel)]="q" placeholder="Search" aria-label="Search" />
+          <button mat-icon-button matSuffix class="search-btn" type="submit" aria-label="Run search">
+            <mat-icon>search</mat-icon>
+          </button>
+        </mat-form-field>
+      </form>
+
+      <button mat-flat-button class="btn-add" (click)="addClient()">Add</button>
 
       <button mat-flat-button color="warn" class="btn-remove" (click)="deleteSelectedClients()"
         [disabled]="!selection.hasValue()">

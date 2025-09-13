@@ -153,7 +153,6 @@ td.col-actions {
   border: 0;
 }
 
-
 /* ========== Flags & Chips ========== */
 .fi {
   margin-right: 8px;
@@ -182,11 +181,44 @@ td.col-actions {
   --mdc-outlined-text-field-outline-color: #e5e7eb;
   --mdc-outlined-text-field-focus-outline-color: #cbd5e1;
 }
+
 ::ng-deep .table-card .mat-mdc-paginator .mat-mdc-select-arrow {
   color: #cbd5e1 !important;
 }
 
-/* ========== Paginator — Dropdown ========== */
+/* ========== Paginator — Dropdown (overlay) ========== */
 ::ng-deep .client-select-panel .mat-mdc-select-panel {
   --mat-option-selected-state-label-text-color: #cacaca !important;
+}
+
+/* ========== Search ========== */
+.search-field {
+  width: 300px;
+  --mdc-outlined-text-field-container-height: 36px;
+  --mdc-outlined-text-field-container-shape: 18px;
+  --mdc-outlined-text-field-outline-color: #e6e6e6;
+  --mdc-outlined-text-field-hover-outline-color: #dfdfe1;
+  --mdc-outlined-text-field-focus-outline-color: #0d2e87;
+}
+
+::ng-deep .search-field .mat-mdc-text-field-wrapper,
+.search-field .mat-mdc-form-field-flex,
+.search-field .mat-mdc-form-field-infix {
+  display: flex;
+  align-items: center;
+}
+
+::ng-deep .search-field .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
+  height: 36px;
+}
+
+.search-field .mat-mdc-input-element {
+  padding: 0;
+  color: #000000;
+  caret-color: #8a8a8a;
+}
+
+.search-field .mat-mdc-input-element::placeholder {
+  color: #8a8a8a;
+  opacity: 1;
 }

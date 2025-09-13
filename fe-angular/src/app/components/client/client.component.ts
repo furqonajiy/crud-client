@@ -3,6 +3,7 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SelectionModel } from '@angular/cdk/collections';
+import { FormsModule } from '@angular/forms';
 
 // ========== Angular Material ==========
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -13,6 +14,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MAT_SELECT_CONFIG } from '@angular/material/select';
 
 // ========== App Components / Utils ==========
@@ -40,9 +43,11 @@ interface ClientsResponse { clients: Client[]; }
   imports: [
     CommonModule,
     HttpClientModule,
+    FormsModule,
 
     // Material
     MatTableModule, MatSortModule, MatPaginatorModule,
+    MatFormFieldModule, MatInputModule,
     MatIconModule, MatCheckboxModule, MatButtonModule,
     MatTooltipModule, MatDialogModule,
   ],
@@ -61,6 +66,9 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  // inside your component class
+  q: string = '';
 
   // ===== API =====
   private readonly API = 'http://localhost:8080/api/v1/clients';
@@ -234,4 +242,10 @@ export class ClientComponent implements OnInit, AfterViewInit {
   }
   // ----- Utils -----
   readonly iso = isoFromName;
+
+  onSearch(): void {
+    this.applyFilter(this.q);
+    this.pruneSelectionToRendered(); // keep selection limited to currently rendered rows
+  }
+
 }
