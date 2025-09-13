@@ -55,6 +55,16 @@
         <mat-checkbox formControlName="active" aria-label="Active"></mat-checkbox>
       </div>
 
+      <!-- Location -->
+      <div class="label">Location</div>
+      <div class="value">
+        <mat-form-field appearance="fill">
+          <input matInput formControlName="location" placeholder="City, Region" />
+          <mat-hint align="start">e.g., Amsterdam, NL</mat-hint>
+          <mat-error *ngIf="form.get('location')?.hasError('maxlength')">Max 120 characters</mat-error>
+        </mat-form-field>
+      </div>
+
       <!-- Country -->
       <div class="label">Country</div>
       <div class="value">
@@ -77,8 +87,9 @@
     </div>
   </mat-dialog-content>
 
+  <!-- actions -->
   <mat-dialog-actions align="end">
     <button mat-button type="button" (click)="cancel()">Cancel</button>
-    <button mat-flat-button class="btn-save" type="submit" [disabled]="form.invalid">Save</button>
+    <button mat-flat-button class="btn-save" type="submit" [disabled]="form.invalid || submitting">Save</button>
   </mat-dialog-actions>
 </form>

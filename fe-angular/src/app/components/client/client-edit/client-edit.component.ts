@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 // ===== Angular Material =====
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -25,8 +25,12 @@ type FormModel = {
   email: string;
   details: string;
   active: boolean;
+  location: string;
   country: string;
 };
+
+type AddClientPayload = Omit<Client, 'id'>;
+type UpdateClientPayload = Client;
 
 @Component({
   selector: 'app-client-edit',
@@ -35,7 +39,6 @@ type FormModel = {
     CommonModule,
     ReactiveFormsModule,
     HttpClientModule,
-    // Material
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
@@ -50,12 +53,16 @@ type FormModel = {
 export class ClientEditComponent {
   // ===== DI =====
   private readonly fb = inject(NonNullableFormBuilder);
-  private readonly dialogRef = inject(MatDialogRef<ClientEditComponent, Partial<Client>>);
+  private readonly http = inject(HttpClient);
+  private readonly dialogRef = inject(MatDialogRef<ClientEditComponent, Client>);
   readonly data = inject<ClientEditData>(MAT_DIALOG_DATA);
 
   // ===== Data for UI =====
   readonly countries: Country[] = countriesList();
   readonly iso = isoFromName;
+
+  // ===== API base =====
+  private readonly baseUrl = '/api/v1/clients';
 
   // ===== Form =====
   private readonly initial: FormModel = {
@@ -64,6 +71,7 @@ export class ClientEditComponent {
     email: this.data.email ?? '',
     details: this.data.details ?? '',
     active: this.data.active ?? false,
+    location: this.data.location ?? '', // ✅ fixed
     country: this.data.country ?? '',
   };
 
@@ -73,8 +81,11 @@ export class ClientEditComponent {
     email: this.fb.control(this.initial.email, [Validators.required, Validators.email]),
     details: this.fb.control(this.initial.details, [Validators.maxLength(500)]),
     active: this.fb.control(this.initial.active),
+    location: this.fb.control(this.initial.location, [Validators.maxLength(120)]),
     country: this.fb.control(this.initial.country, [Validators.required]),
   });
+
+  submitting = false;
 
   // ===== Actions =====
   cancel(): void {
@@ -87,12 +98,39 @@ export class ClientEditComponent {
       return;
     }
 
-    // include id only when editing
-    const result: Partial<Client> = {
-      ...(this.data.id != null ? { id: this.data.id } : {}),
-      ...this.form.getRawValue(),
-    };
+    this.submitting = true;
 
-    this.dialogRef.close(result);
+    const bodyNoId: AddClientPayload = this.form.getRawValue() as AddClientPayload;
+
+    if (this.data.isNew) {
+      // POST /api/v1/clients
+      this.http.post<Client>(this.baseUrl, bodyNoId).subscribe({
+        next: (created) => {
+          this.submitting = false;
+          this.dialogRef.close(created);
+        },
+        error: (err) => {
+          console.error('Create client failed', err);
+          this.submitting = false;
+        },
+      });
+    } else {
+      // PUT /api/v1/clients (with id in body)
+      const bodyWithId: UpdateClientPayload = {
+        id: this.data.id!, // assume dialog only opens in edit with valid id
+        ...bodyNoId,
+      };
+
+      this.http.put<Client>(this.baseUrl, bodyWithId).subscribe({
+        next: (updated) => {
+          this.submitting = false;
+          this.dialogRef.close(updated);
+        },
+        error: (err) => {
+          console.error('Update client failed', err);
+          this.submitting = false;
+        },
+      });
+    }
   }
 }

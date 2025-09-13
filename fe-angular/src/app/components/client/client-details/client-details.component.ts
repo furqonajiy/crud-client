@@ -18,9 +18,6 @@ import { isoFromName } from '../../../utils/country.util';
   styleUrls: ['./client-details.component.css'],
 })
 export class ClientDetailsComponent {
-  // injected dialog data
   readonly data = inject<Client>(MAT_DIALOG_DATA);
-
-  // expose the util directly for the template
   readonly iso = isoFromName;
 }
