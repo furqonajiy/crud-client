@@ -3,10 +3,13 @@
 <form [formGroup]="form" (ngSubmit)="save()" novalidate>
   <mat-dialog-content>
     <div class="grid">
-      <!-- ID row only for edit -->
-      <div class="label" *ngIf="!isNew">ID {{isNew}}</div>
-      <div class="value id" *ngIf="!isNew">{{ data.id }}</div>
+      <!-- ID (edit only) -->
+      <ng-container *ngIf="!isNew">
+        <div class="label">ID</div>
+        <div class="value id">{{ data.id }}</div>
+      </ng-container>
 
+      <!-- Full Name -->
       <div class="label">Full Name</div>
       <div class="value">
         <mat-form-field appearance="fill">
@@ -16,6 +19,7 @@
         </mat-form-field>
       </div>
 
+      <!-- Display Name -->
       <div class="label">Display Name</div>
       <div class="value">
         <mat-form-field appearance="fill">
@@ -25,6 +29,7 @@
         </mat-form-field>
       </div>
 
+      <!-- Email -->
       <div class="label">Email</div>
       <div class="value">
         <mat-form-field appearance="fill">
@@ -34,29 +39,33 @@
         </mat-form-field>
       </div>
 
+      <!-- Details -->
       <div class="label">Details</div>
       <div class="value">
         <mat-form-field appearance="fill">
           <textarea matInput rows="3" formControlName="details" maxlength="500"></textarea>
-          <mat-hint align="end">{{ form.get('details')?.value?.length || 0 }}/500</mat-hint>
+          <mat-hint align="end">{{ form.get("details")?.value?.length || 0 }}/500</mat-hint>
           <mat-error *ngIf="form.get('details')?.hasError('maxlength')">Max 500 characters</mat-error>
         </mat-form-field>
       </div>
 
+      <!-- Active -->
       <div class="label">Active</div>
       <div class="value checkbox">
         <mat-checkbox formControlName="active" aria-label="Active"></mat-checkbox>
       </div>
 
+      <!-- Country -->
       <div class="label">Country</div>
       <div class="value">
         <mat-form-field appearance="fill" class="country-field">
           <mat-label>Country</mat-label>
           <mat-select formControlName="country" panelClass="country-panel" required>
             <mat-select-trigger>
-              <span class="fi" [ngClass]="'fi-' + iso(form.value.country)"></span>
-              {{ form.value.country }}
+              <span class="fi" [ngClass]="'fi-' + iso(form.get('country')?.value || '')"></span>
+              {{ form.get("country")?.value || "Select…" }}
             </mat-select-trigger>
+
             <mat-option *ngFor="let c of countries" [value]="c.name">
               <span class="fi" [ngClass]="'fi-' + c.code"></span>
               {{ c.name }}
