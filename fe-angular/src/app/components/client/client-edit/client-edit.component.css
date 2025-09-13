@@ -2,8 +2,8 @@
 .grid {
   display: grid;
   grid-template-columns: 140px 1fr;
-  gap: 10px 16px;
-  padding-top: 6px;
+  /* gap: 0px 16px; */
+  /* padding-top: 6px; */
 }
 
 .label {

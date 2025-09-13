@@ -13,10 +13,9 @@
       <div class="label">Full Name*</div>
       <div class="value">
         <mat-form-field appearance="fill" [matTooltip]="getError('fullName')" [matTooltipShowDelay]="0"
-          matTooltipPosition="right" #ttFullName="matTooltip">
+          matTooltipPosition="above" #ttFullName="matTooltip">
           <input matInput formControlName="fullName" required maxlength="128"
             (input)="onFieldChange('fullName', ttFullName)" (blur)="onFieldChange('fullName', ttFullName)" />
-          <mat-hint align="end">{{ form.get('fullName')?.value?.length || 0 }}/128</mat-hint>
           <mat-error *ngIf="getError('fullName') as err">{{ err }}</mat-error>
         </mat-form-field>
       </div>
@@ -25,10 +24,9 @@
       <div class="label">Display Name*</div>
       <div class="value">
         <mat-form-field appearance="fill" [matTooltip]="getError('displayName')" [matTooltipShowDelay]="0"
-          matTooltipPosition="right" #ttDisplay="matTooltip">
+          matTooltipPosition="above" #ttDisplay="matTooltip">
           <input matInput formControlName="displayName" required maxlength="30"
             (input)="onFieldChange('displayName', ttDisplay)" (blur)="onFieldChange('displayName', ttDisplay)" />
-          <mat-hint align="end">{{ form.get('displayName')?.value?.length || 0 }}/30</mat-hint>
           <mat-error *ngIf="getError('displayName') as err">{{ err }}</mat-error>
         </mat-form-field>
       </div>
@@ -37,10 +35,9 @@
       <div class="label">Email*</div>
       <div class="value">
         <mat-form-field appearance="fill" [matTooltip]="getError('email')" [matTooltipShowDelay]="0"
-          matTooltipPosition="right" #ttEmail="matTooltip">
+          matTooltipPosition="above" #ttEmail="matTooltip">
           <input matInput type="email" formControlName="email" required maxlength="254"
             (input)="onFieldChange('email', ttEmail)" (blur)="onFieldChange('email', ttEmail)" />
-          <mat-hint align="end">{{ form.get('email')?.value?.length || 0 }}/254</mat-hint>
           <mat-error *ngIf="getError('email') as err">{{ err }}</mat-error>
         </mat-form-field>
       </div>
@@ -66,8 +63,6 @@
       <div class="value">
         <mat-form-field appearance="fill">
           <input matInput formControlName="location" placeholder="City, Region" maxlength="120" />
-          <mat-hint align="start">e.g., Amsterdam, NL</mat-hint>
-          <mat-hint align="end">{{ form.get('location')?.value?.length || 0 }}/120</mat-hint>
           <mat-error *ngIf="form.get('location')?.hasError('maxlength')">Max 120 characters</mat-error>
         </mat-form-field>
       </div>
