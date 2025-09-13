@@ -30,14 +30,14 @@ public class ClientService implements IClientService {
 
     private ClientDto clientEntityToClientDto(ClientEntity clientEntity) {
         ClientDto clientDto = new ClientDto();
-        clientDto.id = clientEntity.getId();
-        clientDto.fullName = clientEntity.getFullName();
-        clientDto.displayName = clientEntity.getDisplayName();
-        clientDto.email = clientEntity.getEmail();
-        clientDto.details = clientEntity.getDetails();
-        clientDto.active = clientEntity.getActive();
-        clientDto.location = clientEntity.getLocation();
-        clientDto.country = clientEntity.getCountry();
+        clientDto.setId(clientEntity.getId());
+        clientDto.setFullName(clientEntity.getFullName());
+        clientDto.setDisplayName(clientEntity.getDisplayName());
+        clientDto.setEmail(clientEntity.getEmail());
+        clientDto.setDetails(clientEntity.getDetails());
+        clientDto.setActive(clientEntity.getActive());
+        clientDto.setLocation(clientEntity.getLocation());
+        clientDto.setCountry(clientEntity.getCountry());
         return clientDto;
     }
 
