@@ -22,6 +22,7 @@ import { MAT_SELECT_CONFIG } from '@angular/material/select';
 import { ClientDetailsComponent } from './client-details/client-details.component';
 import { ClientEditComponent } from './client-edit/client-edit.component';
 import { isoFromName } from '../../utils/country.util';
+import { setCookie, getCookieInt } from '../../utils/cookie.util';
 
 // ===== Types =====
 export interface Client {
@@ -67,6 +68,15 @@ export class ClientComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  // ===== Utils =====
+  readonly iso = isoFromName;
+
+  private updateClientsCountCookie(): void {
+    const total = this.dataSource.data.length;
+    const prev = getCookieInt('RABO_CLIENTS');
+    if (prev !== total) setCookie('RABO_CLIENTS', String(total), 1);
+  }
+
   // inside your component class
   q: string = '';
 
@@ -75,7 +85,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
   constructor(private dialog: MatDialog, private http: HttpClient) { }
 
-  // ----- Lifecycle -----
+  // ===== Lifecycle =====
   ngOnInit(): void {
     // Sorting & filtering logic (pure, readable helpers)
     this.dataSource.sortingDataAccessor = (row, col) => this.sortAccessor(row, col);
@@ -95,8 +105,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
     this.paginator.page.subscribe(() => this.pruneSelectionToRendered());
   }
 
-
-  // ----- Data load -----
+  // ===== Data load =====
   private loadClients(opts?: { keepPage?: boolean; goLast?: boolean }): void {
     const keepPage = !!opts?.keepPage;
     const goLast = !!opts?.goLast;
@@ -124,12 +133,13 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
         // trigger table to re-render the correct slice
         this.dataSource._updateChangeSubscription();
+        this.updateClientsCountCookie();
       },
       error: (err) => console.error('Failed to load clients', err),
     });
   }
 
-  // ----- Table helpers -----
+  // ===== Table helpers =====
   applyFilter(value: string): void {
     this.dataSource.filter = (value || '').trim().toLowerCase();
     this.paginator?.firstPage();
@@ -174,7 +184,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
     rows.forEach(r => allSelected ? this.selection.deselect(r) : this.selection.select(r));
   }
 
-  // ----- Row actions -----
+  // ===== Row actions =====
   addClient(): void {
     this.blurActive();
 
@@ -229,22 +239,15 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
     this.http.delete<void>(this.API, { body: { ids } }).subscribe({
       next: () => {
-        const idSet = new Set(ids);
-        this.dataSource.data = this.dataSource.data.filter(c => !idSet.has(c.id));
         this.selection.clear();
-
-        // Keep paginator on a valid page
-        const p = this.paginator;
-        if (p && p.pageIndex > 0 && p.pageIndex >= p.getNumberOfPages()) p.previousPage();
+        this.loadClients({ keepPage: true });
       },
       error: (err) => {
         console.error('Failed to delete clients', err);
-        alert('Failed to delete. Please try again.');
+        alert('Failed to delete clients. Please try again.');
       }
     });
   }
-  // ----- Utils -----
-  readonly iso = isoFromName;
 
   onSearch(): void {
     this.applyFilter(this.q);
