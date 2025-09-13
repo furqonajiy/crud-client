@@ -60,13 +60,7 @@ table[mat-table] {
   width: 100%;
 }
 
-/* Checkbox (select) column — kill ellipsis + shrink padding */
-.mat-mdc-header-cell.mat-column-select,
-.mat-mdc-cell.mat-column-select {
-  overflow: visible !important;
-}
-
-/* header row */
+/* ========== Table Rows & Cells ========== */
 .mat-mdc-header-row {
   background: #f8fafc !important;
 }
@@ -76,7 +70,6 @@ table[mat-table] {
   font-weight: 700;
 }
 
-/* body rows */
 .mat-mdc-row {
   background: #fff;
 }
@@ -98,8 +91,7 @@ table[mat-table] {
   --mdc-checkbox-disabled-unselected-icon-color: #64748b;
 }
 
-/* ----- Client Table Width ----- */
-/* Fixed widths per column (tweak to taste) */
+/* ========== Column Widths ========== */
 th.col-select,
 td.col-select {
   width: 48px;
@@ -113,7 +105,6 @@ td.col-id {
   min-width: 48px;
   max-width: 48px;
 }
-
 
 th.col-display,
 td.col-display {
@@ -141,6 +132,12 @@ td.col-actions {
   width: 64px;
   min-width: 64px;
   max-width: 64px;
+}
+
+/* ========== Column Tweaks (padding/ellipsis) ========== */
+.mat-mdc-header-cell.mat-column-select,
+.mat-mdc-cell.mat-column-select {
+  overflow: visible !important;
 }
 
 /* ----- Flag & Chips ----- */
