@@ -140,7 +140,7 @@ td.col-actions {
   overflow: visible !important;
 }
 
-/* ----- Flag & Chips ----- */
+/* ========== Flags & Chips ========== */
 .fi {
   margin-right: 8px;
 }
@@ -161,17 +161,4 @@ td.col-actions {
 .chip-inactive {
   background: #fee2e2;
   color: #991b1b;
-}
-
-/* ----- Pagination ----- */
-/* pierce Material internals rendered deep inside components */
-::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__leading,
-::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__notch,
-::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__trailing {
-  border-color: #fff !important;
-}
-
-/* dropdown arrow inside the select */
-::ng-deep .table-card .mat-mdc-paginator .mat-mdc-select-arrow {
-  color: #fff !important;
 }
