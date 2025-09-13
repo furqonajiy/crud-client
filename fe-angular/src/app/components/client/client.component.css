@@ -62,7 +62,7 @@ table[mat-table] {
 
 /* ========== Table Rows & Cells ========== */
 .mat-mdc-header-row {
-  background: #f8fafc !important;
+  background: #f8fafc;
 }
 
 .mat-mdc-header-cell {
@@ -89,6 +89,18 @@ table[mat-table] {
   --mdc-checkbox-selected-focus-icon-color: #334155;
   --mdc-checkbox-selected-pressed-icon-color: #334155;
   --mdc-checkbox-disabled-selected-icon-color: #64748b;
+
+  --mdc-checkbox-selected-hover-state-layer-color: #475569;
+  --mdc-checkbox-selected-focus-state-layer-color: #475569;
+  --mdc-checkbox-selected-pressed-state-layer-color: #475569;
+
+  --mdc-checkbox-unselected-hover-state-layer-color: #475569;
+  --mdc-checkbox-unselected-focus-state-layer-color: #475569;
+  --mdc-checkbox-unselected-pressed-state-layer-color: #475569;
+
+  --mdc-checkbox-hover-state-layer-opacity: 0.10;
+  --mdc-checkbox-focus-state-layer-opacity: 0.12;
+  --mdc-checkbox-pressed-state-layer-opacity: 0.14;
 }
 
 /* ========== Column Widths ========== */
@@ -137,7 +149,7 @@ td.col-actions {
 /* ========== Column Tweaks (padding/ellipsis) ========== */
 .mat-mdc-header-cell.mat-column-select,
 .mat-mdc-cell.mat-column-select {
-  overflow: visible !important;
+  overflow: visible;
 }
 
 /* ========== Utilities ========== */
