@@ -14,6 +14,7 @@
 /* ========== Grid ========== */
 .grid-4 {
   display: grid;
+  grid-template-columns: 240px auto 1fr auto auto;
   align-items: center;
   height: 42px;
 }
