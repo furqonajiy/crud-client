@@ -140,6 +140,18 @@ td.col-actions {
   overflow: visible;
 }
 
+/* ========== Vertical Scroll ========== */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-content,
+::ng-deep .cdk-overlay-pane.client-edit-light .mdc-dialog__content {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-surface,
+::ng-deep .cdk-overlay-pane.client-edit-light .mdc-dialog__surface {
+  max-height: none !important;
+}
+
 /* ========== Utilities ========== */
 .visually-hidden {
   position: absolute;

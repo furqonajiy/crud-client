@@ -12,10 +12,8 @@
       <!-- Full Name -->
       <div class="label">Full Name*</div>
       <div class="value">
-        <mat-form-field appearance="fill" [matTooltip]="getError('fullName')" [matTooltipShowDelay]="0"
-          matTooltipPosition="above" #ttFullName="matTooltip">
-          <input matInput formControlName="fullName" required maxlength="128"
-            (input)="onFieldChange('fullName', ttFullName)" (blur)="onFieldChange('fullName', ttFullName)" />
+        <mat-form-field appearance="fill" subscriptSizing="dynamic">
+          <input matInput formControlName="fullName" required maxlength="128" />
           <mat-error *ngIf="getError('fullName') as err">{{ err }}</mat-error>
         </mat-form-field>
       </div>
@@ -23,10 +21,8 @@
       <!-- Display Name -->
       <div class="label">Display Name*</div>
       <div class="value">
-        <mat-form-field appearance="fill" [matTooltip]="getError('displayName')" [matTooltipShowDelay]="0"
-          matTooltipPosition="above" #ttDisplay="matTooltip">
-          <input matInput formControlName="displayName" required maxlength="30"
-            (input)="onFieldChange('displayName', ttDisplay)" (blur)="onFieldChange('displayName', ttDisplay)" />
+        <mat-form-field appearance="fill" subscriptSizing="dynamic">
+          <input matInput formControlName="displayName" required maxlength="30" />
           <mat-error *ngIf="getError('displayName') as err">{{ err }}</mat-error>
         </mat-form-field>
       </div>
@@ -34,10 +30,8 @@
       <!-- Email -->
       <div class="label">Email*</div>
       <div class="value">
-        <mat-form-field appearance="fill" [matTooltip]="getError('email')" [matTooltipShowDelay]="0"
-          matTooltipPosition="above" #ttEmail="matTooltip">
-          <input matInput type="email" formControlName="email" required maxlength="254"
-            (input)="onFieldChange('email', ttEmail)" (blur)="onFieldChange('email', ttEmail)" />
+        <mat-form-field appearance="fill" subscriptSizing="dynamic">
+          <input matInput type="email" formControlName="email" required maxlength="254" />
           <mat-error *ngIf="getError('email') as err">{{ err }}</mat-error>
         </mat-form-field>
       </div>
@@ -45,7 +39,7 @@
       <!-- Details -->
       <div class="label">Details</div>
       <div class="value">
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <textarea matInput rows="3" formControlName="details" maxlength="500"></textarea>
           <mat-hint align="end">{{ form.get('details')?.value?.length || 0 }}/500</mat-hint>
           <mat-error *ngIf="form.get('details')?.hasError('maxlength')">Max 500 characters</mat-error>
@@ -61,8 +55,8 @@
       <!-- Location -->
       <div class="label">Location</div>
       <div class="value">
-        <mat-form-field appearance="fill">
-          <input matInput formControlName="location" placeholder="City, Region" maxlength="120" />
+        <mat-form-field appearance="fill" subscriptSizing="dynamic">
+          <input matInput formControlName="location" maxlength="120" />
           <mat-error *ngIf="form.get('location')?.hasError('maxlength')">Max 120 characters</mat-error>
         </mat-form-field>
       </div>
@@ -70,8 +64,7 @@
       <!-- Country -->
       <div class="label">Country*</div>
       <div class="value">
-        <mat-form-field appearance="fill" class="country-field">
-          <mat-label>Country</mat-label>
+        <mat-form-field appearance="fill" subscriptSizing="dynamic" class="country-field">
           <mat-select formControlName="country" panelClass="country-panel" required>
             <mat-select-trigger>
               <span class="fi" [ngClass]="'fi-' + iso(form.get('country')?.value || '')"></span>

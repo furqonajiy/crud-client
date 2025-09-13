@@ -15,6 +15,7 @@
 /* ========== Value Column ========== */
 .value .mat-mdc-form-field {
   width: 100%;
+  margin-bottom: 12px; 
 }
 
 .value.checkbox {
@@ -58,6 +59,7 @@
 
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-content {
   color: #111827;
+  padding-bottom: 8px !important;
 }
 
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-actions {
@@ -131,6 +133,7 @@
 ::ng-deep .cdk-overlay-pane.client-edit-light .country-field .mat-mdc-select-arrow {
   color: #B0BEC5 !important;
 }
+
 
 /* ========== Country dropdown panel (options & checkmark) ========== */
 ::ng-deep .country-panel {

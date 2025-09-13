@@ -176,11 +176,14 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
   // ----- Row actions -----
   addClient(): void {
+    this.blurActive();
+
     const ref = this.dialog.open(ClientEditComponent, {
       width: '720px',
       data: { isNew: true },
       disableClose: true,
       panelClass: 'client-edit-light',
+      maxHeight: 'none',
     });
 
     ref.afterClosed().subscribe((ok) => {
@@ -195,6 +198,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
       data: row,
       disableClose: true,
       panelClass: 'client-edit-light',
+      maxHeight: 'none',
     });
 
     ref.afterClosed().subscribe((ok) => {
@@ -202,7 +206,6 @@ export class ClientComponent implements OnInit, AfterViewInit {
       this.loadClients({ keepPage: true });
     });
   }
-
 
   openClientDetails(row: Client): void {
     this.dialog.open(ClientDetailsComponent, {
@@ -246,6 +249,10 @@ export class ClientComponent implements OnInit, AfterViewInit {
   onSearch(): void {
     this.applyFilter(this.q);
     this.pruneSelectionToRendered(); // keep selection limited to currently rendered rows
+  }
+
+  private blurActive(): void {
+    (document.activeElement as HTMLElement | null)?.blur();
   }
 
 }
