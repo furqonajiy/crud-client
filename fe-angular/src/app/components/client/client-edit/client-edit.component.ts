@@ -2,8 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 
 // ===== Angular Material =====
@@ -14,13 +13,15 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltip, MatTooltipModule } from '@angular/material/tooltip';
 
 // ===== App Types / Utils =====
 import { Client } from '../client.component';
 import { countriesList, isoFromName, Country } from '../../../utils/country.util';
 
+// ===== Types =====
 type ClientEditData = Partial<Client> & { isNew?: boolean };
-
 type FormModel = {
   fullName: string;
   displayName: string;
@@ -30,9 +31,18 @@ type FormModel = {
   location: string;
   country: string;
 };
-
 type AddClientPayload = Omit<Client, 'id'>;
-type UpdateClientPayload = Client;
+
+// ===== Consts =====
+const LABELS: Record<keyof FormModel, string> = {
+  fullName: 'Full name',
+  displayName: 'Display name',
+  email: 'Email',
+  details: 'Details',
+  active: 'Active',
+  location: 'Location',
+  country: 'Country',
+};
 
 @Component({
   selector: 'app-client-edit',
@@ -49,46 +59,36 @@ type UpdateClientPayload = Client;
     MatSelectModule,
     MatOptionModule,
     MatSnackBarModule,
+    MatTooltipModule,
   ],
   templateUrl: './client-edit.component.html',
   styleUrls: ['./client-edit.component.css'],
 })
 export class ClientEditComponent {
-  // ===== DI =====
+  // ===== DI & API =====
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly http = inject(HttpClient);
+  private readonly snack = inject(MatSnackBar);
   private readonly dialogRef = inject(MatDialogRef<ClientEditComponent, Client>);
   readonly data = inject<ClientEditData>(MAT_DIALOG_DATA);
-  private readonly snackBar = inject(MatSnackBar);
+  private readonly API = 'http://localhost:8080/api/v1/clients';
 
   // ===== Data for UI =====
   readonly countries: Country[] = countriesList();
   readonly iso = isoFromName;
 
-  // ===== API =====
-  private readonly API = 'http://localhost:8080/api/v1/clients';
-
   // ===== Form =====
-  private readonly initial: FormModel = {
-    fullName: this.data.fullName ?? '',
-    displayName: this.data.displayName ?? '',
-    email: this.data.email ?? '',
-    details: this.data.details ?? '',
-    active: this.data.active ?? false,
-    location: this.data.location ?? '',
-    country: this.data.country ?? '',
-  };
-
   readonly form = this.fb.group({
-    fullName: this.fb.control(this.initial.fullName, [Validators.required, Validators.maxLength(128)]),
-    displayName: this.fb.control(this.initial.displayName, [Validators.required, Validators.maxLength(30)]),
-    email: this.fb.control(this.initial.email, [Validators.required, Validators.email, Validators.maxLength(254)]),
-    details: this.fb.control(this.initial.details, [Validators.maxLength(500)]),
-    active: this.fb.control(this.initial.active),
-    location: this.fb.control(this.initial.location, [Validators.maxLength(120)]),
-    country: this.fb.control(this.initial.country, [Validators.required]),
+    fullName: this.fb.control(this.data.fullName ?? '', [Validators.required, Validators.maxLength(128)]),
+    displayName: this.fb.control(this.data.displayName ?? '', [Validators.required, Validators.maxLength(30)]),
+    email: this.fb.control(this.data.email ?? '', [Validators.required, Validators.email, Validators.maxLength(254)]),
+    details: this.fb.control(this.data.details ?? '', [Validators.maxLength(500)]),
+    active: this.fb.control(this.data.active ?? false),
+    location: this.fb.control(this.data.location ?? '', [Validators.maxLength(120)]),
+    country: this.fb.control(this.data.country ?? '', [Validators.required]),
   });
 
+  // ===== State =====
   submitting = false;
 
   // ===== Actions =====
@@ -103,40 +103,37 @@ export class ClientEditComponent {
     }
 
     this.submitting = true;
+    const payload = this.form.getRawValue() as AddClientPayload;
 
-    const bodyNoId: AddClientPayload = this.form.getRawValue() as AddClientPayload;
+    const req$ = this.data.isNew
+      ? this.http.post<Client>(this.API, payload)
+      : this.http.put<Client>(this.API, { id: this.data.id!, ...payload });
 
-    if (this.data.isNew) {
-      // POST /api/v1/clients
-      this.http.post<Client>(this.API, bodyNoId)
-        .pipe(finalize(() => (this.submitting = false)))
-        .subscribe({
-          next: (created) => this.dialogRef.close(created ?? (bodyNoId as unknown as Client)),
-          error: (err) => this.showError(err),
-        });
-    } else {
-      // PUT /api/v1/clients
-      const bodyWithId: Client = { id: this.data.id!, ...bodyNoId };
-      this.http.put<Client>(this.API, bodyWithId)
-        .pipe(finalize(() => (this.submitting = false)))
-        .subscribe({
-          next: (updated) => this.dialogRef.close(updated ?? bodyWithId),
-          error: (err) => this.showError(err),
-        });
-    }
+    req$.pipe(finalize(() => (this.submitting = false))).subscribe({
+      next: (res) => this.dialogRef.close(res ?? ({ id: this.data.id!, ...payload } as Client)),
+      error: (e) => this.snack.open(this.extractErr(e), 'Dismiss', { duration: 6000 }),
+    });
   }
 
-  private getErrorMessage(err: unknown): string {
-    const http = err as HttpErrorResponse;
-    if (http?.error) {
-      if (typeof http.error === 'string') return http.error;
-      if (typeof http.error?.message === 'string') return http.error.message;
-    }
-    if (typeof http?.message === 'string') return http.message;
-    return 'Unexpected error. Please try again.';
+  // ===== Validation tooltip helpers =====
+  getError(name: keyof FormModel): string {
+    const c = this.form.get(name)!;
+    if (!c || c.valid || !(c.dirty || c.touched)) return '';
+    if (c.hasError('required')) return `${LABELS[name]} is required`;
+    if (c.hasError('email')) return 'Enter a valid email';
+    const max = c.getError('maxlength')?.requiredLength;
+    return max ? `Max ${max} characters` : 'Invalid value';
   }
 
-  private showError(err: unknown): void {
-    this.snackBar.open(this.getErrorMessage(err), 'Dismiss', { duration: 6000 });
+  onFieldChange(name: keyof FormModel, tip: MatTooltip): void {
+    const msg = this.getError(name);
+    tip.message = msg;
+    msg ? tip.show() : tip.hide();
+  }
+
+  // ===== Errors =====
+  private extractErr(e: any): string {
+    const msg = e?.error?.message ?? e?.error ?? e?.message;
+    return (typeof msg === 'string' && msg.trim()) ? msg : 'Unexpected error. Please try again.';
   }
 }

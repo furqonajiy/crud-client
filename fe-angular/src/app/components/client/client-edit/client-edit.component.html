@@ -12,33 +12,36 @@
       <!-- Full Name -->
       <div class="label">Full Name*</div>
       <div class="value">
-        <mat-form-field appearance="fill">
-          <input matInput formControlName="fullName" required maxlength="128" />
+        <mat-form-field appearance="fill" [matTooltip]="getError('fullName')" [matTooltipShowDelay]="0"
+          matTooltipPosition="right" #ttFullName="matTooltip">
+          <input matInput formControlName="fullName" required maxlength="128"
+            (input)="onFieldChange('fullName', ttFullName)" (blur)="onFieldChange('fullName', ttFullName)" />
           <mat-hint align="end">{{ form.get('fullName')?.value?.length || 0 }}/128</mat-hint>
-          <mat-error *ngIf="form.get('fullName')?.hasError('required')">Full name is required</mat-error>
-          <mat-error *ngIf="form.get('fullName')?.hasError('maxlength')">Max 128 characters</mat-error>
+          <mat-error *ngIf="getError('fullName') as err">{{ err }}</mat-error>
         </mat-form-field>
       </div>
 
       <!-- Display Name -->
       <div class="label">Display Name*</div>
       <div class="value">
-        <mat-form-field appearance="fill">
-          <input matInput formControlName="displayName" required maxlength="30" />
+        <mat-form-field appearance="fill" [matTooltip]="getError('displayName')" [matTooltipShowDelay]="0"
+          matTooltipPosition="right" #ttDisplay="matTooltip">
+          <input matInput formControlName="displayName" required maxlength="30"
+            (input)="onFieldChange('displayName', ttDisplay)" (blur)="onFieldChange('displayName', ttDisplay)" />
           <mat-hint align="end">{{ form.get('displayName')?.value?.length || 0 }}/30</mat-hint>
-          <mat-error *ngIf="form.get('displayName')?.hasError('required')">Display name is required</mat-error>
-          <mat-error *ngIf="form.get('displayName')?.hasError('maxlength')">Max 30 characters</mat-error>
+          <mat-error *ngIf="getError('displayName') as err">{{ err }}</mat-error>
         </mat-form-field>
       </div>
 
       <!-- Email -->
       <div class="label">Email*</div>
       <div class="value">
-        <mat-form-field appearance="fill">
-          <input matInput type="email" formControlName="email" required maxlength="254" />
+        <mat-form-field appearance="fill" [matTooltip]="getError('email')" [matTooltipShowDelay]="0"
+          matTooltipPosition="right" #ttEmail="matTooltip">
+          <input matInput type="email" formControlName="email" required maxlength="254"
+            (input)="onFieldChange('email', ttEmail)" (blur)="onFieldChange('email', ttEmail)" />
           <mat-hint align="end">{{ form.get('email')?.value?.length || 0 }}/254</mat-hint>
-          <mat-error *ngIf="form.get('email')?.hasError('required')">Email is required</mat-error>
-          <mat-error *ngIf="form.get('email')?.hasError('email')">Enter a valid email</mat-error>
+          <mat-error *ngIf="getError('email') as err">{{ err }}</mat-error>
         </mat-form-field>
       </div>
 
