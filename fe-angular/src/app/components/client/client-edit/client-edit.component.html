@@ -50,9 +50,9 @@
 
       <div class="label">Country</div>
       <div class="value">
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="fill" class="country-field">
           <mat-label>Country</mat-label>
-          <mat-select formControlName="country" required>
+          <mat-select formControlName="country" panelClass="country-panel" required>
             <mat-select-trigger>
               <span class="fi" [ngClass]="'fi-' + iso(form.value.country)"></span>
               {{ form.value.country }}

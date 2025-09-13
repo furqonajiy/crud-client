@@ -112,7 +112,35 @@
   --mdc-checkbox-disabled-unselected-icon-color: #64748b;
 }
 
-/* Save button (green) + keep disabled readable */
+/* ========== Country field ========== */
+::ng-deep .cdk-overlay-pane.client-edit-light .country-field {
+  --mat-select-trigger-text-color: #ffffff;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .country-field .mdc-floating-label,
+::ng-deep .cdk-overlay-pane.client-edit-light .country-field .mat-mdc-form-field-required-marker {
+  color: #606060 !important;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .country-field .mat-mdc-select-arrow {
+  color: #B0BEC5 !important;
+}
+
+/* ========== Country dropdown panel (options & checkmark) ========== */
+::ng-deep .country-panel {
+  --mat-option-selected-state-label-text-color: #ffffff !important;
+}
+
+::ng-deep .country-panel .mdc-list-item--selected .mdc-list-item__primary-text,
+::ng-deep .country-panel .mat-mdc-option-active .mdc-list-item__primary-text {
+  color: #ffffff !important;
+}
+
+::ng-deep .country-panel .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-minimal::after {
+  border-color: #ffffff !important;
+}
+
+/* ========== Save Button ========== */
 ::ng-deep .cdk-overlay-pane.client-edit-light .btn-save.mat-mdc-unelevated-button {
   --mdc-filled-button-container-color: #16a34a;
   --mdc-filled-button-label-text-color: #ffffff;
