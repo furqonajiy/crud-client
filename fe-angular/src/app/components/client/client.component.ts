@@ -146,7 +146,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
   private filterRow(row: Client, filter: string): boolean {
     const haystack = [
-      row.fullName, row.displayName, row.email, row.details, row.country,
+      row.id, row.fullName, row.displayName, row.email, row.details, row.country,
       row.active ? 'active' : 'inactive'
     ].join(' ').toLowerCase();
     return haystack.includes(filter);
@@ -248,7 +248,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
   onSearch(): void {
     this.applyFilter(this.q);
-    this.pruneSelectionToRendered(); // keep selection limited to currently rendered rows
+    this.pruneSelectionToRendered();
   }
 
   private blurActive(): void {
