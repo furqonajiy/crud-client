@@ -52,6 +52,13 @@ h2 {
 }
 
 /* ----- Client Table ----- */
+/* Checkbox (select) column — kill ellipsis + shrink padding */
+.mat-mdc-header-cell.mat-column-select,
+.mat-mdc-cell.mat-column-select {
+  overflow: visible !important;
+  text-align: center; /* optional */
+}
+
 /* Card around the table */
 .table-card {
   border: 1px solid #e5e7eb;
@@ -89,6 +96,51 @@ h2 {
   --mdc-checkbox-unselected-focus-icon-color: #334155;
   --mdc-checkbox-unselected-pressed-icon-color: #334155;
   --mdc-checkbox-disabled-unselected-icon-color: #64748b;
+}
+
+/* ----- Client Table Width ----- */
+/* Fixed widths per column (tweak to taste) */
+th.col-select,
+td.col-select {
+  width: 48px;
+  min-width: 48px;
+  max-width: 48px;
+}
+
+th.col-id,
+td.col-id {
+  width: 48px;
+  min-width: 48px;
+  max-width: 48px;
+}
+
+
+th.col-display,
+td.col-display {
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+}
+
+th.col-active,
+td.col-active {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+}
+
+th.col-country,
+td.col-country {
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+}
+
+th.col-actions,
+td.col-actions {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
 }
 
 /* ----- Flag & Chips ----- */
@@ -133,38 +185,3 @@ table[mat-table] {
   width: 100%;
 }
 
-/* Fixed widths per column (tweak to taste) */
-th.col-select,
-td.col-select {
-  width: 48px;
-  min-width: 48px;
-  max-width: 48px;
-}
-
-th.col-display,
-td.col-display {
-  width: 220px;
-  min-width: 220px;
-  max-width: 220px;
-}
-
-th.col-active,
-td.col-active {
-  width: 120px;
-  min-width: 120px;
-  max-width: 120px;
-}
-
-th.col-country,
-td.col-country {
-  width: 220px;
-  min-width: 220px;
-  max-width: 220px;
-}
-
-th.col-actions,
-td.col-actions {
-  width: 64px;
-  min-width: 64px;
-  max-width: 64px;
-}

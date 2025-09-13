@@ -51,7 +51,7 @@ interface ClientsResponse {
 
 })
 export class ClientComponent implements OnInit {
-  displayedColumns = ['select', 'displayName', 'active', 'country', 'actions'];
+  displayedColumns = ['select', 'id', 'displayName', 'active', 'country', 'actions'];
   dataSource = new MatTableDataSource<Client>();
   selection = new SelectionModel<Client>(true, []);
 
