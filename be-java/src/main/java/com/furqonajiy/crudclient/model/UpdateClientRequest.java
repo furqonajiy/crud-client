@@ -1,19 +1,18 @@
 package com.furqonajiy.crudclient.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class ClientDto {
+public class UpdateClientRequest {
+    @NotNull
     private Long id;
+
     private String fullName;
     private String displayName;
     private String email;
     private String details;
-    private boolean active;
+    private boolean active;    // boxed for nullability
     private String location;
     private String country;
 }

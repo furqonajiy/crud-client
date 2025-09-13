@@ -1,68 +1,107 @@
 package com.furqonajiy.crudclient.service;
 
-import com.furqonajiy.crudclient.model.ClientDto;
-import com.furqonajiy.crudclient.model.ClientEntity;
-import com.furqonajiy.crudclient.model.DeleteClientsRequest;
-import com.furqonajiy.crudclient.model.DeleteClientsResponse;
+import com.furqonajiy.crudclient.model.*;
 import com.furqonajiy.crudclient.repository.ClientRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-@Slf4j
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 @Service
+@Transactional(readOnly = true)
 public class ClientService implements IClientService {
-    private final ClientRepository clientRepository;
 
-    public ClientService(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
+    private final ClientRepository repo;
 
-    public List<ClientDto> getAllClients() {
-        return clientRepository.findAll().stream().map(this::clientEntityToClientDto).toList();
-    }
-
-    private ClientDto clientEntityToClientDto(ClientEntity clientEntity) {
-        ClientDto clientDto = new ClientDto();
-        clientDto.setId(clientEntity.getId());
-        clientDto.setFullName(clientEntity.getFullName());
-        clientDto.setDisplayName(clientEntity.getDisplayName());
-        clientDto.setEmail(clientEntity.getEmail());
-        clientDto.setDetails(clientEntity.getDetails());
-        clientDto.setActive(clientEntity.getActive());
-        clientDto.setLocation(clientEntity.getLocation());
-        clientDto.setCountry(clientEntity.getCountry());
-        return clientDto;
+    public ClientService(ClientRepository repo) {
+        this.repo = repo;
     }
 
     @Override
     @Transactional
-    public DeleteClientsResponse deleteMany(DeleteClientsRequest req) {
-        // de-dup and normalize input
-        List<Long> idReq = req.ids().stream().filter(Objects::nonNull).distinct().toList();
-        if (idReq.isEmpty()) {
-            return new DeleteClientsResponse(0, List.of(), List.of());
+    public List<ClientDto> createClient(CreateClientRequest req) {
+        var e = new ClientEntity();
+        e.setFullName(req.getFullName());
+        e.setDisplayName(req.getDisplayName());
+        e.setEmail(req.getEmail());
+        e.setDetails(req.getDetails());
+        e.setActive(req.isActive());
+        e.setLocation(req.getLocation());
+        e.setCountry(req.getCountry());
+        repo.save(e);
+
+        return toDtoList(repo.findAll());
+    }
+
+    @Override
+    public List<ClientDto> getAllClients() {
+        return toDtoList(repo.findAll());
+    }
+
+    @Override
+    @Transactional
+    public List<ClientDto> updateClient(UpdateClientRequest req) {
+        var e = repo.findById(req.getId())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Client not found: " + req.getId()));
+
+        if (req.getFullName() != null) {
+            e.setFullName(req.getFullName());
         }
 
-        // find what actually exists
-        List<ClientEntity> existing = clientRepository.findAllById(idReq);
-        List<Long> existingIds = existing.stream().map(ClientEntity::getId).collect(Collectors.toList());
-
-        // delete in batch (single SQL)
-        if (!existingIds.isEmpty()) {
-            clientRepository.deleteAllByIdInBatch(existingIds);
+        if (req.getDisplayName() != null) {
+            e.setDisplayName(req.getDisplayName());
         }
 
-        // compute not-found = requested - existing
-        Set<Long> existingSet = new HashSet<>(existingIds);
-        List<Long> notFound = idReq.stream().filter(id -> !existingSet.contains(id)).toList();
+        if (req.getEmail() != null) {
+            e.setEmail(req.getEmail());
+        }
 
-        return new DeleteClientsResponse(existingIds.size(), existingIds, notFound);
+        if (req.getDetails() != null) {
+            e.setDetails(req.getDetails());
+        }
+
+        e.setActive(req.isActive());
+
+        if (req.getLocation() != null) {
+            e.setLocation(req.getLocation());
+        }
+
+        if (req.getCountry() != null) {
+            e.setCountry(req.getCountry());
+        }
+
+        repo.save(e);
+        return toDtoList(repo.findAll());
+    }
+
+    @Override
+    @Transactional
+    public List<ClientDto> deleteMultipleClients(DeleteClientsRequest req) {
+        var ids = req.ids().stream().filter(Objects::nonNull).distinct().toList();
+        if (!ids.isEmpty()) {
+            repo.deleteAllByIdInBatch(ids);
+        }
+        return toDtoList(repo.findAll());
+    }
+
+    private static ClientDto clientEntityToDto(ClientEntity e) {
+        return new ClientDto(
+                e.getId(),
+                e.getFullName(),
+                e.getDisplayName(),
+                e.getEmail(),
+                e.getDetails(),
+                e.isActive(),
+                e.getLocation(),
+                e.getCountry()
+        );
+    }
+
+    private static List<ClientDto> toDtoList(List<ClientEntity> entities) {
+        return entities.stream().map(ClientService::clientEntityToDto).toList();
     }
 }

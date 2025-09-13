@@ -1,4 +1,4 @@
-package com.furqonajiy.client.exception;
+package com.furqonajiy.crudclient.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

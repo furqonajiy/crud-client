@@ -1,42 +1,44 @@
 package com.furqonajiy.crudclient.controller;
 
 import com.furqonajiy.crudclient.model.ClientDto;
-import com.furqonajiy.crudclient.model.ClientResponse;
+import com.furqonajiy.crudclient.model.CreateClientRequest;
 import com.furqonajiy.crudclient.model.DeleteClientsRequest;
-import com.furqonajiy.crudclient.model.DeleteClientsResponse;
+import com.furqonajiy.crudclient.model.UpdateClientRequest;
 import com.furqonajiy.crudclient.service.ClientService;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
-@RequestMapping("/api/v1/clients")
+@RequestMapping("/api/clients")
 public class ClientController {
-    private final ClientService clientService;
 
-    public ClientController(ClientService clientService) {
-        this.clientService = clientService;
+    private final ClientService service;
+
+    public ClientController(ClientService service) {
+        this.service = service;
     }
 
-    @Operation(
-            summary = "Getll All Clients",
-            description = "Returns all clients from database")
     @GetMapping
-    public Object getAllClients() {
-        log.debug("Execute Get All Clients");
+    public List<ClientDto> getAll() {
+        return service.getAllClients();
+    }
 
-        List<ClientDto> data = clientService.getAllClients();
-        return new ClientResponse<>(data);
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<ClientDto> create(@Valid @RequestBody CreateClientRequest req) {
+        return service.createClient(req);
+    }
+
+    @PutMapping
+    public List<ClientDto> update(@Valid @RequestBody UpdateClientRequest req) {
+        return service.updateClient(req);
     }
 
     @DeleteMapping
-    @ResponseStatus(HttpStatus.OK)
-    public DeleteClientsResponse deleteMany(@Valid @RequestBody DeleteClientsRequest req) {
-        return clientService.deleteMany(req);
+    public List<ClientDto> deleteMany(@Valid @RequestBody DeleteClientsRequest req) {
+        return service.deleteMultipleClients(req);
     }
 }
