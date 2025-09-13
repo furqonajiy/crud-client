@@ -1,4 +1,4 @@
-/* ----- Layout ----- */
+/* ========== Layout ========== */
 h2 {
   font-weight: 700;
 }
@@ -8,60 +8,61 @@ h2 {
   margin: 0 auto;
 }
 
-/* ----- Page Client Header ----- */
+/* ========== Page Header ========== */
 .page-header {
   display: grid;
-  grid-template-columns: 1fr auto;  /* title | actions */
-  align-items: center;               /* vertical centering */
+  grid-template-columns: 1fr auto;
+  align-items: center;
   gap: 12px;
-  padding: 8px 0;                    /* give the row some breathing room */
-  min-height: 44px;                  /* ≈ button height so they align */
+  padding: 8px 0;
+  min-height: 44px;
 }
 
-.page-header .title{
-  margin: 0;                         /* kill default h2 margins */
-  line-height: 1.2;                  /* nicer vertical balance */
+.page-header .title {
+  margin: 0;
+  line-height: 1.2;
   display: flex;
-  align-items: center;               /* vertically center the text baseline */
+  align-items: center;
 }
 
 .header-actions {
   display: grid;
   grid-auto-flow: column;
   gap: 8px;
-  justify-self: end; /* push to far right */
+  justify-self: end;
 }
 
-/* ----- Add Button ----- */
+/* ========== Add / Delete Buttons ========== */
 .page-header .btn-add.mat-mdc-unelevated-button {
   --mdc-filled-button-container-color: #16a34a;
   --mdc-filled-button-label-text-color: #ffffff;
 }
 
-/* ----- Delete Button ----- */
-/* Keep disabled header buttons visible */
 .page-header .mat-mdc-button.mat-mdc-button-disabled {
   opacity: 1;
   cursor: not-allowed;
 }
 
-/* FLAT (mat-flat-button) — disabled red style */
-.page-header .mat-mdc-unelevated-button {
+.page-header .btn-remove.mat-mdc-unelevated-button {
   --mdc-filled-button-disabled-container-color: #fee2e2;
   --mdc-filled-button-disabled-label-text-color: #b5b5b5;
 }
 
-/* ----- Client Table ----- */
-/* Card around the table */
+/* ========== Table Shell ========== */
 .table-card {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  padding: 8px 8px 8px;
+  padding: 8px;
 }
 
-/* header row */
+table[mat-table] {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* ========== Table Rows & Cells ========== */
 .mat-mdc-header-row {
-  background: #f8fafc !important;
+  background: #f8fafc;
 }
 
 .mat-mdc-header-cell {
@@ -69,7 +70,6 @@ h2 {
   font-weight: 700;
 }
 
-/* body rows */
 .mat-mdc-row {
   background: #fff;
 }
@@ -82,60 +82,25 @@ h2 {
   color: #111827;
 }
 
-/* Darker checkbox outline (unchecked) + slightly thicker */
-.table-card .mat-mdc-checkbox {
-  --mdc-checkbox-unselected-icon-color: #475569;
-  --mdc-checkbox-unselected-hover-icon-color: #334155;
-  --mdc-checkbox-unselected-focus-icon-color: #334155;
-  --mdc-checkbox-unselected-pressed-icon-color: #334155;
-  --mdc-checkbox-disabled-unselected-icon-color: #64748b;
+/* Checkbox look */
+.mat-mdc-checkbox {
+  --mdc-checkbox-unselected-icon-color: #B0BEC5;
+  --mdc-checkbox-unselected-hover-icon-color: #B0BEC5;
+  --mdc-checkbox-unselected-focus-icon-color: #B0BEC5;
+  --mdc-checkbox-unselected-pressed-icon-color: #B0BEC5;
+  --mdc-checkbox-disabled-unselected-icon-color: #B0BEC5;
 }
 
-/* ----- Flag & Chips ----- */
-.fi {
-  margin-right: 8px;
-}
-
-.chip {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 999px;
-  display: inline-block;
-}
-
-.chip-active {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.chip-inactive {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-/* ----- Pagination ----- */
-/* pierce Material internals rendered deep inside components */
-::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__leading,
-::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__notch,
-::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field .mdc-text-field--outlined .mdc-notched-outline__trailing {
-  border-color: #fff !important;
-}
-
-/* dropdown arrow inside the select */
-::ng-deep .table-card .mat-mdc-paginator .mat-mdc-select-arrow {
-  color: #fff !important;
-}
-
-/* Stop auto-resizing by content */
-table[mat-table] {
-  table-layout: fixed;
-  width: 100%;
-}
-
-/* Fixed widths per column (tweak to taste) */
+/* ========== Column Widths ========== */
 th.col-select,
 td.col-select {
+  width: 48px;
+  min-width: 48px;
+  max-width: 48px;
+}
+
+th.col-id,
+td.col-id {
   width: 48px;
   min-width: 48px;
   max-width: 48px;
@@ -167,4 +132,61 @@ td.col-actions {
   width: 64px;
   min-width: 64px;
   max-width: 64px;
+}
+
+/* ========== Column Tweaks (padding/ellipsis) ========== */
+.mat-mdc-header-cell.mat-column-select,
+.mat-mdc-cell.mat-column-select {
+  overflow: visible;
+}
+
+/* ========== Utilities ========== */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* ========== Flags & Chips ========== */
+.fi {
+  margin-right: 8px;
+}
+
+.chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.chip-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.chip-inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ========== Paginator — Trigger ========== */
+::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field {
+  --mdc-outlined-text-field-outline-color: #e5e7eb;
+  --mdc-outlined-text-field-focus-outline-color: #cbd5e1;
+}
+::ng-deep .table-card .mat-mdc-paginator .mat-mdc-select-arrow {
+  color: #cbd5e1 !important;
+}
+
+/* ========== Paginator — Dropdown ========== */
+::ng-deep .client-select-panel .mat-mdc-select-panel {
+  --mat-option-selected-state-label-text-color: #cacaca !important;
 }
