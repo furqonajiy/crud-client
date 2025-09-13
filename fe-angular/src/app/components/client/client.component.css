@@ -48,19 +48,22 @@ h2 {
   --mdc-filled-button-disabled-label-text-color: #b5b5b5;
 }
 
-/* ----- Client Table ----- */
+/* ========== Table Shell ========== */
+.table-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+table[mat-table] {
+  table-layout: fixed;
+  width: 100%;
+}
+
 /* Checkbox (select) column — kill ellipsis + shrink padding */
 .mat-mdc-header-cell.mat-column-select,
 .mat-mdc-cell.mat-column-select {
   overflow: visible !important;
-  text-align: center; /* optional */
-}
-
-/* Card around the table */
-.table-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 8px 8px 8px;
 }
 
 /* header row */
@@ -86,8 +89,8 @@ h2 {
   color: #111827;
 }
 
-/* Darker checkbox outline (unchecked) + slightly thicker */
-.table-card .mat-mdc-checkbox {
+/* Checkbox look */
+.mat-mdc-checkbox {
   --mdc-checkbox-unselected-icon-color: #475569;
   --mdc-checkbox-unselected-hover-icon-color: #334155;
   --mdc-checkbox-unselected-focus-icon-color: #334155;
@@ -175,10 +178,3 @@ td.col-actions {
 ::ng-deep .table-card .mat-mdc-paginator .mat-mdc-select-arrow {
   color: #fff !important;
 }
-
-/* Stop auto-resizing by content */
-table[mat-table] {
-  table-layout: fixed;
-  width: 100%;
-}
-
