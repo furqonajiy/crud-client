@@ -81,11 +81,33 @@ export class ClientComponent implements OnInit, AfterViewInit {
   }
 
   // ----- Data load -----
-  private loadClients(): void {
+  private loadClients(opts?: { keepPage?: boolean; goLast?: boolean }): void {
+    const keepPage = !!opts?.keepPage;
+    const goLast = !!opts?.goLast;
+
+    // remember current page before data changes
+    const prevIndex = this.paginator ? this.paginator.pageIndex : 0;
+
     this.http.get<ClientsResponse>(this.API).subscribe({
       next: (res) => {
         this.dataSource.data = res?.clients ?? [];
-        this.paginator?.firstPage();
+
+        if (!this.paginator) return;
+
+        // compute max page index after refresh
+        const total = (this.dataSource.filteredData.length || this.dataSource.data.length);
+        const maxIndex = Math.max(0, Math.ceil(total / this.paginator.pageSize) - 1);
+
+        if (goLast) {
+          this.paginator.pageIndex = maxIndex;
+        } else if (keepPage) {
+          this.paginator.pageIndex = Math.min(prevIndex, maxIndex);
+        } else {
+          this.paginator.pageIndex = 0;
+        }
+
+        // trigger table to re-render the correct slice
+        this.dataSource._updateChangeSubscription();
       },
       error: (err) => console.error('Failed to load clients', err),
     });
@@ -128,26 +150,19 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
   // ----- Row actions -----
   addClient(): void {
-    const nextId = (this.dataSource.data.reduce((m, c) => Math.max(m, c.id), 0) || 0) + 1;
-    const draft: Client = {
-      id: nextId, fullName: '', displayName: '', email: '', details: '',
-      active: false, location: '', country: ''
-    };
-
     const ref = this.dialog.open(ClientEditComponent, {
       width: '720px',
-      data: { ...draft, isNew: true },
+      data: { isNew: true },
       disableClose: true,
       panelClass: 'client-edit-light',
     });
 
-    ref.afterClosed().subscribe((created?: Client) => {
-      if (!created) return;
-      this.dataSource.data = [...this.dataSource.data, created];
-      this.paginator && setTimeout(() => this.paginator.lastPage());
+    ref.afterClosed().subscribe((ok) => {
+      if (!ok) return;
+      this.loadClients({ goLast: true });
     });
   }
-  
+
   editClient(row: Client): void {
     const ref = this.dialog.open(ClientEditComponent, {
       width: '720px',
@@ -156,16 +171,12 @@ export class ClientComponent implements OnInit, AfterViewInit {
       panelClass: 'client-edit-light',
     });
 
-    ref.afterClosed().subscribe((updated?: Client) => {
-      if (!updated) return;
-      const copy = this.dataSource.data.slice();
-      const i = copy.findIndex(c => c.id === updated.id);
-      if (i > -1) {
-        copy[i] = updated;
-        this.dataSource.data = copy;
-      }
+    ref.afterClosed().subscribe((ok) => {
+      if (!ok) return;
+      this.loadClients({ keepPage: true });
     });
   }
+
 
   openClientDetails(row: Client): void {
     this.dialog.open(ClientDetailsComponent, {

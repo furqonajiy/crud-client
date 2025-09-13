@@ -111,17 +111,16 @@ export class ClientEditComponent {
       this.http.post<Client>(this.API, bodyNoId)
         .pipe(finalize(() => (this.submitting = false)))
         .subscribe({
-          next: (created) => this.dialogRef.close(created),
+          next: (created) => this.dialogRef.close(created ?? (bodyNoId as unknown as Client)),
           error: (err) => this.showError(err),
         });
     } else {
       // PUT /api/v1/clients
       const bodyWithId: Client = { id: this.data.id!, ...bodyNoId };
-
       this.http.put<Client>(this.API, bodyWithId)
         .pipe(finalize(() => (this.submitting = false)))
         .subscribe({
-          next: (updated) => this.dialogRef.close(updated),
+          next: (updated) => this.dialogRef.close(updated ?? bodyWithId),
           error: (err) => this.showError(err),
         });
     }
