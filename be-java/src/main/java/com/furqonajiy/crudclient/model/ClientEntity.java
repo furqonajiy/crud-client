@@ -1,4 +1,4 @@
-package com.furqonajiy.clients.client.model;
+package com.furqonajiy.crudclient.model;
 
 import jakarta.persistence.*;
 import lombok.Data;

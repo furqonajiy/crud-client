@@ -1,4 +1,4 @@
-package com.furqonajiy.clients.client.dto;
+package com.furqonajiy.crudclient.model;
 
 import java.util.List;
 
