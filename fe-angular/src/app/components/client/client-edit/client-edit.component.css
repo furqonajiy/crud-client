@@ -82,6 +82,12 @@
   border-radius: 8px;
 }
 
+/* Prevent text box overflow */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-surface,
+::ng-deep .cdk-overlay-pane.client-edit-light .mdc-dialog__surface {
+  overflow-x: hidden;
+}
+
 /* Keep Mat Select trigger/value text dark */
 ::ng-deep .cdk-overlay-pane.client-edit-light {
   --mat-select-trigger-text-color: #111827;
@@ -155,3 +161,4 @@
 ::ng-deep .mat-mdc-snack-bar-label {
   white-space: pre-line;
 }
+
