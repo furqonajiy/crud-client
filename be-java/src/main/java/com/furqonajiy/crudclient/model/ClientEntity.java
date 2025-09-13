@@ -1,4 +1,4 @@
-package com.furqonajiy.clients.client.model;
+package com.furqonajiy.crudclient.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -23,8 +23,7 @@ public class ClientEntity {
     @Column(columnDefinition = "TEXT")
     private String details;
 
-    @Column(nullable = false)
-    private Boolean active;
+    private boolean active;
 
     @Column()
     private String location;

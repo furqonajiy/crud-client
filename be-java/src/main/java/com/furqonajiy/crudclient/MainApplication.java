@@ -1,11 +1,11 @@
-package com.furqonajiy.clients;
+package com.furqonajiy.crudclient;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ClientsApplication {
+public class MainApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ClientsApplication.class, args);
+        SpringApplication.run(MainApplication.class, args);
     }
 }
