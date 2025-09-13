@@ -75,11 +75,18 @@ export class ClientComponent implements OnInit, AfterViewInit {
     this.loadClients();
   }
 
+  private pruneSelectionToRendered(): void {
+    const keep = new Set(this.renderedRows.map(r => r.id));
+    this.selection.selected.forEach(s => { if (!keep.has(s.id)) this.selection.deselect(s); });
+  }
+
   ngAfterViewInit(): void {
-    // Attach sort & paginator once the view is ready
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+
+    this.paginator.page.subscribe(() => this.pruneSelectionToRendered());
   }
+
 
   // ----- Data load -----
   private loadClients(opts?: { keepPage?: boolean; goLast?: boolean }): void {
