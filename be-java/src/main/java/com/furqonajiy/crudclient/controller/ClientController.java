@@ -1,12 +1,13 @@
 package com.furqonajiy.crudclient.controller;
 
-import com.furqonajiy.crudclient.model.*;
+import com.furqonajiy.crudclient.model.ClientResponse;
+import com.furqonajiy.crudclient.model.CreateClientRequest;
+import com.furqonajiy.crudclient.model.DeleteClientsRequest;
+import com.furqonajiy.crudclient.model.UpdateClientRequest;
 import com.furqonajiy.crudclient.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/clients")
