@@ -13,9 +13,10 @@
       <div class="label">Full Name*</div>
       <div class="value">
         <mat-form-field appearance="fill">
-          <input matInput formControlName="fullName" required />
+          <input matInput formControlName="fullName" required maxlength="128" />
+          <mat-hint align="end">{{ form.get('fullName')?.value?.length || 0 }}/128</mat-hint>
           <mat-error *ngIf="form.get('fullName')?.hasError('required')">Full name is required</mat-error>
-          <mat-error *ngIf="form.get('fullName')?.hasError('maxlength')">Max 120 characters</mat-error>
+          <mat-error *ngIf="form.get('fullName')?.hasError('maxlength')">Max 128 characters</mat-error>
         </mat-form-field>
       </div>
 
@@ -23,9 +24,10 @@
       <div class="label">Display Name*</div>
       <div class="value">
         <mat-form-field appearance="fill">
-          <input matInput formControlName="displayName" required />
+          <input matInput formControlName="displayName" required maxlength="30" />
+          <mat-hint align="end">{{ form.get('displayName')?.value?.length || 0 }}/30</mat-hint>
           <mat-error *ngIf="form.get('displayName')?.hasError('required')">Display name is required</mat-error>
-          <mat-error *ngIf="form.get('displayName')?.hasError('maxlength')">Max 80 characters</mat-error>
+          <mat-error *ngIf="form.get('displayName')?.hasError('maxlength')">Max 30 characters</mat-error>
         </mat-form-field>
       </div>
 
@@ -33,7 +35,8 @@
       <div class="label">Email*</div>
       <div class="value">
         <mat-form-field appearance="fill">
-          <input matInput type="email" formControlName="email" required />
+          <input matInput type="email" formControlName="email" required maxlength="254" />
+          <mat-hint align="end">{{ form.get('email')?.value?.length || 0 }}/254</mat-hint>
           <mat-error *ngIf="form.get('email')?.hasError('required')">Email is required</mat-error>
           <mat-error *ngIf="form.get('email')?.hasError('email')">Enter a valid email</mat-error>
         </mat-form-field>
@@ -44,7 +47,7 @@
       <div class="value">
         <mat-form-field appearance="fill">
           <textarea matInput rows="3" formControlName="details" maxlength="500"></textarea>
-          <mat-hint align="end">{{ form.get("details")?.value?.length || 0 }}/500</mat-hint>
+          <mat-hint align="end">{{ form.get('details')?.value?.length || 0 }}/500</mat-hint>
           <mat-error *ngIf="form.get('details')?.hasError('maxlength')">Max 500 characters</mat-error>
         </mat-form-field>
       </div>
@@ -59,8 +62,9 @@
       <div class="label">Location</div>
       <div class="value">
         <mat-form-field appearance="fill">
-          <input matInput formControlName="location" placeholder="City, Region" />
+          <input matInput formControlName="location" placeholder="City, Region" maxlength="120" />
           <mat-hint align="start">e.g., Amsterdam, NL</mat-hint>
+          <mat-hint align="end">{{ form.get('location')?.value?.length || 0 }}/120</mat-hint>
           <mat-error *ngIf="form.get('location')?.hasError('maxlength')">Max 120 characters</mat-error>
         </mat-form-field>
       </div>

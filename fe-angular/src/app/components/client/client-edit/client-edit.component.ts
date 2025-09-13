@@ -80,9 +80,9 @@ export class ClientEditComponent {
   };
 
   readonly form = this.fb.group({
-    fullName: this.fb.control(this.initial.fullName, [Validators.required, Validators.maxLength(120)]),
-    displayName: this.fb.control(this.initial.displayName, [Validators.required, Validators.maxLength(80)]),
-    email: this.fb.control(this.initial.email, [Validators.required, Validators.email]),
+    fullName: this.fb.control(this.initial.fullName, [Validators.required, Validators.maxLength(128)]),
+    displayName: this.fb.control(this.initial.displayName, [Validators.required, Validators.maxLength(30)]),
+    email: this.fb.control(this.initial.email, [Validators.required, Validators.email, Validators.maxLength(254)]),
     details: this.fb.control(this.initial.details, [Validators.maxLength(500)]),
     active: this.fb.control(this.initial.active),
     location: this.fb.control(this.initial.location, [Validators.maxLength(120)]),
