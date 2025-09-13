@@ -55,7 +55,7 @@ export class ClientEditComponent {
 
   // ===== Data for UI =====
   readonly countries: Country[] = countriesList();
-  iso(name?: string) { return isoFromName(name); }
+  readonly iso = isoFromName;
 
   // ===== Form =====
   private readonly initial: FormModel = {

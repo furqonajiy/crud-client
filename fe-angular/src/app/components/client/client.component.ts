@@ -193,7 +193,5 @@ export class ClientComponent implements OnInit, AfterViewInit {
   }
 
   // ----- Utils -----
-  iso(country?: string): string {
-    return isoFromName(country);
-  }
+  readonly iso = isoFromName;
 }
