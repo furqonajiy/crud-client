@@ -1,7 +1,8 @@
 // ========== Angular / CDK ==========
 import {
   Component, OnInit, AfterViewInit, OnDestroy,
-  signal, computed, effect, viewChild
+  signal, computed, effect, viewChild,
+  NgZone
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -133,7 +134,7 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
   private es?: EventSource;
 
   // ===== DI =====
-  constructor(private dialog: MatDialog, private http: HttpClient, private snack: MatSnackBar) { }
+  constructor(private dialog: MatDialog, private http: HttpClient, private snack: MatSnackBar, private zone: NgZone) { }
 
   // ===== Lifecycle =====
   ngOnInit(): void {
@@ -159,21 +160,47 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ===== Realtime SSE =====
   private connectToEvents(): void {
-    try {
-      this.es = new EventSource(CLIENTS_EVENTS, { withCredentials: false });
-      this.es.onmessage = (e) => {
-        if (!e?.data) return;
-        let ev: ClientEventMsg;
-        try { ev = JSON.parse(e.data); } catch { return; }
-        this.handleEvent(ev);
-      };
-      this.es.onerror = () => {
-        // let EventSource auto-retry; no noise to the user
-      };
-    } catch {
-      // silently ignore if browser blocks it
-    }
+    const es = new EventSource(CLIENTS_EVENTS, { withCredentials: false });
+
+    const parse = (e: MessageEvent) => {
+      try { return JSON.parse(e.data) as ClientEventMsg; } catch { return null; }
+    };
+
+    const run = (fn: () => void) => this.zone.run(fn);
+
+    es.addEventListener('INIT', () => {
+      // connected (optional)
+    });
+
+    es.addEventListener('CREATED', (e: MessageEvent) => {
+      const ev = parse(e); if (!ev) return;
+      run(() => this.handleEvent(ev));
+    });
+
+    es.addEventListener('UPDATED', (e: MessageEvent) => {
+      const ev = parse(e); if (!ev) return;
+      run(() => this.handleEvent(ev));
+    });
+
+    es.addEventListener('DELETED', (e: MessageEvent) => {
+      const ev = parse(e); if (!ev) return;
+      run(() => this.handleEvent(ev));
+    });
+
+    // Fallback if server ever sends unnamed events:
+    es.onmessage = (e) => {
+      const ev = parse(e); if (!ev) return;
+      run(() => this.handleEvent(ev));
+    };
+
+    es.onerror = () => {
+      es.close();
+      setTimeout(() => this.connectToEvents(), 3000); // simple retry
+    };
+
+    this.es = es;
   }
+
 
   private handleEvent(ev: ClientEventMsg): void {
     let msg = '';
