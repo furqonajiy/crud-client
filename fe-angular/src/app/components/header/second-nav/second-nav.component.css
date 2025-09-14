@@ -1,3 +1,4 @@
+/* ========== Wrapper ========== */
 .second-nav {
   background: #fff;
   border-bottom: 1px solid #e9e9e9;
@@ -8,28 +9,23 @@
   margin: 0 auto;
 }
 
+/* ========== Grid ========== */
 .grid-4 {
   display: grid;
-  /* [logo] | [menu] | [search] | [login] */
+  grid-template-columns: 240px auto 1fr auto auto;
   align-items: center;
   height: 72px;
 }
 
-/* explicit column placement (optional but clear) */
+/* ========== Column Placements ========== */
 .logo {
   grid-column: 1;
   justify-self: start;
 }
 
-/* align as you like: start/end */
 .main-menu {
   grid-column: 2;
   justify-self: start;
-}
-
-.search {
-  grid-column: 3;
-  justify-self: end;
 }
 
 .login {
@@ -37,24 +33,18 @@
   justify-self: end;
 }
 
-/* Don’t wrap item labels */
-.main-menu li,
-.main-menu a span:first-child {
-  white-space: nowrap;
-}
-
-/* Logo */
+/* ========== Logo ========== */
 .logo img {
   height: 28px;
 }
 
-/* Main menu */
+/* ========== Main Menu ========== */
 .main-menu ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
   display: flex;
   gap: 26px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .main-menu a {
@@ -75,59 +65,24 @@
   line-height: 1;
 }
 
-/* Search */
-/* Container look: large, rounded, light grey outline */
-.search-field {
-  width: 300px;
-  --mdc-outlined-text-field-container-shape: 12px; /* rounded corners */
-  --mdc-outlined-text-field-outline-color: #e6e6e6; /* default border */
-  --mdc-outlined-text-field-hover-outline-color: #dfdfe0; /* outline when hover */
-  --mdc-outlined-text-field-focus-outline-color: #0d2e87; /* blue when focused */
-}
-
-/* Grey placeholder */
-.search-field .mat-mdc-input-element::placeholder {
-  color: #8a8a8a;
-  opacity: 1;
-}
-
-/* Black caret + black typed text when focused/clicked */
-.search-field .mat-mdc-input-element {
-  color: #000; /* typed text */
-  caret-color: #8a8a8a; /* blinking caret */
-}
-
-/* Keep placeholder grey */
-.search-field .mat-mdc-input-element::placeholder {
-  color: #8a8a8a;
-  opacity: 1;
-}
-
-/* Reduce extra helper space under the field */
-::ng-deep .mat-mdc-form-field-subscript-wrapper {
-  display: none;
-}
-
-/* Base (stroked, blue text/border) */
+/* ========== Login Button (stroked) ========== */
 .login-btn.mat-mdc-outlined-button {
   color: #0d2e87;
+  border-width: 1px;
   --mdc-outlined-button-label-text-color: #0d2e87;
   --mdc-outlined-button-outline-color: #0d2e87;
-  border-width: 1px;
-  transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
-/* Hover/Focus: blue fill + white text */
 .login-btn.mat-mdc-outlined-button:hover,
 .login-btn.mat-mdc-outlined-button:focus-visible {
-  background-color: #0d2e87; /* fallback */
-  --mdc-outlined-button-container-color: #0d2e87; /* MDC var */
-  color: #fff; /* fallback */
-  --mdc-outlined-button-label-text-color: #fff; /* MDC var */
-  --mdc-outlined-button-outline-color: #0d2e87; /* keep border blue */
+  background-color: #0d2e87;
+  color: #fff;
+  --mdc-outlined-button-container-color: #0d2e87;
+  --mdc-outlined-button-label-text-color: #fff;
+  --mdc-outlined-button-outline-color: #0d2e87;
 }
 
-/* Ensure label turns white even if theme overrides */
 .login-btn.mat-mdc-outlined-button:hover .mdc-button__label,
 .login-btn.mat-mdc-outlined-button:focus-visible .mdc-button__label {
   color: #fff;

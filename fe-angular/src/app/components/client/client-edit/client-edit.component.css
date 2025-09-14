@@ -1,9 +1,9 @@
-/* ----- Layout ----- */
+/* ========== Layout ========== */
 .grid {
   display: grid;
   grid-template-columns: 140px 1fr;
-  gap: 10px 16px;
-  padding-top: 6px;
+  /* gap: 0px 16px; */
+  /* padding-top: 6px; */
 }
 
 .label {
@@ -12,23 +12,22 @@
   padding-top: 8px;
 }
 
-/* ----- Client Table ----- */
-/* form fields take full width in value column */
+/* ========== Value Column ========== */
 .value .mat-mdc-form-field {
   width: 100%;
+  margin-bottom: 12px; 
 }
 
 .value.checkbox {
   display: flex;
-  align-items: left;  /* vertical-center the checkbox */
+  align-items: center;
 }
 
 .value.id {
   display: flex;
-  align-items: center;   /* vertical-center the number */
+  align-items: center;
 }
 
-/* keep link behavior consistent if any appear */
 .value a {
   color: inherit;
   text-decoration: none;
@@ -38,28 +37,29 @@
   text-decoration: underline;
 }
 
-/* ----- Flag ----- */
+/* ========== Flag Icon ========== */
 .fi {
   margin-right: 8px;
   transform: translateY(1px);
 }
 
-/* ----- Client Edit Dialog ----- */
+/* ========== Client Edit Dialog ========== */
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-surface,
 ::ng-deep .cdk-overlay-pane.client-edit-light .mdc-dialog__surface {
-  background: #ffffff !important;
+  background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, .18);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
 }
 
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-title {
-  color: #0f172a !important;
+  color: #0f172a;
   font-weight: 700;
 }
 
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-content {
-  color: #111827 !important;
+  color: #111827;
+  padding-bottom: 8px !important;
 }
 
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-actions {
@@ -69,9 +69,10 @@
 }
 
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-button {
-  color: #0f172a !important;
+  color: #0f172a;
 }
 
+/* Filled text fields */
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field {
   --mdc-filled-text-field-container-color: #f8fafc;
   --mdc-filled-text-field-label-text-color: #6b7280;
@@ -83,41 +84,34 @@
   border-radius: 8px;
 }
 
-/* Keep Country select text dark in all states */
+/* Prevent text box overflow */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-surface,
+::ng-deep .cdk-overlay-pane.client-edit-light .mdc-dialog__surface {
+  overflow-x: hidden;
+}
+
+/* Keep Mat Select trigger/value text dark */
 ::ng-deep .cdk-overlay-pane.client-edit-light {
-  /* token used by Mat Select trigger */
   --mat-select-trigger-text-color: #111827;
 }
 
-::ng-deep .cdk-overlay-pane.client-edit-light
-  .mat-mdc-form-field .mat-mdc-select-value,
-::ng-deep .cdk-overlay-pane.client-edit-light
-  .mat-mdc-form-field .mat-mdc-select-value-text,
-::ng-deep .cdk-overlay-pane.client-edit-light
-  .mat-mdc-form-field .mat-mdc-select-placeholder,
-::ng-deep .cdk-overlay-pane.client-edit-light
-  .mat-mdc-form-field:hover .mat-mdc-select-value,
-::ng-deep .cdk-overlay-pane.client-edit-light
-  .mat-mdc-form-field:hover .mat-mdc-select-value-text,
-::ng-deep .cdk-overlay-pane.client-edit-light
-  .mat-mdc-form-field.mat-focused .mat-mdc-select-value,
-::ng-deep .cdk-overlay-pane.client-edit-light
-  .mat-mdc-form-field.mat-focused .mat-mdc-select-value-text {
-  color: #111827 !important;  /* stay dark */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field .mat-mdc-select-value,
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field .mat-mdc-select-value-text,
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field .mat-mdc-select-placeholder,
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field:hover .mat-mdc-select-value,
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field:hover .mat-mdc-select-value-text,
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field.mat-focused .mat-mdc-select-value,
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field.mat-focused .mat-mdc-select-value-text {
+  color: #111827;
 }
 
-/* Optional: keep the floating label muted (not white) on hover/focus */
+/* Floating label tone */
 ::ng-deep .cdk-overlay-pane.client-edit-light .mdc-floating-label,
 ::ng-deep .cdk-overlay-pane.client-edit-light .mdc-text-field--filled:hover .mdc-floating-label {
-  color: #6b7280 !important;
+  color: #6b7280;
 }
 
-.value.checkbox {
-  display: flex;
-  align-items: center
-}
-
-/* Make the checkbox styling cleaner in this light dialog */
+/* Checkbox in dialog */
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-checkbox {
   --mdc-checkbox-unselected-icon-color: #475569;
   --mdc-checkbox-unselected-hover-icon-color: #334155;
@@ -126,16 +120,48 @@
   --mdc-checkbox-disabled-unselected-icon-color: #64748b;
 }
 
-/* Save = green; Disabled Save = soft green */
-::ng-deep .cdk-overlay-pane.client-edit-light .btn-save.mat-mdc-unelevated-button {
-  --mdc-filled-button-container-color: #16a34a;            /* enabled bg */
-  --mdc-filled-button-label-text-color: #ffffff;           /* enabled text */
-  --mdc-filled-button-disabled-container-color: #dcfce7;   /* disabled bg */
-  --mdc-filled-button-disabled-label-text-color: #b5b5b5;  /* disabled text */
+/* ========== Country field ========== */
+::ng-deep .cdk-overlay-pane.client-edit-light .country-field {
+  --mat-select-trigger-text-color: #ffffff;
 }
 
-/* ----- Save Button ----- */
-::ng-deep .cdk-overlay-pane.client-edit-light
-  .btn-save.mat-mdc-unelevated-button.mat-mdc-button-disabled {
+::ng-deep .cdk-overlay-pane.client-edit-light .country-field .mdc-floating-label,
+::ng-deep .cdk-overlay-pane.client-edit-light .country-field .mat-mdc-form-field-required-marker {
+  color: #606060 !important;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .country-field .mat-mdc-select-arrow {
+  color: #B0BEC5 !important;
+}
+
+
+/* ========== Country dropdown panel (options & checkmark) ========== */
+::ng-deep .country-panel {
+  --mat-option-selected-state-label-text-color: #ffffff !important;
+}
+
+::ng-deep .country-panel .mdc-list-item--selected .mdc-list-item__primary-text,
+::ng-deep .country-panel .mat-mdc-option-active .mdc-list-item__primary-text {
+  color: #ffffff !important;
+}
+
+::ng-deep .country-panel .mat-pseudo-checkbox-checked.mat-pseudo-checkbox-minimal::after {
+  border-color: #ffffff !important;
+}
+
+/* ========== Save Button ========== */
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-save.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: #16a34a;
+  --mdc-filled-button-label-text-color: #ffffff;
+  --mdc-filled-button-disabled-container-color: #dcfce7;
+  --mdc-filled-button-disabled-label-text-color: #b5b5b5;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-save.mat-mdc-unelevated-button.mat-mdc-button-disabled {
   opacity: 1;
 }
+
+::ng-deep .mat-mdc-snack-bar-label {
+  white-space: pre-line;
+}
+

@@ -1,4 +1,3 @@
-// src/app/utils/country.ts
 import wc from 'world-countries';
 
 export type Country = { code: string; name: string };

@@ -17,6 +17,9 @@
     <div class="label">Details</div>
     <div class="value">{{ data.details || '—' }}</div>
 
+    <div class="label">Location</div>
+    <div class="value">{{ data.location || '—' }}</div>
+
     <div class="label">Active</div>
     <div class="value">
       <span class="chip" [ngClass]="data.active ? 'chip-active' : 'chip-inactive'">
@@ -33,5 +36,5 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="close()">Close</button>
+  <button mat-button mat-dialog-close>Close</button>
 </mat-dialog-actions>

@@ -1,3 +1,4 @@
+/* ========== Wrapper ========== */
 .first-nav {
   background: #fff;
   border-bottom: 1px solid #ececec;
@@ -10,10 +11,10 @@
   margin: 0 auto;
 }
 
-/* ----- First Navigation Grid ----- */
+/* ========== Grid ========== */
 .grid-4 {
   display: grid;
-  /* [empty] | [menu] | [preference button] | [empty]  */
+  grid-template-columns: 240px auto 1fr auto auto;
   align-items: center;
   height: 42px;
 }
@@ -28,40 +29,40 @@
   justify-self: end;
 }
 
-/* First Nav Bar Menu */
+/* ========== Left Menu ========== */
 .left-menu ul {
+  display: flex;
+  gap: 18px;
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  gap: 18px;
 }
 
 .left-menu a {
-  text-decoration: none;
   color: #5a5a5a;
+  text-decoration: none;
   padding: 8px 2px;
 }
 
-.left-menu li.active a {
-  color: #0d2e87;
-  border-bottom: 2px solid #0d2e87;
-}
-
+.left-menu li.active a,
 .left-menu a:hover {
   color: #0d2e87;
 }
 
-/* ----- Preference Button ---- */
+.left-menu li.active a {
+  border-bottom: 2px solid #0d2e87;
+}
+
+/* ========== Preferences Button ========== */
 .pref-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: none;
+  padding: 6px 8px;
+  border: 0;
   background: transparent;
   color: #5a5a5a;
   cursor: pointer;
-  padding: 6px 8px;
 }
 
 .pref-btn:hover {
