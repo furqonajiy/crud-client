@@ -15,16 +15,22 @@
     <div class="value"><a [href]="'mailto:'+data.email">{{ data.email }}</a></div>
 
     <div class="label">Details</div>
-    <div class="value">{{ data.details || '—' }}</div>
+    <div class="value">
+      @if (data.details?.trim()) { {{ data.details }} } @else { — }
+    </div>
 
     <div class="label">Location</div>
-    <div class="value">{{ data.location || '—' }}</div>
+    <div class="value">
+      @if (data.location?.trim()) { {{ data.location }} } @else { — }
+    </div>
 
     <div class="label">Active</div>
     <div class="value">
-      <span class="chip" [ngClass]="data.active ? 'chip-active' : 'chip-inactive'">
-        {{ data.active ? 'Active' : 'Inactive' }}
-      </span>
+      @if (data.active) {
+      <span class="chip chip-active">Active</span>
+      } @else {
+      <span class="chip chip-inactive">Inactive</span>
+      }
     </div>
 
     <div class="label">Country</div>
