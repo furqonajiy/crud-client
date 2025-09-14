@@ -1,6 +1,7 @@
 package com.furqonajiy.crudclient.service;
 
 import com.furqonajiy.crudclient.model.*;
+import com.furqonajiy.crudclient.repository.ClientEntity;
 import com.furqonajiy.crudclient.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,7 +83,7 @@ public class ClientService implements IClientService {
     @Override
     @Transactional
     public ClientResponse deleteMultipleClients(DeleteClientsRequest req) {
-        var ids = req.ids().stream().filter(Objects::nonNull).distinct().toList();
+        var ids = req.getIds().stream().filter(Objects::nonNull).distinct().toList();
         if (!ids.isEmpty()) {
             repo.deleteAllByIdInBatch(ids);
         }
