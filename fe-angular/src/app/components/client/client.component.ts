@@ -42,6 +42,14 @@ export interface Client {
 }
 interface ClientsResponse { clients: Client[]; }
 
+type ClientEventMsg = {
+  type: 'CREATED' | 'UPDATED' | 'DELETED';
+  clientId?: number;
+  displayName?: string;
+  message?: string;
+  at?: string;
+};
+
 // ===== Constants =====
 const CLIENTS_API = 'http://localhost:8080/api/v1/clients';
 const CLIENTS_EVENTS = 'http://localhost:8080/api/v1/clients/events';
@@ -131,7 +139,7 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.dataSource.sortingDataAccessor = (row, col) => this.sortAccessor(row, col);
     this.fetchClients();
-    this.setupEventStream();
+    this.connectToEvents();
   }
 
   ngAfterViewInit(): void {
@@ -147,6 +155,46 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.es?.close();
+  }
+
+  // ===== Realtime SSE =====
+  private connectToEvents(): void {
+    try {
+      this.es = new EventSource(CLIENTS_EVENTS, { withCredentials: false });
+      this.es.onmessage = (e) => {
+        if (!e?.data) return;
+        let ev: ClientEventMsg;
+        try { ev = JSON.parse(e.data); } catch { return; }
+        this.handleEvent(ev);
+      };
+      this.es.onerror = () => {
+        // let EventSource auto-retry; no noise to the user
+      };
+    } catch {
+      // silently ignore if browser blocks it
+    }
+  }
+
+  private handleEvent(ev: ClientEventMsg): void {
+    let msg = '';
+    switch (ev.type) {
+      case 'CREATED':
+        msg = `New client added${ev.displayName ? `: ${ev.displayName}` : ''}`;
+        break;
+      case 'UPDATED':
+        msg = `Client updated${ev.displayName ? `: ${ev.displayName}` : ''}`;
+        break;
+      case 'DELETED':
+        msg = `Client deleted${ev.clientId ? ` #${ev.clientId}` : ''}`;
+        break;
+      default:
+        return;
+    }
+
+    // Show a quick toast; refresh on action (and also do a quiet refresh)
+    const ref = this.snack.open(msg, 'Refresh', { duration: 4000 });
+    ref.onAction().subscribe(() => this.fetchClients({ keepPage: true }));
+    this.fetchClients({ keepPage: true });
   }
 
   // ===== Data loading =====
@@ -176,35 +224,6 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
       },
       error: (err) => console.error('Failed to load clients', err),
     });
-  }
-
-  // ===== Real-time (SSE) =====
-  private setupEventStream(): void {
-    const es = new EventSource(CLIENTS_EVENTS, { withCredentials: false });
-
-    es.addEventListener('client-created', (evt: MessageEvent) => {
-      const c = JSON.parse(evt.data) as Partial<Client>;
-      const name = c.displayName || c.fullName || `#${c.id}`;
-      this.snack.open(`New client added: ${name}`, 'View', { duration: 5000 })
-        .onAction().subscribe(() => this.openClientDetails(c as Client));
-      this.fetchClients({ goLast: true });
-    });
-
-    es.addEventListener('client-updated', (evt: MessageEvent) => {
-      const c = JSON.parse(evt.data) as Partial<Client>;
-      const name = c.displayName || c.fullName || `#${c.id}`;
-      this.snack.open(`Client updated: ${name}`, 'Refresh', { duration: 5000 })
-        .onAction().subscribe(() => this.fetchClients({ keepPage: true }));
-      // Keep page; still refresh to reflect change
-      this.fetchClients({ keepPage: true });
-    });
-
-    es.onerror = () => {
-      es.close();
-      setTimeout(() => this.setupEventStream(), 3000);
-    };
-
-    this.es = es;
   }
 
   // ===== Sorting / Filtering / Selection helpers =====
@@ -293,7 +312,7 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  openClientDetails(row: Client | Partial<Client>): void {
+  openClientDetails(row: Client): void {
     this.dialog.open(ClientDetailsComponent, {
       data: row,
       width: '520px',
