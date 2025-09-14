@@ -171,6 +171,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
   // ===== Sorting / Filtering / Selection helpers =====
   applyFilter(value: string): void {
     this.filterText.set((value || '').trim());
+    this.removeSelectionOutsideFilter();
     this.paginator?.firstPage();
   }
 
@@ -183,7 +184,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private getCurrentPageRows(): Client[] {
+  getCurrentPageRows(): Client[] {
     const rows = this.dataSource.data;
     const p = this.paginator;
     if (!p) return rows;
@@ -195,6 +196,13 @@ export class ClientComponent implements OnInit, AfterViewInit {
     const idsOnPage = new Set(this.getCurrentPageRows().map(r => r.id));
     this.selection.selected.forEach(s => {
       if (!idsOnPage.has(s.id)) this.selection.deselect(s);
+    });
+  }
+
+  private removeSelectionOutsideFilter(): void {
+    const filteredIds = new Set(this.filteredClients().map(c => c.id));
+    this.selection.selected.forEach(s => {
+      if (!filteredIds.has(s.id)) this.selection.deselect(s);
     });
   }
 
