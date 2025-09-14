@@ -5,7 +5,8 @@
     <div class="header-actions">
       <form (ngSubmit)="searchClient()" class="search">
         <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
-          <input matInput type="search" name="clientSearchQ" [(ngModel)]="clientSearchQ" placeholder="Search" aria-label="Search" />
+          <input matInput type="search" name="clientSearchQ" [(ngModel)]="clientSearchQ" placeholder="Search"
+            aria-label="Search" />
           <button mat-icon-button matSuffix class="search-btn" type="submit" aria-label="Run search">
             <mat-icon>search</mat-icon>
           </button>
@@ -26,8 +27,8 @@
       <!-- Checkbox -->
       <ng-container matColumnDef="select">
         <th mat-header-cell *matHeaderCellDef class="col-select">
-          <mat-checkbox (change)="masterToggle()" [checked]="isAllSelected()"
-            [indeterminate]="pageHasSelection() && !isAllSelected()">
+          <mat-checkbox [disabled]="getCurrentPageRows().length === 0" [checked]="isAllSelected()"
+            [indeterminate]="pageHasSelection() && !isAllSelected()" (change)="masterToggle()">
           </mat-checkbox>
         </th>
         <td mat-cell *matCellDef="let row" class="col-select">
