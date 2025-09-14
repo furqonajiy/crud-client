@@ -29,7 +29,7 @@ public class ClientService implements IClientService {
         var e = new ClientEntity();
         e.setFullName(req.getFullName());
         e.setDisplayName(req.getDisplayName());
-        e.setEmail(req.getEmail());
+        e.setEmail(req.getEmail().toLowerCase());
         e.setDetails(req.getDetails());
         e.setActive(req.isActive());
         e.setLocation(req.getLocation());
@@ -59,7 +59,7 @@ public class ClientService implements IClientService {
         }
 
         if (req.getEmail() != null) {
-            e.setEmail(req.getEmail());
+            e.setEmail(req.getEmail().toLowerCase());
         }
 
         if (req.getDetails() != null) {
