@@ -5,7 +5,6 @@
 <form [formGroup]="form" (ngSubmit)="save()" novalidate>
   <mat-dialog-content>
     <div class="grid">
-      <!-- ID (edit only) -->
       @if (!data.isNew) {
       <div class="label">ID</div>
       <div class="value id">{{ data.id }}</div>
@@ -16,9 +15,7 @@
       <div class="value">
         <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <input matInput formControlName="fullName" required maxlength="128" />
-          @if (getError('fullName'); as err) {
-          <mat-error>{{ err }}</mat-error>
-          }
+          <mat-error *ngIf="getError('fullName') as err">{{ err }}</mat-error>
         </mat-form-field>
       </div>
 
@@ -27,9 +24,7 @@
       <div class="value">
         <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <input matInput formControlName="displayName" required maxlength="30" />
-          @if (getError('displayName'); as err) {
-          <mat-error>{{ err }}</mat-error>
-          }
+          <mat-error *ngIf="getError('displayName') as err">{{ err }}</mat-error>
         </mat-form-field>
       </div>
 
@@ -38,9 +33,7 @@
       <div class="value">
         <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <input matInput type="email" formControlName="email" required maxlength="254" />
-          @if (getError('email'); as err) {
-          <mat-error>{{ err }}</mat-error>
-          }
+          <mat-error *ngIf="getError('email') as err">{{ err }}</mat-error>
         </mat-form-field>
       </div>
 
@@ -50,9 +43,7 @@
         <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <textarea matInput rows="3" formControlName="details" maxlength="500"></textarea>
           <mat-hint align="end">{{ form.get('details')?.value?.length || 0 }}/500</mat-hint>
-          @if (form.get('details')?.hasError('maxlength')) {
-          <mat-error>Max 500 characters</mat-error>
-          }
+          <mat-error *ngIf="form.get('details')?.hasError('maxlength')">Max 500 characters</mat-error>
         </mat-form-field>
       </div>
 
@@ -67,9 +58,7 @@
       <div class="value">
         <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <input matInput formControlName="location" maxlength="120" />
-          @if (form.get('location')?.hasError('maxlength')) {
-          <mat-error>Max 120 characters</mat-error>
-          }
+          <mat-error *ngIf="form.get('location')?.hasError('maxlength')">Max 120 characters</mat-error>
         </mat-form-field>
       </div>
 
@@ -90,15 +79,12 @@
             </mat-option>
             }
           </mat-select>
-          @if (form.get('country')?.hasError('required')) {
-          <mat-error>Country is required</mat-error>
-          }
+          <mat-error *ngIf="form.get('country')?.hasError('required')">Country is required</mat-error>
         </mat-form-field>
       </div>
     </div>
   </mat-dialog-content>
 
-  <!-- actions -->
   <mat-dialog-actions align="end">
     <button mat-button type="button" (click)="cancel()">Cancel</button>
     <button mat-flat-button class="btn-save" type="submit" [disabled]="form.invalid || submitting">Save</button>
