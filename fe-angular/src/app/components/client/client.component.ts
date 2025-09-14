@@ -1,7 +1,7 @@
 // ========== Angular / CDK ==========
 import {
-  Component, OnInit, AfterViewInit, ViewChild,
-  signal, computed, effect
+  Component, OnInit, AfterViewInit,
+  signal, computed, effect, viewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -65,10 +65,6 @@ const CLIENTS_COUNT_COOKIE = 'RABO_CLIENTS';
   styleUrls: ['./client.component.css'],
 })
 export class ClientComponent implements OnInit, AfterViewInit {
-  // ===== View refs =====
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
   // ===== Table config =====
   readonly displayedColumns: string[] = ['select', 'id', 'displayName', 'active', 'country', 'actions'];
   readonly dataSource = new MatTableDataSource<Client>([]);
@@ -81,6 +77,10 @@ export class ClientComponent implements OnInit, AfterViewInit {
   clientSearchQ: string = '';
 
   // ===== Signals =====
+  /** View queries */
+  readonly sort = viewChild(MatSort);
+  readonly paginator = viewChild(MatPaginator);
+
   private readonly allClients = signal<Client[]>([]);
   private readonly filterText = signal('');
 
@@ -115,7 +115,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
   /** Keep paginator on a valid page when data size changes */
   readonly clampPaginatorEffect = effect(() => {
-    const p = this.paginator;
+    const p = this.paginator();
     if (!p) return;
 
     const totalRows = this.filteredClients().length;
@@ -133,21 +133,27 @@ export class ClientComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.paginator.page.subscribe(() => this.removeSelectionOutsideCurrentPage());
+    // Wire MatSort & MatPaginator once the view queries resolve
+    const sort = this.sort();
+    if (sort) this.dataSource.sort = sort;
+
+    const paginator = this.paginator();
+    if (paginator) {
+      this.dataSource.paginator = paginator;
+      paginator.page.subscribe(() => this.removeSelectionOutsideCurrentPage());
+    }
   }
 
   // ===== Data loading =====
   private fetchClients(opts: { keepPage?: boolean; goLast?: boolean } = {}): void {
-    const prevIndex = this.paginator ? this.paginator.pageIndex : 0;
+    const p0 = this.paginator();
+    const prevIndex = p0 ? p0.pageIndex : 0;
 
     this.http.get<ClientsResponse>(CLIENTS_API).subscribe({
       next: ({ clients }) => {
         this.allClients.set(clients ?? []);
 
-        // Adjust page after new data
-        const p = this.paginator;
+        const p = this.paginator();
         if (!p) return;
 
         const len = this.filteredClients().length;
@@ -172,7 +178,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
   applyFilter(value: string): void {
     this.filterText.set((value || '').trim());
     this.removeSelectionOutsideFilter();
-    this.paginator?.firstPage();
+    this.paginator()?.firstPage();
   }
 
   private sortAccessor(row: Client, col: string): string | number {
@@ -186,7 +192,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
   getCurrentPageRows(): Client[] {
     const rows = this.dataSource.data;
-    const p = this.paginator;
+    const p = this.paginator();
     if (!p) return rows;
     const start = p.pageIndex * p.pageSize;
     return rows.slice(start, start + p.pageSize);
