@@ -26,6 +26,7 @@ import { ClientDetailsComponent } from './client-details/client-details.componen
 import { ClientEditComponent } from './client-edit/client-edit.component';
 import { isoFromName } from '../../utils/country.util';
 import { setCookie, getCookieInt } from '../../utils/cookie.util';
+import { exportClientsToXlsx } from '../../utils/export.util';
 
 // ===== Types =====
 export interface Client {
@@ -300,5 +301,10 @@ export class ClientComponent implements OnInit, AfterViewInit {
   // ===== DOM nicety =====
   private blurActive(): void {
     (document.activeElement as HTMLElement | null)?.blur();
+  }
+
+  // ===== Export =====
+  exportAllClients(): void {
+    exportClientsToXlsx(this.allClients());
   }
 }
