@@ -61,7 +61,7 @@ public class ClientController {
 
     // ===== SSE endpoint =====
     @CrossOrigin(origins = "http://localhost:4200")
-    @GetMapping(value = "/events", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/events")
     public SseEmitter events() {
         log.debug("Event");
         return eventService.subscribe();

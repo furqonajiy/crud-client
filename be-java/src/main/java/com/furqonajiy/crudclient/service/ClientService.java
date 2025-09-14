@@ -1,6 +1,7 @@
 package com.furqonajiy.crudclient.service;
 
 import com.furqonajiy.crudclient.model.*;
+import com.furqonajiy.crudclient.repository.ClientEntity;
 import com.furqonajiy.crudclient.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -13,8 +13,4 @@ import java.util.List;
 public class ClientResponse {
     @JsonProperty("clients")
     private List<ClientDto> clients;
-
-    public static ClientResponse of(List<ClientDto> items) {
-        return new ClientResponse(items);
-    }
 }
