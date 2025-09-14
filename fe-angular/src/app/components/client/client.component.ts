@@ -101,7 +101,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
   /** Push filtered rows into the Material table whenever signals change */
   readonly syncTableEffect = effect(() => {
     this.dataSource.data = this.filteredClients();
-  });
+  }, { allowSignalWrites: true }); // <-- allow writes during effect
 
   /** Keep cookie with client count in sync (1-day expiry, only when changed) */
   readonly cookieCountEffect = effect(() => {
@@ -118,8 +118,8 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
     const totalRows = this.filteredClients().length;
     const maxIndex = Math.max(0, Math.ceil(totalRows / p.pageSize) - 1);
-    if (p.pageIndex > maxIndex) p.pageIndex = maxIndex;
-  });
+    if (p.pageIndex > maxIndex) p.pageIndex = maxIndex; // mutates Material component state
+  }, { allowSignalWrites: true }); // <-- allow writes during effect
 
   // ===== DI =====
   constructor(private dialog: MatDialog, private http: HttpClient) { }
