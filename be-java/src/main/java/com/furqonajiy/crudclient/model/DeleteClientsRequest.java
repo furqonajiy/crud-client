@@ -1,11 +1,12 @@
 package com.furqonajiy.crudclient.model;
 
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Data;
 
 import java.util.List;
 
-public record DeleteClientsRequest(
+@Data
+public class DeleteClientsRequest {
         @NotEmpty(message = "ids must not be empty")
-        List<Long> ids
-) {
+        private List<Long> ids;
 }
