@@ -1,5 +1,8 @@
 // ========== Angular / CDK ==========
-import { Component, OnInit, AfterViewInit, ViewChild, signal, computed, effect } from '@angular/core';
+import {
+  Component, OnInit, AfterViewInit, ViewChild,
+  signal, computed, effect
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -37,7 +40,10 @@ export interface Client {
 }
 interface ClientsResponse { clients: Client[]; }
 
-// ===== Component =====
+// ===== Constants =====
+const CLIENTS_API = 'http://localhost:8080/api/v1/clients';
+const CLIENTS_COUNT_COOKIE = 'RABO_CLIENTS';
+
 @Component({
   selector: 'app-client',
   standalone: true,
@@ -59,48 +65,61 @@ interface ClientsResponse { clients: Client[]; }
   styleUrls: ['./client.component.css'],
 })
 export class ClientComponent implements OnInit, AfterViewInit {
-  // ===== Table Config =====
+  // ===== View refs =====
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  // ===== Table config =====
   readonly displayedColumns: string[] = ['select', 'id', 'displayName', 'active', 'country', 'actions'];
   readonly dataSource = new MatTableDataSource<Client>([]);
   readonly selection = new SelectionModel<Client>(true, []);
 
-  // ===== View Refs =====
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  // ===== Utils =====
+  readonly iso = isoFromName;
 
-  // ===== API =====
-  private readonly API = 'http://localhost:8080/api/v1/clients';
+  // ===== Search model (template binds to this) =====
+  clientSearchQ: string = '';
 
   // ===== Signals =====
-  private readonly clients = signal<Client[]>([]);
-  private readonly filterQ = signal('');
-  readonly total = computed(() => this.clients().length);
+  private readonly allClients = signal<Client[]>([]);
+  private readonly filterText = signal('');
 
-  private readonly visible = computed(() => {
-    const f = this.filterQ().trim().toLowerCase();
-    if (!f) return this.clients();
-    return this.clients().filter(c => (
+  /** Total clients (for cookies or badges) */
+  readonly totalClients = computed(() => this.allClients().length);
+
+  /** Client list filtered by `filterText` */
+  private readonly filteredClients = computed(() => {
+    const f = this.filterText().trim().toLowerCase();
+    if (!f) return this.allClients();
+
+    return this.allClients().filter(c =>
       `${c.id} ${c.fullName} ${c.displayName} ${c.email} ${c.details} ${c.country} ${c.active ? 'active' : 'inactive'}`
-    ).toLowerCase().includes(f));
+        .toLowerCase()
+        .includes(f)
+    );
   });
 
-  // ===== Effects =====
-  readonly _syncTableEffect = effect(() => {
-    this.dataSource.data = this.visible();
+  // ===== Effects (react to signals, perform side-effects) =====
+  /** Push filtered rows into the Material table whenever signals change */
+  readonly syncTableEffect = effect(() => {
+    this.dataSource.data = this.filteredClients();
   });
 
-  readonly _cookieEffect = effect(() => {
-    const count = this.total();
-    const prev = getCookieInt('RABO_CLIENTS');
-    if (prev !== count) setCookie('RABO_CLIENTS', String(count), 1);
+  /** Keep cookie with client count in sync (1-day expiry, only when changed) */
+  readonly cookieCountEffect = effect(() => {
+    const count = this.totalClients();
+    if (getCookieInt(CLIENTS_COUNT_COOKIE) !== count) {
+      setCookie(CLIENTS_COUNT_COOKIE, String(count), 1);
+    }
   });
 
-  /** Clamp paginator when filtered data shrinks or grows */
-  readonly _clampPageEffect = effect(() => {
+  /** Keep paginator on a valid page when data size changes */
+  readonly clampPaginatorEffect = effect(() => {
     const p = this.paginator;
     if (!p) return;
-    const len = this.visible().length;
-    const maxIndex = Math.max(0, Math.ceil(len / p.pageSize) - 1);
+
+    const totalRows = this.filteredClients().length;
+    const maxIndex = Math.max(0, Math.ceil(totalRows / p.pageSize) - 1);
     if (p.pageIndex > maxIndex) p.pageIndex = maxIndex;
   });
 
@@ -110,42 +129,48 @@ export class ClientComponent implements OnInit, AfterViewInit {
   // ===== Lifecycle =====
   ngOnInit(): void {
     this.dataSource.sortingDataAccessor = (row, col) => this.sortAccessor(row, col);
-    this.loadClients();
+    this.fetchClients();
   }
 
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-    this.paginator.page.subscribe(() => this.pruneSelectionToRendered());
+    this.paginator.page.subscribe(() => this.removeSelectionOutsideCurrentPage());
   }
 
-  // ===== Data Load =====
-  private loadClients(opts?: { keepPage?: boolean; goLast?: boolean }): void {
-    const keepPage = !!opts?.keepPage;
-    const goLast = !!opts?.goLast;
-
+  // ===== Data loading =====
+  private fetchClients(opts: { keepPage?: boolean; goLast?: boolean } = {}): void {
     const prevIndex = this.paginator ? this.paginator.pageIndex : 0;
 
-    this.http.get<ClientsResponse>(this.API).subscribe({
-      next: (res) => {
-        this.clients.set(res?.clients ?? []);
+    this.http.get<ClientsResponse>(CLIENTS_API).subscribe({
+      next: ({ clients }) => {
+        this.allClients.set(clients ?? []);
 
+        // Adjust page after new data
         const p = this.paginator;
         if (!p) return;
 
-        const len = this.visible().length;
+        const len = this.filteredClients().length;
         const maxIndex = Math.max(0, Math.ceil(len / p.pageSize) - 1);
-        p.pageIndex = goLast ? maxIndex : keepPage ? Math.min(prevIndex, maxIndex) : 0;
 
+        if (opts.goLast) {
+          p.pageIndex = maxIndex;
+        } else if (opts.keepPage) {
+          p.pageIndex = Math.min(prevIndex, maxIndex);
+        } else {
+          p.pageIndex = 0;
+        }
+
+        // Force table to recalc its rendered slice
         this.dataSource._updateChangeSubscription();
       },
       error: (err) => console.error('Failed to load clients', err),
     });
   }
 
-  // ===== Table Helpers =====
+  // ===== Sorting / Filtering / Selection helpers =====
   applyFilter(value: string): void {
-    this.filterQ.set((value || '').trim());
+    this.filterText.set((value || '').trim());
     this.paginator?.firstPage();
   }
 
@@ -158,34 +183,37 @@ export class ClientComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private get renderedRows(): Client[] {
-    const list = this.dataSource.data;
-    if (!this.paginator) return list;
-    const start = this.paginator.pageIndex * this.paginator.pageSize;
-    return list.slice(start, start + this.paginator.pageSize);
+  private getCurrentPageRows(): Client[] {
+    const rows = this.dataSource.data;
+    const p = this.paginator;
+    if (!p) return rows;
+    const start = p.pageIndex * p.pageSize;
+    return rows.slice(start, start + p.pageSize);
+  }
+
+  private removeSelectionOutsideCurrentPage(): void {
+    const idsOnPage = new Set(this.getCurrentPageRows().map(r => r.id));
+    this.selection.selected.forEach(s => {
+      if (!idsOnPage.has(s.id)) this.selection.deselect(s);
+    });
   }
 
   isAllSelected(): boolean {
-    const rows = this.renderedRows;
+    const rows = this.getCurrentPageRows();
     return rows.length > 0 && rows.every(r => this.selection.isSelected(r));
   }
 
   pageHasSelection(): boolean {
-    return this.renderedRows.some(r => this.selection.isSelected(r));
+    return this.getCurrentPageRows().some(r => this.selection.isSelected(r));
   }
 
   masterToggle(): void {
-    const rows = this.renderedRows;
+    const rows = this.getCurrentPageRows();
     const allSelected = rows.length > 0 && rows.every(r => this.selection.isSelected(r));
     rows.forEach(r => allSelected ? this.selection.deselect(r) : this.selection.select(r));
   }
 
-  private pruneSelectionToRendered(): void {
-    const keep = new Set(this.renderedRows.map(r => r.id));
-    this.selection.selected.forEach(s => { if (!keep.has(s.id)) this.selection.deselect(s); });
-  }
-
-  // ===== Row Actions =====
+  // ===== Row actions (dialogs & CRUD) =====
   addClient(): void {
     this.blurActive();
 
@@ -197,9 +225,9 @@ export class ClientComponent implements OnInit, AfterViewInit {
       maxHeight: 'none',
     });
 
-    ref.afterClosed().subscribe((ok) => {
+    ref.afterClosed().subscribe(ok => {
       if (!ok) return;
-      this.loadClients({ goLast: true });
+      this.fetchClients({ goLast: true });
     });
   }
 
@@ -212,9 +240,9 @@ export class ClientComponent implements OnInit, AfterViewInit {
       maxHeight: 'none',
     });
 
-    ref.afterClosed().subscribe((ok) => {
+    ref.afterClosed().subscribe(ok => {
       if (!ok) return;
-      this.loadClients({ keepPage: true });
+      this.fetchClients({ keepPage: true });
     });
   }
 
@@ -238,10 +266,11 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
     const ids = this.selection.selected.map(c => c.id);
 
-    this.http.delete<void>(this.API, { body: { ids } }).subscribe({
+    this.http.delete<void>(CLIENTS_API, { body: { ids } }).subscribe({
       next: () => {
         this.selection.clear();
-        this.loadClients({ keepPage: true });
+        // Other users may have modified the list — re-fetch from server.
+        this.fetchClients({ keepPage: true });
       },
       error: (err) => {
         console.error('Failed to delete clients', err);
@@ -250,16 +279,13 @@ export class ClientComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // ===== Search =====
-  q: string = '';
-  onSearch(): void {
-    this.applyFilter(this.q);
-    this.pruneSelectionToRendered();
+  // ===== Search trigger from template =====
+  searchClient(): void {
+    this.applyFilter(this.clientSearchQ);
+    this.removeSelectionOutsideCurrentPage();
   }
 
-  // ===== Utils =====
-  readonly iso = isoFromName;
-
+  // ===== DOM nicety =====
   private blurActive(): void {
     (document.activeElement as HTMLElement | null)?.blur();
   }
