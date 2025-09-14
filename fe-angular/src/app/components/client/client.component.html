@@ -1,3 +1,4 @@
+<!-- client.component.html -->
 <div class="container">
   <div class="page-header">
     <h2 class="title">List of Clients</h2>
@@ -5,8 +6,8 @@
     <div class="header-actions">
       <form (ngSubmit)="searchClient()" class="search">
         <mat-form-field appearance="outline" subscriptSizing="dynamic" class="search-field">
-          <input matInput type="search" name="clientSearchQ" [(ngModel)]="clientSearchQ" placeholder="Search"
-            aria-label="Search" />
+          <input matInput type="search" name="clientSearchQ" [ngModel]="clientSearchQ()"
+            (ngModelChange)="clientSearchQ.set($event)" placeholder="Search" aria-label="Search" />
           <button mat-icon-button matSuffix class="search-btn" type="submit" aria-label="Run search">
             <mat-icon>search</mat-icon>
           </button>
@@ -95,7 +96,8 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns" class="row-clickable" (click)="openClientDetails(row)"
-        tabindex="0" (keydown.enter)="openClientDetails(row)" (keydown.space)="openClientDetails(row)"></tr>
+        tabindex="0" (keydown.enter)="openClientDetails(row)" (keydown.space)="openClientDetails(row)">
+      </tr>
     </table>
 
     <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>

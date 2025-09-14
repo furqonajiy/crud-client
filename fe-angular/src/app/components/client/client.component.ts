@@ -73,14 +73,12 @@ export class ClientComponent implements OnInit, AfterViewInit {
   // ===== Utils =====
   readonly iso = isoFromName;
 
-  // ===== Search model (template binds to this) =====
-  clientSearchQ: string = '';
-
   // ===== Signals =====
   /** View queries */
   readonly sort = viewChild(MatSort);
   readonly paginator = viewChild(MatPaginator);
 
+  readonly clientSearchQ = signal('');
   private readonly allClients = signal<Client[]>([]);
   private readonly filterText = signal('');
 
@@ -295,7 +293,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
 
   // ===== Search trigger from template =====
   searchClient(): void {
-    this.applyFilter(this.clientSearchQ);
+    this.applyFilter(this.clientSearchQ());
     this.removeSelectionOutsideCurrentPage();
   }
 
