@@ -16,7 +16,9 @@
       <div class="value">
         <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <input matInput formControlName="fullName" required maxlength="128" />
-          @if (getError('fullName'); as err) {<ng-container matError>{{ err }}</ng-container>}
+          @if (getError('fullName'); as err) {
+          <mat-error>{{ err }}</mat-error>
+          }
         </mat-form-field>
       </div>
 
@@ -25,7 +27,9 @@
       <div class="value">
         <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <input matInput formControlName="displayName" required maxlength="30" />
-          @if (getError('displayName'); as err) {<ng-container matError>{{ err }}</ng-container>}
+          @if (getError('displayName'); as err) {
+          <mat-error>{{ err }}</mat-error>
+          }
         </mat-form-field>
       </div>
 
@@ -34,7 +38,9 @@
       <div class="value">
         <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <input matInput type="email" formControlName="email" required maxlength="254" />
-          @if (getError('email'); as err) {<ng-container matError>{{ err }}</ng-container>}
+          @if (getError('email'); as err) {
+          <mat-error>{{ err }}</mat-error>
+          }
         </mat-form-field>
       </div>
 
@@ -44,7 +50,9 @@
         <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <textarea matInput rows="3" formControlName="details" maxlength="500"></textarea>
           <mat-hint align="end">{{ form.get('details')?.value?.length || 0 }}/500</mat-hint>
-          @if (form.get('details')?.hasError('maxlength')) {<ng-container matError>Max 500 characters</ng-container>}
+          @if (form.get('details')?.hasError('maxlength')) {
+          <mat-error>Max 500 characters</mat-error>
+          }
         </mat-form-field>
       </div>
 
@@ -59,7 +67,9 @@
       <div class="value">
         <mat-form-field appearance="fill" subscriptSizing="dynamic">
           <input matInput formControlName="location" maxlength="120" />
-          @if (form.get('location')?.hasError('maxlength')) {<ng-container matError>Max 120 characters</ng-container>}
+          @if (form.get('location')?.hasError('maxlength')) {
+          <mat-error>Max 120 characters</mat-error>
+          }
         </mat-form-field>
       </div>
 
@@ -80,7 +90,9 @@
             </mat-option>
             }
           </mat-select>
-          @if (form.get('country')?.hasError('required')) {<ng-container matError>Country is required</ng-container>}
+          @if (form.get('country')?.hasError('required')) {
+          <mat-error>Country is required</mat-error>
+          }
         </mat-form-field>
       </div>
     </div>
