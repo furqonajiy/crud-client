@@ -1,8 +1,7 @@
 // ========== Angular / CDK ==========
 import {
   Component, OnInit, AfterViewInit, OnDestroy,
-  signal, computed, effect, viewChild,
-  NgZone
+  signal, computed, effect, viewChild, NgZone, inject
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -20,7 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MAT_SELECT_CONFIG } from '@angular/material/select';
 
 // ========== App Components / Utils ==========
@@ -78,42 +77,41 @@ const CLIENTS_COUNT_COOKIE = 'RABO_CLIENTS';
 })
 export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
   // ===== Table config =====
-  readonly displayedColumns: string[] = ['select', 'id', 'displayName', 'active', 'country', 'actions'];
+  readonly displayedColumns = ['select', 'id', 'displayName', 'active', 'country', 'actions'] as const;
   readonly dataSource = new MatTableDataSource<Client>([]);
   readonly selection = new SelectionModel<Client>(true, []);
 
   // ===== Utils =====
   readonly iso = isoFromName;
 
-  // ===== Signals =====
-  /** View queries */
+  // ===== View queries (signals) =====
   readonly sort = viewChild(MatSort);
   readonly paginator = viewChild(MatPaginator);
 
+  // ===== State (signals) =====
   readonly clientSearchQ = signal('');
   private readonly allClients = signal<Client[]>([]);
   private readonly filterText = signal('');
 
-  /** Total clients (for cookies or badges) */
+  // Derived state
   readonly totalClients = computed(() => this.allClients().length);
-
-  /** Client list filtered by `filterText` */
   private readonly filteredClients = computed(() => {
-    const f = this.filterText().trim().toLowerCase();
-    if (!f) return this.allClients();
-
+    const q = this.filterText().trim().toLowerCase();
+    if (!q) return this.allClients();
     return this.allClients().filter(c =>
       `${c.id} ${c.fullName} ${c.displayName} ${c.email} ${c.details} ${c.country} ${c.active ? 'active' : 'inactive'}`
         .toLowerCase()
-        .includes(f)
+        .includes(q)
     );
   });
 
-  // ===== Effects (react to signals, perform side-effects) =====
+  // ===== Effects =====
+  // Keep table rows in sync with the filtered list
   readonly syncTableEffect = effect(() => {
     this.dataSource.data = this.filteredClients();
   }, { allowSignalWrites: true });
 
+  // Persist count to cookie (1 day)
   readonly cookieCountEffect = effect(() => {
     const count = this.totalClients();
     if (getCookieInt(CLIENTS_COUNT_COOKIE) !== count) {
@@ -121,25 +119,28 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   });
 
+  // Clamp paginator when data size changes
   readonly clampPaginatorEffect = effect(() => {
     const p = this.paginator();
     if (!p) return;
-
-    const totalRows = this.filteredClients().length;
-    const maxIndex = Math.max(0, Math.ceil(totalRows / p.pageSize) - 1);
+    const total = this.filteredClients().length;
+    const maxIndex = Math.max(0, Math.ceil(total / p.pageSize) - 1);
     if (p.pageIndex > maxIndex) p.pageIndex = maxIndex;
   }, { allowSignalWrites: true });
 
-  // ===== Events (SSE) =====
+  // ===== Realtime (SSE) =====
   private es?: EventSource;
 
-  // ===== DI =====
-  constructor(private dialog: MatDialog, private http: HttpClient, private snack: MatSnackBar, private zone: NgZone) { }
+  // ===== DI (inject() – idiomatic in v17) =====
+  private readonly http = inject(HttpClient);
+  private readonly dialog = inject(MatDialog);
+  private readonly snack = inject(MatSnackBar);
+  private readonly zone = inject(NgZone);
 
   // ===== Lifecycle =====
   ngOnInit(): void {
     this.dataSource.sortingDataAccessor = (row, col) => this.sortAccessor(row, col);
-    this.fetchClients();
+    this.loadClients();
     this.connectToEvents();
   }
 
@@ -158,34 +159,33 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
     this.es?.close();
   }
 
+  // ===== Helpers (tiny & readable) =====
+  private showSnack(message: string, action = 'Refresh', duration = 4000): void {
+    this.snack.open(message, action, { duration })
+      .onAction().subscribe(() => this.loadClients({ keepPage: true }));
+  }
+
+  private refresh(opts: { keepPage?: boolean; goLast?: boolean } = {}): void {
+    this.loadClients(opts);
+  }
+
   // ===== Realtime SSE =====
   private connectToEvents(): void {
-    const es = new EventSource(CLIENTS_EVENTS, { withCredentials: false });
+    const es = new EventSource(CLIENTS_EVENTS);
 
-    const parse = (e: MessageEvent) => {
+    const parse = (e: MessageEvent): ClientEventMsg | null => {
       try { return JSON.parse(e.data) as ClientEventMsg; } catch { return null; }
     };
-
     const run = (fn: () => void) => this.zone.run(fn);
 
-    es.addEventListener('INIT', () => {
-      // connected (optional)
-    });
+    es.addEventListener('INIT', () => { /* connected */ });
 
-    es.addEventListener('CREATED', (e: MessageEvent) => {
-      const ev = parse(e); if (!ev) return;
-      run(() => this.handleEvent(ev));
-    });
-
-    es.addEventListener('UPDATED', (e: MessageEvent) => {
-      const ev = parse(e); if (!ev) return;
-      run(() => this.handleEvent(ev));
-    });
-
-    es.addEventListener('DELETED', (e: MessageEvent) => {
-      const ev = parse(e); if (!ev) return;
-      run(() => this.handleEvent(ev));
-    });
+    for (const name of ['CREATED', 'UPDATED', 'DELETED'] as const) {
+      es.addEventListener(name, (e: MessageEvent) => {
+        const ev = parse(e); if (!ev) return;
+        run(() => this.handleEvent(ev));
+      });
+    }
 
     // Fallback if server ever sends unnamed events:
     es.onmessage = (e) => {
@@ -195,39 +195,39 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
 
     es.onerror = () => {
       es.close();
-      setTimeout(() => this.connectToEvents(), 3000); // simple retry
+      // simple retry; keep it quiet
+      setTimeout(() => this.connectToEvents(), 3000);
     };
 
     this.es = es;
   }
 
-
   private handleEvent(ev: ClientEventMsg): void {
-    let msg = '';
     switch (ev.type) {
-      case 'CREATED':
-        msg = `New client added${ev.displayName ? `: ${ev.displayName}` : ''}`;
+      case 'CREATED': {
+        const name = ev.displayName ? `: ${ev.displayName}` : '';
+        this.showSnack(`New client added${name}`, 'View');
+        this.refresh({ goLast: true });
         break;
-      case 'UPDATED':
-        msg = `Client updated${ev.displayName ? `: ${ev.displayName}` : ''}`;
+      }
+      case 'UPDATED': {
+        const name = ev.displayName ? `: ${ev.displayName}` : '';
+        this.showSnack(`Client updated${name}`);
+        this.refresh({ keepPage: true });
         break;
-      case 'DELETED':
-        msg = `Client deleted${ev.clientId ? ` #${ev.clientId}` : ''}`;
+      }
+      case 'DELETED': {
+        const idPart = ev.clientId ? ` #${ev.clientId}` : '';
+        this.showSnack(`Client deleted${idPart}`);
+        this.refresh({ keepPage: true });
         break;
-      default:
-        return;
+      }
     }
-
-    // Show a quick toast; refresh on action (and also do a quiet refresh)
-    const ref = this.snack.open(msg, 'Refresh', { duration: 4000 });
-    ref.onAction().subscribe(() => this.fetchClients({ keepPage: true }));
-    this.fetchClients({ keepPage: true });
   }
 
   // ===== Data loading =====
-  private fetchClients(opts: { keepPage?: boolean; goLast?: boolean } = {}): void {
-    const p0 = this.paginator();
-    const prevIndex = p0 ? p0.pageIndex : 0;
+  private loadClients(opts: { keepPage?: boolean; goLast?: boolean } = {}): void {
+    const prevIndex = this.paginator()?.pageIndex ?? 0;
 
     this.http.get<ClientsResponse>(CLIENTS_API).subscribe({
       next: ({ clients }) => {
@@ -239,14 +239,11 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
         const len = this.filteredClients().length;
         const maxIndex = Math.max(0, Math.ceil(len / p.pageSize) - 1);
 
-        if (opts.goLast) {
-          p.pageIndex = maxIndex;
-        } else if (opts.keepPage) {
-          p.pageIndex = Math.min(prevIndex, maxIndex);
-        } else {
-          p.pageIndex = 0;
-        }
+        if (opts.goLast) p.pageIndex = maxIndex;
+        else if (opts.keepPage) p.pageIndex = Math.min(prevIndex, maxIndex);
+        else p.pageIndex = 0;
 
+        // Ensure table recalculates rendered slice after programmatic page changes.
         this.dataSource._updateChangeSubscription();
       },
       error: (err) => console.error('Failed to load clients', err),
@@ -309,7 +306,6 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
   // ===== Row actions (dialogs & CRUD) =====
   addClient(): void {
     this.blurActive();
-
     const ref = this.dialog.open(ClientEditComponent, {
       width: '720px',
       data: { isNew: true },
@@ -317,10 +313,8 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
       panelClass: 'client-edit-light',
       maxHeight: 'none',
     });
-
     ref.afterClosed().subscribe(ok => {
-      if (!ok) return;
-      this.fetchClients({ goLast: true });
+      if (ok) this.refresh({ goLast: true });
     });
   }
 
@@ -332,10 +326,8 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
       panelClass: 'client-edit-light',
       maxHeight: 'none',
     });
-
     ref.afterClosed().subscribe(ok => {
-      if (!ok) return;
-      this.fetchClients({ keepPage: true });
+      if (ok) this.refresh({ keepPage: true });
     });
   }
 
@@ -352,17 +344,14 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
     const count = this.selection.selected.length;
     if (!count) return;
 
-    const ok = confirm(count === 1
-      ? 'Delete the selected client?'
-      : `Delete ${count} selected clients?`);
+    const ok = confirm(count === 1 ? 'Delete the selected client?' : `Delete ${count} selected clients?`);
     if (!ok) return;
 
     const ids = this.selection.selected.map(c => c.id);
-
     this.http.delete<void>(CLIENTS_API, { body: { ids } }).subscribe({
       next: () => {
         this.selection.clear();
-        this.fetchClients({ keepPage: true });
+        this.refresh({ keepPage: true });
       },
       error: (err) => {
         console.error('Failed to delete clients', err);
