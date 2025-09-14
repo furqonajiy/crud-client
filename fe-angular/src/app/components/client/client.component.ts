@@ -1,6 +1,6 @@
 // ========== Angular / CDK ==========
 import {
-  Component, OnInit, AfterViewInit,
+  Component, OnInit, AfterViewInit, OnDestroy,
   signal, computed, effect, viewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -19,6 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_SELECT_CONFIG } from '@angular/material/select';
 
 // ========== App Components / Utils ==========
@@ -26,6 +27,7 @@ import { ClientDetailsComponent } from './client-details/client-details.componen
 import { ClientEditComponent } from './client-edit/client-edit.component';
 import { isoFromName } from '../../utils/country.util';
 import { setCookie, getCookieInt } from '../../utils/cookie.util';
+import { exportClientsToXlsx } from '../../utils/export.util';
 
 // ===== Types =====
 export interface Client {
@@ -42,6 +44,7 @@ interface ClientsResponse { clients: Client[]; }
 
 // ===== Constants =====
 const CLIENTS_API = 'http://localhost:8080/api/v1/clients';
+const CLIENTS_EVENTS = 'http://localhost:8080/api/v1/clients/events';
 const CLIENTS_COUNT_COOKIE = 'RABO_CLIENTS';
 
 @Component({
@@ -56,7 +59,7 @@ const CLIENTS_COUNT_COOKIE = 'RABO_CLIENTS';
     MatTableModule, MatSortModule, MatPaginatorModule,
     MatFormFieldModule, MatInputModule,
     MatIconModule, MatCheckboxModule, MatButtonModule,
-    MatTooltipModule, MatDialogModule,
+    MatTooltipModule, MatDialogModule, MatSnackBarModule,
   ],
   providers: [
     { provide: MAT_SELECT_CONFIG, useValue: { overlayPanelClass: 'client-select-panel' } }
@@ -64,7 +67,7 @@ const CLIENTS_COUNT_COOKIE = 'RABO_CLIENTS';
   templateUrl: './client.component.html',
   styleUrls: ['./client.component.css'],
 })
-export class ClientComponent implements OnInit, AfterViewInit {
+export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
   // ===== Table config =====
   readonly displayedColumns: string[] = ['select', 'id', 'displayName', 'active', 'country', 'actions'];
   readonly dataSource = new MatTableDataSource<Client>([]);
@@ -98,12 +101,10 @@ export class ClientComponent implements OnInit, AfterViewInit {
   });
 
   // ===== Effects (react to signals, perform side-effects) =====
-  /** Push filtered rows into the Material table whenever signals change */
   readonly syncTableEffect = effect(() => {
     this.dataSource.data = this.filteredClients();
-  });
+  }, { allowSignalWrites: true });
 
-  /** Keep cookie with client count in sync (1-day expiry, only when changed) */
   readonly cookieCountEffect = effect(() => {
     const count = this.totalClients();
     if (getCookieInt(CLIENTS_COUNT_COOKIE) !== count) {
@@ -111,7 +112,6 @@ export class ClientComponent implements OnInit, AfterViewInit {
     }
   });
 
-  /** Keep paginator on a valid page when data size changes */
   readonly clampPaginatorEffect = effect(() => {
     const p = this.paginator();
     if (!p) return;
@@ -119,19 +119,22 @@ export class ClientComponent implements OnInit, AfterViewInit {
     const totalRows = this.filteredClients().length;
     const maxIndex = Math.max(0, Math.ceil(totalRows / p.pageSize) - 1);
     if (p.pageIndex > maxIndex) p.pageIndex = maxIndex;
-  });
+  }, { allowSignalWrites: true });
+
+  // ===== Events (SSE) =====
+  private es?: EventSource;
 
   // ===== DI =====
-  constructor(private dialog: MatDialog, private http: HttpClient) { }
+  constructor(private dialog: MatDialog, private http: HttpClient, private snack: MatSnackBar) { }
 
   // ===== Lifecycle =====
   ngOnInit(): void {
     this.dataSource.sortingDataAccessor = (row, col) => this.sortAccessor(row, col);
     this.fetchClients();
+    this.setupEventStream();
   }
 
   ngAfterViewInit(): void {
-    // Wire MatSort & MatPaginator once the view queries resolve
     const sort = this.sort();
     if (sort) this.dataSource.sort = sort;
 
@@ -140,6 +143,10 @@ export class ClientComponent implements OnInit, AfterViewInit {
       this.dataSource.paginator = paginator;
       paginator.page.subscribe(() => this.removeSelectionOutsideCurrentPage());
     }
+  }
+
+  ngOnDestroy(): void {
+    this.es?.close();
   }
 
   // ===== Data loading =====
@@ -165,11 +172,39 @@ export class ClientComponent implements OnInit, AfterViewInit {
           p.pageIndex = 0;
         }
 
-        // Force table to recalc its rendered slice
         this.dataSource._updateChangeSubscription();
       },
       error: (err) => console.error('Failed to load clients', err),
     });
+  }
+
+  // ===== Real-time (SSE) =====
+  private setupEventStream(): void {
+    const es = new EventSource(CLIENTS_EVENTS, { withCredentials: false });
+
+    es.addEventListener('client-created', (evt: MessageEvent) => {
+      const c = JSON.parse(evt.data) as Partial<Client>;
+      const name = c.displayName || c.fullName || `#${c.id}`;
+      this.snack.open(`New client added: ${name}`, 'View', { duration: 5000 })
+        .onAction().subscribe(() => this.openClientDetails(c as Client));
+      this.fetchClients({ goLast: true });
+    });
+
+    es.addEventListener('client-updated', (evt: MessageEvent) => {
+      const c = JSON.parse(evt.data) as Partial<Client>;
+      const name = c.displayName || c.fullName || `#${c.id}`;
+      this.snack.open(`Client updated: ${name}`, 'Refresh', { duration: 5000 })
+        .onAction().subscribe(() => this.fetchClients({ keepPage: true }));
+      // Keep page; still refresh to reflect change
+      this.fetchClients({ keepPage: true });
+    });
+
+    es.onerror = () => {
+      es.close();
+      setTimeout(() => this.setupEventStream(), 3000);
+    };
+
+    this.es = es;
   }
 
   // ===== Sorting / Filtering / Selection helpers =====
@@ -258,7 +293,7 @@ export class ClientComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openClientDetails(row: Client): void {
+  openClientDetails(row: Client | Partial<Client>): void {
     this.dialog.open(ClientDetailsComponent, {
       data: row,
       width: '520px',
@@ -281,7 +316,6 @@ export class ClientComponent implements OnInit, AfterViewInit {
     this.http.delete<void>(CLIENTS_API, { body: { ids } }).subscribe({
       next: () => {
         this.selection.clear();
-        // Other users may have modified the list — re-fetch from server.
         this.fetchClients({ keepPage: true });
       },
       error: (err) => {
@@ -300,5 +334,10 @@ export class ClientComponent implements OnInit, AfterViewInit {
   // ===== DOM nicety =====
   private blurActive(): void {
     (document.activeElement as HTMLElement | null)?.blur();
+  }
+
+  // ===== Export =====
+  exportAllClients(): void {
+    exportClientsToXlsx(this.allClients());
   }
 }

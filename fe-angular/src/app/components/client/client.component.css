@@ -32,7 +32,7 @@ h2 {
   justify-self: end;
 }
 
-/* ========== Add / Delete Buttons ========== */
+/* ========== Buttons ========== */
 .page-header .btn-add.mat-mdc-unelevated-button {
   --mdc-filled-button-container-color: #16a34a;
   --mdc-filled-button-label-text-color: #ffffff;
@@ -46,6 +46,11 @@ h2 {
 .page-header .btn-remove.mat-mdc-unelevated-button {
   --mdc-filled-button-disabled-container-color: #fee2e2;
   --mdc-filled-button-disabled-label-text-color: #b5b5b5;
+}
+
+.page-header .btn-export.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: #252525;
+  --mdc-filled-button-label-text-color: #ffffff;
 }
 
 /* ========== Table Shell ========== */
