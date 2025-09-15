@@ -46,7 +46,7 @@ public class ClientController {
         log.debug("Start Bulk Create Client API ({} items)", reqs.size());
         var res = service.createClients(reqs);
 
-        reqs.forEach(r -> eventService.publish(ClientEvent.created(null, r.getDisplayName())));
+        eventService.publish(ClientEvent.created(null, reqs.getFirst().getDisplayName()));
         return res;
     }
 
