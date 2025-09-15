@@ -1,4 +1,4 @@
-package com.furqonajiy.crudclient.event;
+package com.furqonajiy.crudclient.eventservice;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;

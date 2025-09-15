@@ -1,13 +1,13 @@
 package com.furqonajiy.crudclient.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.furqonajiy.crudclient.event.ClientEvent;
-import com.furqonajiy.crudclient.event.ClientEventService;
-import com.furqonajiy.crudclient.event.ClientEventType;
+import com.furqonajiy.crudclient.eventservice.ClientEvent;
+import com.furqonajiy.crudclient.eventservice.ClientEventService;
+import com.furqonajiy.crudclient.eventservice.ClientEventType;
 import com.furqonajiy.crudclient.model.ClientDto;
 import com.furqonajiy.crudclient.model.ClientResponse;
 import com.furqonajiy.crudclient.model.CreateClientRequest;
-import com.furqonajiy.crudclient.model.DeleteClientsRequest;
+import com.furqonajiy.crudclient.model.DeleteMultipleClientRequest;
 import com.furqonajiy.crudclient.model.UpdateClientRequest;
 import com.furqonajiy.crudclient.service.ClientService;
 import org.junit.jupiter.api.DisplayName;
@@ -123,9 +123,9 @@ class ClientControllerTest {
     @Test
     @DisplayName("DELETE /api/v1/clients deletes many and emits DELETED events for each id")
     void deleteMany_ok_emitsEvents() throws Exception {
-        when(clientService.deleteMultipleClients(any(DeleteClientsRequest.class))).thenReturn(sampleResponse());
+        when(clientService.deleteMultipleClients(any(DeleteMultipleClientRequest.class))).thenReturn(sampleResponse());
 
-        DeleteClientsRequest req = new DeleteClientsRequest();
+        DeleteMultipleClientRequest req = new DeleteMultipleClientRequest();
         req.setIds(List.of(5L, 6L));
 
         mvc.perform(delete("/api/v1/clients")

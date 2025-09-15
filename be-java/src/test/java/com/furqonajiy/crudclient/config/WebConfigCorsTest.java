@@ -1,7 +1,7 @@
 
 package com.furqonajiy.crudclient.config;
 
-import com.furqonajiy.crudclient.event.ClientEventService;
+import com.furqonajiy.crudclient.eventservice.ClientEventService;
 import com.furqonajiy.crudclient.service.ClientService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

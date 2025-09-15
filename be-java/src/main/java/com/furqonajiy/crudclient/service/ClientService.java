@@ -71,7 +71,7 @@ public class ClientService implements IClientService {
 
     @Override
     @Transactional
-    public ClientResponse deleteMultipleClients(DeleteClientsRequest req) {
+    public ClientResponse deleteMultipleClients(DeleteMultipleClientRequest req) {
         var ids = req.getIds().stream().filter(Objects::nonNull).distinct().toList();
         if (!ids.isEmpty()) {
             repo.deleteAllByIdInBatch(ids);

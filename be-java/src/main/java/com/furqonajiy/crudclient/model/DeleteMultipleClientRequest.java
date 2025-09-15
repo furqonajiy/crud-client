@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class DeleteClientsRequest {
+public class DeleteMultipleClientRequest {
         @NotEmpty(message = "ids must not be empty")
         private List<Long> ids;
 }

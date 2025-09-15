@@ -9,5 +9,5 @@ public interface IClientService {
     ClientResponse createClients(List<CreateClientRequest> reqs);
     ClientResponse getAllClients();
     ClientResponse updateClient(UpdateClientRequest req);
-    ClientResponse deleteMultipleClients(DeleteClientsRequest req);
+    ClientResponse deleteMultipleClients(DeleteMultipleClientRequest req);
 }

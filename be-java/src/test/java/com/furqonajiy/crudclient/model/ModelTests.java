@@ -2,8 +2,8 @@
 package com.furqonajiy.crudclient.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.furqonajiy.crudclient.event.ClientEvent;
-import com.furqonajiy.crudclient.event.ClientEventType;
+import com.furqonajiy.crudclient.eventservice.ClientEvent;
+import com.furqonajiy.crudclient.eventservice.ClientEventType;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

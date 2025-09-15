@@ -109,7 +109,7 @@ class ClientServiceUnitTest {
     @Test @DisplayName("deleteMultipleClients filters nulls & duplicates")
     void deleteMany_ok() {
         when(repo.findAll(any(Sort.class))).thenReturn(List.of());
-        DeleteClientsRequest req = new DeleteClientsRequest();
+        DeleteMultipleClientRequest req = new DeleteMultipleClientRequest();
         req.setIds(List.of(2L, 1L, 4L, 3L));
         svc.deleteMultipleClients(req);
         ArgumentCaptor<List<Long>> cap = ArgumentCaptor.forClass(List.class);

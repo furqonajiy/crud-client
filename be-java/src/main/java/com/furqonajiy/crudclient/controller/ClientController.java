@@ -1,13 +1,12 @@
 package com.furqonajiy.crudclient.controller;
 
-import com.furqonajiy.crudclient.event.ClientEvent;
-import com.furqonajiy.crudclient.event.ClientEventService;
+import com.furqonajiy.crudclient.eventservice.ClientEvent;
+import com.furqonajiy.crudclient.eventservice.ClientEventService;
 import com.furqonajiy.crudclient.model.*;
 import com.furqonajiy.crudclient.service.ClientService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -59,7 +58,7 @@ public class ClientController {
     }
 
     @DeleteMapping
-    public ClientResponse deleteMany(@Valid @RequestBody DeleteClientsRequest req) {
+    public ClientResponse deleteMany(@Valid @RequestBody DeleteMultipleClientRequest req) {
         log.debug("Start Delete Many Clients API");
         ClientResponse res = service.deleteMultipleClients(req);
         if (req.getIds() != null) {

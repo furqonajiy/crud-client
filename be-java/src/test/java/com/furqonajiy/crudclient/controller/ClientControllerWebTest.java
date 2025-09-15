@@ -2,7 +2,7 @@
 package com.furqonajiy.crudclient.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.furqonajiy.crudclient.event.ClientEventService;
+import com.furqonajiy.crudclient.eventservice.ClientEventService;
 import com.furqonajiy.crudclient.model.*;
 import com.furqonajiy.crudclient.service.ClientService;
 import org.junit.jupiter.api.DisplayName;
@@ -90,8 +90,8 @@ class ClientControllerWebTest {
 
     @Test @DisplayName("DELETE /api/v1/clients -> 200 & emits events per id")
     void delete_ok_emits() throws Exception {
-        when(clientService.deleteMultipleClients(any(DeleteClientsRequest.class))).thenReturn(sample());
-        DeleteClientsRequest req = new DeleteClientsRequest();
+        when(clientService.deleteMultipleClients(any(DeleteMultipleClientRequest.class))).thenReturn(sample());
+        DeleteMultipleClientRequest req = new DeleteMultipleClientRequest();
         req.setIds(List.of(5L, 6L));
         mvc.perform(delete("/api/v1/clients")
                 .contentType(MediaType.APPLICATION_JSON)
