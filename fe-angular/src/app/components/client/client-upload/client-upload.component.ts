@@ -1,14 +1,14 @@
-// Standalone dialog: import clients from your Excel template
-// npm i xlsx
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { firstValueFrom } from 'rxjs';
 import * as XLSX from 'xlsx';
 
+/* ===== Types ===== */
 type NewClient = {
   fullName: string;
   displayName: string;
@@ -19,132 +19,163 @@ type NewClient = {
   country: string;
 };
 
+/* ===== Constants ===== */
 const CLIENTS_API = 'http://localhost:8080/api/v1/clients';
+const TEMPLATE_PATH = '/assets/xlsx/client-upload-template.xlsx';
+const REQUIRED_HEADERS = ['Full Name', 'Display Name', 'Email', 'Active', 'Country'] as const;
 
-// Your template headers (exact text + order)
-const TEMPLATE_HEADERS = [
-  'ID', 'Full Name', 'Display Name', 'Email', 'Details', 'Active', 'Location', 'Country'
-] as const;
-
-// Map from template headers -> API fields (ID is ignored)
-const HEADER_TO_FIELD: Record<string, keyof NewClient | null> = {
-  'ID': null,
-  'Full Name': 'fullName',
-  'Display Name': 'displayName',
-  'Email': 'email',
-  'Details': 'details',
-  'Active': 'active',
-  'Location': 'location',
-  'Country': 'country',
-};
-
-const REQUIRED_HEADERS = ['Full Name', 'Display Name', 'Email', 'Active', 'Country'];
-
+/* ===== Component ===== */
 @Component({
   selector: 'app-client-upload',
   standalone: true,
-    imports: [
+  imports: [
     CommonModule, HttpClientModule,
-    MatDialogModule, MatButtonModule, MatSnackBarModule,
-    MatIconModule,
+    MatDialogModule, MatButtonModule, MatSnackBarModule, MatIconModule,
   ],
   templateUrl: './client-upload.component.html',
   styleUrls: ['./client-upload.component.css'],
 })
 export class ClientUploadComponent {
+  /* ===== DI ===== */
   private readonly http = inject(HttpClient);
   private readonly snack = inject(MatSnackBar);
   private readonly ref = inject(MatDialogRef<ClientUploadComponent>);
 
-  fileName = signal<string>('');
-  rows = signal<NewClient[]>([]);
-  loading = signal(false);
-  imported = signal(0);
-  preview = computed(() => this.rows().slice(0, 5));
-  canImport = computed(() => !this.loading() && this.rows().length > 0);
+  /* ===== State (signals) ===== */
+  readonly fileName = signal<string>('');
+  readonly rows = signal<NewClient[]>([]);
+  readonly loading = signal(false);
+  readonly imported = signal(0);
 
-  onPickFile(input: HTMLInputElement) { input.click(); }
+  // Small preview for the table
+  readonly preview = computed(() => this.rows().slice(0, 5));
+  // Enable Import when we have rows and not loading
+  readonly canImport = computed(() => !this.loading() && this.rows().length > 0);
+
+  /* ===== Events (template) ===== */
+  onPickFile(input: HTMLInputElement) {
+    input.click();
+    // ensure the Upload button doesn't look "pressed"
+    queueMicrotask(() => (document.activeElement as HTMLElement | null)?.blur());
+  }
 
   async onFile(e: Event) {
-    const file = (e.target as HTMLInputElement).files?.[0]; if (!file) return;
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
     this.fileName.set(file.name);
+
     try {
       const buf = await file.arrayBuffer();
       const wb = XLSX.read(buf, { cellDates: true });
       const ws = wb.Sheets[wb.SheetNames[0]];
 
-      // Grab header row exactly as in the sheet
-      const rows2d = XLSX.utils.sheet_to_json<any[]>(ws, { header: 1, defval: '' }) as any[][];
-      const headers = (rows2d[0] ?? []).map((h: any) => String(h).trim());
-
-      // Validate required
-      const missing = REQUIRED_HEADERS.filter(h => !headers.includes(h));
+      // Validate headers from the first row
+      const headers = (XLSX.utils.sheet_to_json<any[]>(ws, { header: 1, defval: '' })[0] ?? [])
+        .map(h => String(h).trim());
+      const missing = this.missingRequiredHeaders(headers);
       if (missing.length) {
         this.rows.set([]);
-        this.snack.open(`Missing columns: ${missing.join(', ')}`, 'OK', { duration: 5000 });
+        this.toast(`Missing columns: ${missing.join(', ')}`);
         return;
       }
 
-      // Read records and map using your headers
+      // Parse rows using sheet header names
       const raw = XLSX.utils.sheet_to_json<Record<string, any>>(ws, { defval: '' });
-      const mapped: NewClient[] = raw.map(r => this.mapRow(r)).filter(Boolean) as NewClient[];
+      const mapped = raw.map(this.mapRow).filter(Boolean) as NewClient[];
 
       this.rows.set(mapped);
       this.imported.set(0);
-      this.snack.open(`Parsed ${mapped.length} rows`, undefined, { duration: 2500 });
+      this.toast(`Parsed ${mapped.length} rows`, 2500);
     } catch (err) {
       console.error(err);
       this.rows.set([]);
-      this.snack.open('Failed to read Excel file', 'OK', { duration: 4000 });
+      this.toast('Failed to read Excel file');
     }
   }
 
-  private toBool(v: any): boolean {
-    const s = String(v).trim().toLowerCase();
+  /* ===== Excel parsing ===== */
+  private missingRequiredHeaders(headers: string[]): string[] {
+    const set = new Set(headers);
+    return REQUIRED_HEADERS.filter(h => !set.has(h));
+  }
+
+  private toBool(v: unknown): boolean {
+    const s = String(v ?? '').trim().toLowerCase();
     return s === '1' || s === 'true' || s === 'yes' || s === 'y';
   }
 
-  private mapRow(r: Record<string, any>): NewClient | null {
-    const get = (h: string) => r[h] ?? '';
+  private mapRow = (r: Record<string, any>): NewClient | null => {
+    const get = (h: string) => String(r[h] ?? '').trim();
     const obj: NewClient = {
-      fullName: String(get('Full Name')).trim(),
-      displayName: String(get('Display Name')).trim(),
-      email: String(get('Email')).trim(),
-      details: String(get('Details')).trim(),
-      active: this.toBool(get('Active')),
-      location: String(get('Location')).trim(),
-      country: String(get('Country')).trim(),
+      fullName: get('Full Name'),
+      displayName: get('Display Name'),
+      email: get('Email'),
+      details: get('Details'),
+      active: this.toBool(r['Active']),
+      location: get('Location'),
+      country: get('Country'),
     };
-    // Basic validation
-    if (!obj.fullName || !obj.displayName || !obj.email || !obj.country) return null;
-    return obj;
+    return (obj.fullName && obj.displayName && obj.email && obj.country) ? obj : null;
+  };
+
+  /* ===== Template download (local /assets) ===== */
+  async downloadTemplateFile() {
+    try {
+      const blob = await firstValueFrom(
+        this.http.get(TEMPLATE_PATH, { responseType: 'blob' })
+      );
+
+      // XLSX is a ZIP (must start with "PK")
+      const head = new Uint8Array(await blob.slice(0, 2).arrayBuffer());
+      if (!(head[0] === 0x50 && head[1] === 0x4B)) {
+        this.toast('Template not found or invalid. Check assets path.');
+        return;
+      }
+
+      const url = URL.createObjectURL(blob);
+      try {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'client-upload-template.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+    } catch {
+      this.toast('Failed to download template. Is it in /assets/xlsx/?');
+    }
   }
 
+  /* ===== Import API ===== */
   async importNow() {
     if (!this.canImport()) return;
+
     this.loading.set(true);
     const data = this.rows();
 
-    // Try bulk first
+    // 1) Try bulk
     try {
-      await this.http.post(`${CLIENTS_API}/bulk`, { clients: data }).toPromise();
+      await firstValueFrom(this.http.post(`${CLIENTS_API}/bulk`, { clients: data }));
       this.imported.set(data.length);
-      this.snack.open(`Imported ${data.length} clients (bulk)`, undefined, { duration: 3000 });
+      this.toast(`Imported ${data.length} clients (bulk)`, 3000);
       this.ref.close(true);
       return;
     } catch {
-      // Fallback to single create
+      // 2) Fallback: sequential create
       try {
         let done = 0;
         for (const row of data) {
-          await this.http.post(CLIENTS_API, row).toPromise();
-          done++; this.imported.set(done);
+          await firstValueFrom(this.http.post(CLIENTS_API, row));
+          this.imported.set(++done);
         }
-        this.snack.open(`Imported ${done} clients`, undefined, { duration: 3000 });
+        this.toast(`Imported ${this.imported()} clients`, 3000);
         this.ref.close(true);
       } catch (err) {
         console.error(err);
-        this.snack.open('Import failed. Please check your data.', 'OK', { duration: 5000 });
+        this.toast('Import failed. Please check your data.');
       } finally {
         this.loading.set(false);
       }
@@ -153,26 +184,12 @@ export class ClientUploadComponent {
     }
   }
 
-  // Generates a template that matches your headers & order
-  downloadTemplate() {
-    const sample: Record<string, any> = {};
-    for (const h of TEMPLATE_HEADERS) sample[h] = '';
-    sample['Full Name'] = 'Jane Doe';
-    sample['Display Name'] = 'Jane';
-    sample['Email'] = 'jane@example.com';
-    sample['Details'] = 'VIP';
-    sample['Active'] = true;
-    sample['Location'] = 'Amsterdam';
-    sample['Country'] = 'Netherlands';
-    // ID intentionally left blank
-
-    const ws = XLSX.utils.json_to_sheet([sample], { skipHeader: false });
-    // Enforce header order
-    (ws['!cols'] ??= new Array(TEMPLATE_HEADERS.length));
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Clients');
-    XLSX.writeFile(wb, 'client-import-template.xlsx');
+  /* ===== Utils ===== */
+  private toast(message: string, duration = 4000) {
+    this.snack.open(message, 'OK', { duration });
   }
 
-  close() { this.ref.close(false); }
+  close() {
+    this.ref.close(false);
+  }
 }

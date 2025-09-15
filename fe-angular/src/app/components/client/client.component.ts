@@ -366,6 +366,8 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dialog.open(ClientUploadComponent, {
       width: '640px',
       disableClose: true,
+      autoFocus: false,
+      restoreFocus: false,
       panelClass: 'client-edit-light'
     }).afterClosed().subscribe(ok => {
       if (ok) this.refresh({ goLast: true });

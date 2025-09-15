@@ -1,7 +1,7 @@
-/* ====== Reuse the edit-dialog look via the same panel class ====== */
+/* ===== Dialog (scoped to client-edit-light) ===== */
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-surface,
 ::ng-deep .cdk-overlay-pane.client-edit-light .mdc-dialog__surface {
-  background: #ffffff;
+  background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
@@ -28,11 +28,7 @@
   color: #0f172a;
 }
 
-/* ====== Local layout (same spacing scale) ====== */
-.title {
-  margin: 0 0 12px;
-}
-
+/* ===== Layout ===== */
 .body {
   display: grid;
   gap: 12px;
@@ -44,17 +40,33 @@
   gap: 8px;
 }
 
+.below-actions {
+  margin-top: 6px;
+}
+
+/* ===== Text helpers ===== */
 .file {
-  opacity: .8;
+  opacity: 0.8;
   font-size: 12px;
 }
 
 .hint {
   margin: 0;
   font-size: 12px;
-  opacity: .85;
+  opacity: 0.85;
 }
 
+.text-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #0d2e87;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* ===== Preview table ===== */
 .preview {
   width: 100%;
   border-collapse: collapse;
@@ -67,43 +79,30 @@
   font-size: 12px;
 }
 
-/* Green save button tone (same as edit) */
-::ng-deep .cdk-overlay-pane.client-edit-light .btn-save.mat-mdc-unelevated-button {
-  --mdc-filled-button-container-color: #16a34a;
-  --mdc-filled-button-label-text-color: #ffffff;
-  --mdc-filled-button-disabled-container-color: #dcfce7;
-  --mdc-filled-button-disabled-label-text-color: #b5b5b5;
+/* ===== Upload button (filled) ===== */
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-upload.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: #1f2937;
+  --mdc-filled-button-label-text-color: #fff;
 }
 
-::ng-deep .cdk-overlay-pane.client-edit-light .btn-save.mat-mdc-unelevated-button.mat-mdc-button-disabled {
-  opacity: 1;
-}
-
-/* Snack text wrap */
-::ng-deep .mat-mdc-snack-bar-label {
-  white-space: pre-line;
-}
-
-/* Dark action buttons (filled) */
-::ng-deep .cdk-overlay-pane.client-edit-light .btn-dark.mat-mdc-unelevated-button {
-  --mdc-filled-button-container-color: #1f2937; /* slate-800 */
-  --mdc-filled-button-label-text-color: #ffffff;
-}
-
-::ng-deep .cdk-overlay-pane.client-edit-light .btn-dark.mat-mdc-unelevated-button:hover {
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-upload.mat-mdc-unelevated-button:hover {
   filter: brightness(1.05);
 }
 
-::ng-deep .cdk-overlay-pane.client-edit-light .btn-dark.mat-mdc-unelevated-button.mat-mdc-button-disabled {
-  --mdc-filled-button-container-color: #e5e7eb; /* light gray when disabled */
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-upload.mat-mdc-unelevated-button.mat-mdc-button-disabled {
+  --mdc-filled-button-container-color: #e5e7eb;
   --mdc-filled-button-label-text-color: #9ca3af;
   opacity: 1;
 }
 
-/* keep icon white on the dark button and add spacing */
-::ng-deep .cdk-overlay-pane.client-edit-light .btn-dark mat-icon {
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-upload mat-icon {
   color: #fff;
   margin-right: 8px;
   font-size: 20px;
   line-height: 20px;
+}
+
+/* ===== Snackbar ===== */
+::ng-deep .mat-mdc-snack-bar-label {
+  white-space: pre-line;
 }
