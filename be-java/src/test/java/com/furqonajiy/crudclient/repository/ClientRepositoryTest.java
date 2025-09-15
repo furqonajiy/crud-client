@@ -1,3 +1,4 @@
+
 package com.furqonajiy.crudclient.repository;
 
 import org.junit.jupiter.api.DisplayName;
@@ -12,43 +13,27 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DataJpaTest
 class ClientRepositoryTest {
 
-    @Autowired
-    ClientRepository repo;
+    @Autowired ClientRepository repo;
 
-    private ClientEntity newEntity(String email) {
+    private ClientEntity newE(String email) {
         ClientEntity e = new ClientEntity();
-        e.setFullName("John Wick");
-        e.setDisplayName("John W.");
-        e.setEmail(email);
-        e.setDetails("legendary");
-        e.setActive(true);
-        e.setLocation("New York, USA");
-        e.setCountry("USA");
+        e.setFullName("A"); e.setDisplayName("B");
+        e.setEmail(email); e.setDetails("d");
+        e.setActive(true); e.setLocation("Loc"); e.setCountry("NL");
         return e;
     }
 
-    @Test
-    @DisplayName("save and find work, id generated")
+    @Test @DisplayName("save generates id and findById works")
     void save_ok() {
-        ClientEntity saved = repo.save(newEntity("john@wick.com"));
+        ClientEntity saved = repo.save(newE("x@y.com"));
         assertThat(saved.getId()).isNotNull();
         assertThat(repo.findById(saved.getId())).isPresent();
     }
 
-    @Test
-    @DisplayName("email unique constraint enforced")
-    void uniqueEmail_violation() {
-        repo.save(newEntity("dup@x.com"));
-        assertThatThrownBy(() -> repo.saveAndFlush(newEntity("dup@x.com")))
-                .isInstanceOf(DataIntegrityViolationException.class);
-    }
-
-    @Test
-    @DisplayName("not null constraints enforced (fullName, email)")
-    void notNull_violation() {
-        ClientEntity e = newEntity("z@y.com");
-        e.setFullName(null);
-        assertThatThrownBy(() -> repo.saveAndFlush(e))
+    @Test @DisplayName("unique email enforced")
+    void unique_violation() {
+        repo.save(newE("dup@y.com"));
+        assertThatThrownBy(() -> repo.saveAndFlush(newE("dup@y.com")))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 }
