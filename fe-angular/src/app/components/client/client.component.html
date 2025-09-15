@@ -14,6 +14,7 @@
       </form>
 
       <button mat-flat-button class="btn-add" (click)="addClient()">Add</button>
+      <button mat-flat-button (click)="bulkUpload()">Bulk Upload</button>
 
       <button mat-flat-button color="warn" class="btn-remove" (click)="deleteSelectedClients()"
         [disabled]="!selection.hasValue()">

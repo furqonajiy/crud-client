@@ -28,6 +28,7 @@ import { ClientEditComponent } from './client-edit/client-edit.component';
 import { isoFromName } from '../../utils/country.util';
 import { setCookie, getCookieInt } from '../../utils/cookie.util';
 import { exportClientsToXlsx } from '../../utils/export.util';
+import { ClientUploadComponent } from './client-upload/client-upload.component';
 
 // ===== Types =====
 export interface Client {
@@ -375,4 +376,15 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
   exportAllClients(): void {
     exportClientsToXlsx(this.allClients());
   }
+
+  // ===== Import =====
+  bulkUpload(): void {
+  this.dialog.open(ClientUploadComponent, {
+    width: '640px',
+    disableClose: true,
+    panelClass: 'client-edit-light'
+  }).afterClosed().subscribe(ok => {
+    if (ok) this.refresh({ goLast: true });
+  });
+}
 }
