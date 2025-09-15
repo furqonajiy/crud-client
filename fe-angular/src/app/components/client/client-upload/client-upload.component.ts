@@ -158,7 +158,7 @@ export class ClientUploadComponent {
 
     // 1) Try bulk
     try {
-      await firstValueFrom(this.http.post(`${CLIENTS_API}/bulk`, { clients: data }));
+      await firstValueFrom(this.http.post(`${CLIENTS_API}/bulk`, data));
       this.imported.set(data.length);
       this.toast(`Imported ${data.length} clients (bulk)`, 3000);
       this.ref.close(true);
