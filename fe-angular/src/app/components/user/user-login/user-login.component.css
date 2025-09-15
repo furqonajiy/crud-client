@@ -1,0 +1,75 @@
+/* Layout */
+.login-form {
+  width: 360px;
+  max-width: 92vw;
+  display: grid;
+  gap: 12px;
+}
+.full { width: 100%; }
+.error { color: #b00020; font-size: 0.9rem; }
+
+/* Dialog */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-surface,
+::ng-deep .cdk-overlay-pane.client-edit-light .mdc-dialog__surface {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  overflow: hidden !important;
+}
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-title {
+  color: #0f172a;
+  font-weight: 700;
+}
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-content {
+  color: #111827;
+  padding-bottom: 8px !important;
+}
+
+/* Inputs */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field {
+  --mdc-filled-text-field-container-color: #f8fafc;
+  --mdc-filled-text-field-label-text-color: #6b7280;
+  --mdc-filled-text-field-input-text-color: #111827;
+  --mdc-filled-text-field-caret-color: #111827;
+  --mdc-filled-text-field-active-indicator-color: #e5e7eb;
+  --mdc-filled-text-field-hover-active-indicator-color: #e5e7eb;
+  --mdc-filled-text-field-focus-active-indicator-color: #6366f1;
+
+  --mdc-outlined-text-field-label-text-color: #6b7280;
+  --mdc-outlined-text-field-input-text-color: #111827;
+  --mdc-outlined-text-field-caret-color: #111827;
+  --mdc-outlined-text-field-outline-color: #e5e7eb;
+  --mdc-outlined-text-field-hover-outline-color: #e5e7eb;
+  --mdc-outlined-text-field-focus-outline-color: #6366f1;
+
+  --mdc-outlined-text-field-content-padding: 0 14px;
+  --mdc-filled-text-field-content-padding: 0 14px;
+
+  border-radius: 8px;
+}
+::ng-deep .cdk-overlay-pane.client-edit-light
+  .mat-mdc-text-field-wrapper.mdc-text-field--outlined { border-radius: 8px; }
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field-infix {
+  padding-left: 14px !important;
+  padding-right: 14px !important;
+}
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field-subscript-wrapper {
+  margin-left: 14px;
+  margin-right: 14px;
+}
+
+/* Button */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: #2563eb;
+  --mdc-filled-button-label-text-color: #ffffff;
+  --mdc-filled-button-disabled-container-color: #bfdbfe;
+  --mdc-filled-button-disabled-label-text-color: #ffffff;
+}
+
+/* Actions area */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-actions {
+  background: #f5f5f5;
+  border-top: 1px solid #f1f5f9;
+  padding: 8px 16px;
+}

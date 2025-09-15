@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Log in</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()" novalidate class="login-form">
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="email" autocomplete="email" />
+    <mat-error *ngIf="form.controls.email.hasError('required')">Email is required</mat-error>
+    <mat-error *ngIf="form.controls.email.hasError('email')">Enter a valid email</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full">
+    <mat-label>Password</mat-label>
+    <input matInput [type]="hide() ? 'password' : 'text'" formControlName="password" autocomplete="current-password" />
+    <button mat-icon-button type="button" matSuffix (click)="hide.set(!hide())" [attr.aria-label]="'Toggle password'">
+      <mat-icon>{{ hide() ? 'visibility' : 'visibility_off' }}</mat-icon>
+    </button>
+    <mat-error *ngIf="form.controls.password.hasError('required')">Password is required</mat-error>
+    <mat-error *ngIf="form.controls.password.hasError('minlength')">Min 6 characters</mat-error>
+  </mat-form-field>
+
+  <div class="error" *ngIf="apiError()">{{ apiError() }}</div>
+
+  <button mat-flat-button color="primary" class="full" [disabled]="loading()">
+    {{ loading() ? 'Signing in…' : 'Log in' }}
+  </button>
+</form>
