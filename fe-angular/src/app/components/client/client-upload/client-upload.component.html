@@ -1,25 +1,38 @@
-<h2 class="title">Bulk upload clients (.xlsx)</h2>
+<h2 mat-dialog-title>Bulk upload clients (.xlsx)</h2>
 
-<div class="body">
-  <div class="picker">
-    <input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      (change)="onFile($event)" #file hidden>
-    <button mat-stroked-button (click)="onPickFile(file)">Choose Excel</button>
-    <button mat-stroked-button (click)="downloadTemplate()">Download template</button>
-    <span class="file" *ngIf="fileName()">{{ fileName() }}</span>
-  </div>
+<mat-dialog-content>
+  <div class="body">
+    <div class="picker">
+      <input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        (change)="onFile($event)" #file hidden />
 
-  <p class="hint">
-    Expected columns (sheet <code>Clients</code>):<br>
-    <code>ID</code>, <code>Full Name</code>, <code>Display Name</code>, <code>Email</code>,
-    <code>Details</code>, <code>Active</code>, <code>Location</code>, <code>Country</code>.
-    <br>Note: <code>ID</code> is ignored on import.
-  </p>
+      <button mat-flat-button class="btn-upload" type="button" (click)="onPickFile(file)">
+        <mat-icon aria-hidden="true">file_upload</mat-icon>
+        Upload
+      </button>
 
-  <div *ngIf="rows().length">
-    <p class="summary">
+      @if (fileName()) {
+      <span class="file">{{ fileName() }}</span>
+      }
+    </div>
+
+    <div class="below-actions">
+      <button type="button" class="text-link" (click)="downloadTemplateFile()">
+        Download Template
+      </button>
+    </div>
+
+    <p class="hint">Expected columns (sheet <code>Clients</code>):</p>
+    <p class="hint">
+      <code>ID</code>, <code>Full Name</code>, <code>Display Name</code>, <code>Email</code>,
+      <code>Details</code>, <code>Active</code>, <code>Location</code>, <code>Country</code>.<br />
+      Note: <code>ID</code> is ignored on import.
+    </p>
+
+    @if (rows().length) {
+    <p class="summary" aria-live="polite">
       Parsed <b>{{ rows().length }}</b> rows.
-      <span *ngIf="imported()"> Imported: {{ imported() }}</span>
+      @if (imported()) { <span> Imported: {{ imported() }}</span> }
     </p>
 
     <table class="preview">
@@ -32,18 +45,26 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let r of preview()">
+        @for (r of preview(); track $index) {
+        <tr>
           <td>{{ r.displayName }}</td>
           <td>{{ r.email }}</td>
           <td>{{ r.active }}</td>
           <td>{{ r.country }}</td>
         </tr>
+        }
       </tbody>
     </table>
+    }
   </div>
-</div>
+</mat-dialog-content>
 
-<div class="actions">
-  <button mat-button (click)="close()" [disabled]="loading()">Cancel</button>
-  <button mat-flat-button color="primary" (click)="importNow()" [disabled]="!canImport()">Import</button>
-</div>
+<mat-dialog-actions align="end">
+  <button mat-button type="button" cdkFocusInitial (click)="close()" [disabled]="loading()">
+    Cancel
+  </button>
+  <button mat-flat-button type="button" class="btn-save" color="primary" (click)="importNow()"
+    [disabled]="!canImport()">
+    Import
+  </button>
+</mat-dialog-actions>
