@@ -1,0 +1,241 @@
+/* ========== Layout ========== */
+h2 {
+  font-weight: 700;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ========== Page Header ========== */
+.page-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  min-height: 44px;
+}
+
+.page-header .title {
+  margin: 0;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+}
+
+.header-actions {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 8px;
+  justify-self: end;
+}
+
+/* ========== Buttons ========== */
+.page-header .btn-add.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: #16a34a;
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+.page-header .mat-mdc-button.mat-mdc-button-disabled {
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.page-header .btn-remove.mat-mdc-unelevated-button {
+  --mdc-filled-button-disabled-container-color: #fee2e2;
+  --mdc-filled-button-disabled-label-text-color: #b5b5b5;
+}
+
+.page-header .btn-export.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: #252525;
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+/* ========== Table Shell ========== */
+.table-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+table[mat-table] {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* ========== Table Rows & Cells ========== */
+.mat-mdc-header-row {
+  background: #f8fafc;
+}
+
+.mat-mdc-header-cell {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.mat-mdc-row {
+  background: #fff;
+}
+
+.mat-mdc-row:hover {
+  background: #f9fafb;
+}
+
+:where(td.mat-mdc-cell) {
+  color: #111827;
+}
+
+/* Checkbox look */
+.mat-mdc-checkbox {
+  --mdc-checkbox-unselected-icon-color: #B0BEC5;
+  --mdc-checkbox-unselected-hover-icon-color: #B0BEC5;
+  --mdc-checkbox-unselected-focus-icon-color: #B0BEC5;
+  --mdc-checkbox-unselected-pressed-icon-color: #B0BEC5;
+  --mdc-checkbox-disabled-unselected-icon-color: #B0BEC5;
+}
+
+/* ========== Column Widths ========== */
+th.col-select,
+td.col-select {
+  width: 48px;
+  min-width: 48px;
+  max-width: 48px;
+}
+
+th.col-id,
+td.col-id {
+  width: 48px;
+  min-width: 48px;
+  max-width: 48px;
+}
+
+th.col-display,
+td.col-display {
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+}
+
+th.col-active,
+td.col-active {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+}
+
+th.col-country,
+td.col-country {
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+}
+
+th.col-actions,
+td.col-actions {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+}
+
+/* ========== Column Tweaks (padding/ellipsis) ========== */
+.mat-mdc-header-cell.mat-column-select,
+.mat-mdc-cell.mat-column-select {
+  overflow: visible;
+}
+
+/* ========== Vertical Scroll ========== */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-content,
+::ng-deep .cdk-overlay-pane.client-edit-light .mdc-dialog__content {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-surface,
+::ng-deep .cdk-overlay-pane.client-edit-light .mdc-dialog__surface {
+  max-height: none !important;
+}
+
+/* ========== Utilities ========== */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ========== Flags & Chips ========== */
+.fi {
+  margin-right: 8px;
+}
+
+.chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.chip-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.chip-inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ========== Paginator — Trigger ========== */
+::ng-deep .table-card .mat-mdc-paginator .mat-mdc-form-field {
+  --mdc-outlined-text-field-outline-color: #e5e7eb;
+  --mdc-outlined-text-field-focus-outline-color: #cbd5e1;
+}
+
+::ng-deep .table-card .mat-mdc-paginator .mat-mdc-select-arrow {
+  color: #cbd5e1 !important;
+}
+
+/* ========== Paginator — Dropdown (overlay) ========== */
+::ng-deep .client-select-panel .mat-mdc-select-panel {
+  --mat-option-selected-state-label-text-color: #cacaca !important;
+}
+
+/* ========== Search ========== */
+.search-field {
+  width: 300px;
+  --mdc-outlined-text-field-container-height: 36px;
+  --mdc-outlined-text-field-container-shape: 18px;
+  --mdc-outlined-text-field-outline-color: #e6e6e6;
+  --mdc-outlined-text-field-hover-outline-color: #dfdfe1;
+  --mdc-outlined-text-field-focus-outline-color: #0d2e87;
+}
+
+::ng-deep .search-field .mat-mdc-text-field-wrapper,
+.search-field .mat-mdc-form-field-flex,
+.search-field .mat-mdc-form-field-infix {
+  display: flex;
+  align-items: center;
+}
+
+::ng-deep .search-field .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
+  height: 36px;
+}
+
+.search-field .mat-mdc-input-element {
+  padding: 0;
+  color: #000000;
+  caret-color: #8a8a8a;
+}
+
+.search-field .mat-mdc-input-element::placeholder {
+  color: #8a8a8a;
+  opacity: 1;
+}

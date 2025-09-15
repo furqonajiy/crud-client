@@ -1,0 +1,76 @@
+/* ========== Layout ========== */
+.grid {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px 16px;
+  padding-top: 6px;
+}
+
+.label {
+  color: #000;
+  font-weight: 600;
+}
+
+/* ========== Links / Email========== */
+.value a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.value a:hover {
+  text-decoration: underline;
+}
+
+/* ========== Chips ========== */
+.chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.chip-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.chip-inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ========== Flag Icon ========== */
+.fi {
+  margin-right: 8px;
+  transform: translateY(1px);
+}
+
+/* ========== Client Details Dialog (light) ========== */
+::ng-deep .cdk-overlay-pane.client-details-light .mat-mdc-dialog-surface,
+::ng-deep .cdk-overlay-pane.client-details-light .mdc-dialog__surface {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+::ng-deep .cdk-overlay-pane.client-details-light .mat-mdc-dialog-title {
+  color: #0f172a !important;
+  font-weight: 700;
+}
+
+::ng-deep .cdk-overlay-pane.client-details-light .mat-mdc-dialog-content {
+  color: #111827 !important;
+}
+
+::ng-deep .cdk-overlay-pane.client-details-light .mat-mdc-dialog-actions {
+  background: #fff;
+  border-top: 1px solid #f1f5f9;
+  padding: 8px 16px;
+}
+
+::ng-deep .cdk-overlay-pane.client-details-light .mat-mdc-button {
+  color: #0f172a !important;
+}

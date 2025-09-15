@@ -1,0 +1,89 @@
+/* ========== Wrapper ========== */
+.second-nav {
+  background: #fff;
+  border-bottom: 1px solid #e9e9e9;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* ========== Grid ========== */
+.grid-4 {
+  display: grid;
+  grid-template-columns: 240px auto 1fr auto auto;
+  align-items: center;
+  height: 72px;
+}
+
+/* ========== Column Placements ========== */
+.logo {
+  grid-column: 1;
+  justify-self: start;
+}
+
+.main-menu {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.login {
+  grid-column: 4;
+  justify-self: end;
+}
+
+/* ========== Logo ========== */
+.logo img {
+  height: 28px;
+}
+
+/* ========== Main Menu ========== */
+.main-menu ul {
+  display: flex;
+  gap: 26px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.main-menu a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: #2d2d2d;
+  font-weight: 500;
+}
+
+.main-menu a:hover {
+  color: #0d2e87;
+}
+
+.caret {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* ========== Login Button (stroked) ========== */
+.login-btn.mat-mdc-outlined-button {
+  color: #0d2e87;
+  border-width: 1px;
+  --mdc-outlined-button-label-text-color: #0d2e87;
+  --mdc-outlined-button-outline-color: #0d2e87;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.login-btn.mat-mdc-outlined-button:hover,
+.login-btn.mat-mdc-outlined-button:focus-visible {
+  background-color: #0d2e87;
+  color: #fff;
+  --mdc-outlined-button-container-color: #0d2e87;
+  --mdc-outlined-button-label-text-color: #fff;
+  --mdc-outlined-button-outline-color: #0d2e87;
+}
+
+.login-btn.mat-mdc-outlined-button:hover .mdc-button__label,
+.login-btn.mat-mdc-outlined-button:focus-visible .mdc-button__label {
+  color: #fff;
+}

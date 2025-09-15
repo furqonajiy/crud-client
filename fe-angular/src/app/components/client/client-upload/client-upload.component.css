@@ -1,0 +1,120 @@
+/* ===== Dialog (scoped to client-edit-light) ===== */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-surface,
+::ng-deep .cdk-overlay-pane.client-edit-light .mdc-dialog__surface {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  overflow-x: hidden;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-title {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-content {
+  color: #111827;
+  padding-bottom: 8px !important;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-actions {
+  background: #f5f5f5;
+  border-top: 1px solid #f1f5f9;
+  padding: 8px 16px;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-button {
+  color: #0f172a;
+}
+
+/* ===== Layout ===== */
+.body {
+  display: grid;
+  gap: 12px;
+}
+
+.picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.below-actions {
+  margin-top: 6px;
+}
+
+/* ===== Text helpers ===== */
+.file {
+  opacity: 0.8;
+  font-size: 12px;
+}
+
+.hint {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.text-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #0d2e87;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* ===== Preview table ===== */
+.preview {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.preview th,
+.preview td {
+  border: 1px solid #e6e6e6;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+/* ===== Upload button ===== */
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-upload.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: #1f2937;
+  --mdc-filled-button-label-text-color: #fff;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-upload.mat-mdc-unelevated-button:hover {
+  filter: brightness(1.05);
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-upload.mat-mdc-unelevated-button.mat-mdc-button-disabled {
+  --mdc-filled-button-container-color: #e5e7eb;
+  --mdc-filled-button-label-text-color: #9ca3af;
+  opacity: 1;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-upload mat-icon {
+  color: #fff;
+  margin-right: 8px;
+  font-size: 20px;
+  line-height: 20px;
+}
+
+/* ===== Import button ===== */
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-import.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: #16a34a;
+  --mdc-filled-button-label-text-color: #ffffff;
+  --mdc-filled-button-disabled-container-color: #d5d5d5;
+  --mdc-filled-button-disabled-label-text-color: #b5b5b5;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-import.mat-mdc-unelevated-button.mat-mdc-button-disabled {
+  opacity: 1;
+}
+
+/* ===== Snackbar ===== */
+::ng-deep .mat-mdc-snack-bar-label {
+  white-space: pre-line;
+}

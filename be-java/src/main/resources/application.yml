@@ -1,0 +1,25 @@
+logging:
+  level:
+    com.furqonajiy: DEBUG
+    org.springframework: INFO
+    org.hibernate: INFO
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/postgres}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:admin}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: false
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: 8080
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
