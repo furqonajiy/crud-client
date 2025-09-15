@@ -3,11 +3,11 @@ package com.furqonajiy.crudclient.service;
 import com.furqonajiy.crudclient.model.*;
 import com.furqonajiy.crudclient.repository.ClientEntity;
 import com.furqonajiy.crudclient.repository.ClientRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,22 +26,23 @@ public class ClientService implements IClientService {
     @Override
     @Transactional
     public ClientResponse createClient(CreateClientRequest req) {
-        var e = new ClientEntity();
-        e.setFullName(req.getFullName());
-        e.setDisplayName(req.getDisplayName());
-        e.setEmail(req.getEmail().toLowerCase());
-        e.setDetails(req.getDetails());
-        e.setActive(req.isActive());
-        e.setLocation(req.getLocation());
-        e.setCountry(req.getCountry());
-        repo.save(e);
+        repo.save(mapToEntity(req));
+        return snapshot();
+    }
 
-        return new ClientResponse(toDtoList(repo.findAll()));
+    @Override
+    @Transactional
+    public ClientResponse createClients(List<CreateClientRequest> reqs) {
+        if (reqs != null && !reqs.isEmpty()) {
+            var entities = reqs.stream().map(this::mapToEntity).toList();
+            repo.saveAll(entities);
+        }
+        return snapshot();
     }
 
     @Override
     public ClientResponse getAllClients() {
-        return new ClientResponse(toDtoList(repo.findAll()));
+        return snapshot();
     }
 
     @Override
@@ -50,34 +51,22 @@ public class ClientService implements IClientService {
         var e = repo.findById(req.getId())
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Client not found: " + req.getId()));
 
-        if (req.getFullName() != null) {
+        if (req.getFullName() != null)
             e.setFullName(req.getFullName());
-        }
-
-        if (req.getDisplayName() != null) {
+        if (req.getDisplayName() != null)
             e.setDisplayName(req.getDisplayName());
-        }
-
-        if (req.getEmail() != null) {
-            e.setEmail(req.getEmail().toLowerCase());
-        }
-
-        if (req.getDetails() != null) {
+        if (req.getEmail() != null)
+            e.setEmail(normalizeEmail(req.getEmail()));
+        if (req.getDetails() != null)
             e.setDetails(req.getDetails());
-        }
-
         e.setActive(req.isActive());
-
-        if (req.getLocation() != null) {
+        if (req.getLocation() != null)
             e.setLocation(req.getLocation());
-        }
-
-        if (req.getCountry() != null) {
+        if (req.getCountry() != null)
             e.setCountry(req.getCountry());
-        }
 
         repo.save(e);
-        return new ClientResponse(toDtoList(repo.findAll()));
+        return snapshot();
     }
 
     @Override
@@ -87,10 +76,28 @@ public class ClientService implements IClientService {
         if (!ids.isEmpty()) {
             repo.deleteAllByIdInBatch(ids);
         }
-        return new ClientResponse(toDtoList(repo.findAll()));
+        return snapshot();
     }
 
-    private static ClientDto clientEntityToDto(ClientEntity e) {
+    // ---- helpers ----
+
+    private ClientEntity mapToEntity(CreateClientRequest req) {
+        var e = new ClientEntity();
+        e.setFullName(req.getFullName());
+        e.setDisplayName(req.getDisplayName());
+        e.setEmail(normalizeEmail(req.getEmail()));
+        e.setDetails(req.getDetails());
+        e.setActive(req.isActive());
+        e.setLocation(req.getLocation());
+        e.setCountry(req.getCountry());
+        return e;
+    }
+
+    private static String normalizeEmail(String email) {
+        return email == null ? null : email.trim().toLowerCase();
+    }
+
+    private ClientDto toDto(ClientEntity e) {
         return new ClientDto(
                 e.getId(),
                 e.getFullName(),
@@ -103,10 +110,14 @@ public class ClientService implements IClientService {
         );
     }
 
-    private static List<ClientDto> toDtoList(List<ClientEntity> entities) {
-        return entities.stream()
-                .sorted(Comparator.comparing(ClientEntity::getId, Comparator.nullsLast(Long::compareTo)))
-                .map(ClientService::clientEntityToDto)
+    /**
+     * Returns full list sorted by id ASC (done by DB).
+     */
+    private ClientResponse snapshot() {
+        var dtos = repo.findAll(Sort.by(Sort.Direction.ASC, "id"))
+                .stream()
+                .map(this::toDto)
                 .toList();
+        return new ClientResponse(dtos);
     }
 }

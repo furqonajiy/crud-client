@@ -2,10 +2,7 @@ package com.furqonajiy.crudclient.controller;
 
 import com.furqonajiy.crudclient.event.ClientEvent;
 import com.furqonajiy.crudclient.event.ClientEventService;
-import com.furqonajiy.crudclient.model.ClientResponse;
-import com.furqonajiy.crudclient.model.CreateClientRequest;
-import com.furqonajiy.crudclient.model.DeleteClientsRequest;
-import com.furqonajiy.crudclient.model.UpdateClientRequest;
+import com.furqonajiy.crudclient.model.*;
 import com.furqonajiy.crudclient.service.ClientService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -38,6 +37,16 @@ public class ClientController {
         log.debug("Start Create Client API");
         ClientResponse res = service.createClient(req);
         eventService.publish(ClientEvent.created(null, req.getDisplayName()));
+        return res;
+    }
+
+    @PostMapping("/bulk")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ClientResponse bulkCreate(@Valid @RequestBody List<@Valid CreateClientRequest> reqs) {
+        log.debug("Start Bulk Create Client API ({} items)", reqs.size());
+        var res = service.createClients(reqs);
+
+        eventService.publish(ClientEvent.created(null, reqs.getFirst().getDisplayName()));
         return res;
     }
 
