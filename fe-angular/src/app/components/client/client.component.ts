@@ -361,6 +361,17 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  bulkUpload(): void {
+    this.blurActive();
+    this.dialog.open(ClientUploadComponent, {
+      width: '640px',
+      disableClose: true,
+      panelClass: 'client-edit-light'
+    }).afterClosed().subscribe(ok => {
+      if (ok) this.refresh({ goLast: true });
+    });
+  }
+
   // ===== Search trigger from template =====
   searchClient(): void {
     this.applyFilter(this.clientSearchQ());
@@ -376,15 +387,4 @@ export class ClientComponent implements OnInit, AfterViewInit, OnDestroy {
   exportAllClients(): void {
     exportClientsToXlsx(this.allClients());
   }
-
-  // ===== Import =====
-  bulkUpload(): void {
-  this.dialog.open(ClientUploadComponent, {
-    width: '640px',
-    disableClose: true,
-    panelClass: 'client-edit-light'
-  }).afterClosed().subscribe(ok => {
-    if (ok) this.refresh({ goLast: true });
-  });
-}
 }

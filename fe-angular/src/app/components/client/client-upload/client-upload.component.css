@@ -83,3 +83,27 @@
 ::ng-deep .mat-mdc-snack-bar-label {
   white-space: pre-line;
 }
+
+/* Dark action buttons (filled) */
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-dark.mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: #1f2937; /* slate-800 */
+  --mdc-filled-button-label-text-color: #ffffff;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-dark.mat-mdc-unelevated-button:hover {
+  filter: brightness(1.05);
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-dark.mat-mdc-unelevated-button.mat-mdc-button-disabled {
+  --mdc-filled-button-container-color: #e5e7eb; /* light gray when disabled */
+  --mdc-filled-button-label-text-color: #9ca3af;
+  opacity: 1;
+}
+
+/* keep icon white on the dark button and add spacing */
+::ng-deep .cdk-overlay-pane.client-edit-light .btn-dark mat-icon {
+  color: #fff;
+  margin-right: 8px;
+  font-size: 20px;
+  line-height: 20px;
+}

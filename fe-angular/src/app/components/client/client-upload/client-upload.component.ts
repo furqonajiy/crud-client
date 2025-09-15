@@ -5,6 +5,7 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import * as XLSX from 'xlsx';
 
@@ -42,7 +43,11 @@ const REQUIRED_HEADERS = ['Full Name', 'Display Name', 'Email', 'Active', 'Count
 @Component({
   selector: 'app-client-upload',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, MatDialogModule, MatButtonModule, MatSnackBarModule],
+    imports: [
+    CommonModule, HttpClientModule,
+    MatDialogModule, MatButtonModule, MatSnackBarModule,
+    MatIconModule,
+  ],
   templateUrl: './client-upload.component.html',
   styleUrls: ['./client-upload.component.css'],
 })

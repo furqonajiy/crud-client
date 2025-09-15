@@ -5,8 +5,11 @@
     <div class="picker">
       <input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         (change)="onFile($event)" #file hidden>
-      <button mat-stroked-button (click)="onPickFile(file)">Choose Excel</button>
-      <button mat-stroked-button (click)="downloadTemplate()">Download template</button>
+      <button mat-flat-button class="btn-dark" (click)="onPickFile(file)">
+        <mat-icon>file_upload</mat-icon>
+        Upload
+      </button>
+      <button mat-flat-button class="btn-dark" (click)="downloadTemplate()">Download template</button>
       <span class="file" *ngIf="fileName()">{{ fileName() }}</span>
     </div>
 
