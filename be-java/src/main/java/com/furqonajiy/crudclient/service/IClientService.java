@@ -1,12 +1,12 @@
 package com.furqonajiy.crudclient.service;
 
-import com.furqonajiy.crudclient.model.ClientResponse;
-import com.furqonajiy.crudclient.model.CreateClientRequest;
-import com.furqonajiy.crudclient.model.DeleteClientsRequest;
-import com.furqonajiy.crudclient.model.UpdateClientRequest;
+import com.furqonajiy.crudclient.model.*;
+
+import java.util.List;
 
 public interface IClientService {
     ClientResponse createClient(CreateClientRequest req);
+    ClientResponse createClients(List<CreateClientRequest> reqs);
     ClientResponse getAllClients();
     ClientResponse updateClient(UpdateClientRequest req);
     ClientResponse deleteMultipleClients(DeleteClientsRequest req);
