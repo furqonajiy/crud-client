@@ -1,14 +1,23 @@
-/* Layout */
+/* ===== Form (layout & spacing) ===== */
 .login-form {
   width: 360px;
   max-width: 92vw;
   display: grid;
   gap: 12px;
+  padding: 0 8px 12px;
+  /* left/right padding away from popup edge */
 }
-.full { width: 100%; }
-.error { color: #b00020; font-size: 0.9rem; }
 
-/* Dialog */
+.full {
+  width: 100%;
+}
+
+.error {
+  color: #b00020;
+  font-size: 0.9rem;
+}
+
+/* ===== Dialog (look & container) ===== */
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-surface,
 ::ng-deep .cdk-overlay-pane.client-edit-light .mdc-dialog__surface {
   background: #ffffff;
@@ -17,17 +26,20 @@
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
   overflow: hidden !important;
 }
+
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-title {
   color: #0f172a;
   font-weight: 700;
 }
+
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-content {
   color: #111827;
   padding-bottom: 8px !important;
 }
 
-/* Inputs */
+/* ===== Form fields (tokens) ===== */
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field {
+  /* filled */
   --mdc-filled-text-field-container-color: #f8fafc;
   --mdc-filled-text-field-label-text-color: #6b7280;
   --mdc-filled-text-field-input-text-color: #111827;
@@ -35,31 +47,70 @@
   --mdc-filled-text-field-active-indicator-color: #e5e7eb;
   --mdc-filled-text-field-hover-active-indicator-color: #e5e7eb;
   --mdc-filled-text-field-focus-active-indicator-color: #6366f1;
+  --mdc-filled-text-field-content-padding: 0 14px;
 
+  /* outlined (current) */
   --mdc-outlined-text-field-label-text-color: #6b7280;
   --mdc-outlined-text-field-input-text-color: #111827;
   --mdc-outlined-text-field-caret-color: #111827;
   --mdc-outlined-text-field-outline-color: #e5e7eb;
   --mdc-outlined-text-field-hover-outline-color: #e5e7eb;
   --mdc-outlined-text-field-focus-outline-color: #6366f1;
-
   --mdc-outlined-text-field-content-padding: 0 14px;
-  --mdc-filled-text-field-content-padding: 0 14px;
 
   border-radius: 8px;
 }
-::ng-deep .cdk-overlay-pane.client-edit-light
-  .mat-mdc-text-field-wrapper.mdc-text-field--outlined { border-radius: 8px; }
+
+/* ===== Form fields (structure) ===== */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
+  border-radius: 8px;
+}
+
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field-infix {
   padding-left: 14px !important;
   padding-right: 14px !important;
 }
+
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field-subscript-wrapper {
   margin-left: 14px;
   margin-right: 14px;
 }
 
-/* Button */
+/* ===== States (hover / focus / placeholder) ===== */
+/* input text on hover */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field:not(.mat-focused):hover .mat-mdc-input-element {
+  color: #6b7280 !important;
+}
+
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field:not(.mat-focused):hover .mat-mdc-input-element::placeholder {
+  color: #6b7280 !important;
+  opacity: 1 !important;
+}
+
+/* label + asterisk default */
+::ng-deep .cdk-overlay-pane.client-edit-light .mdc-floating-label,
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field-required-marker {
+  color: #6b7280 !important;
+}
+
+/* label + asterisk on hover (unfocused) */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field:not(.mat-focused):hover .mdc-floating-label,
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field:not(.mat-focused):hover .mat-mdc-form-field-required-marker {
+  color: #6b7280 !important;
+}
+
+/* label + asterisk on focus (override pink-bluegrey) */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field.mat-focused:not(.mat-mdc-form-field-invalid) .mdc-floating-label,
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field.mat-focused:not(.mat-mdc-form-field-invalid) .mat-mdc-form-field-required-marker {
+  color: #111827 !important;
+}
+
+/* Chrome autofill hover text */
+::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-form-field:not(.mat-focused):hover .mat-mdc-input-element:-webkit-autofill {
+  -webkit-text-fill-color: #6b7280 !important;
+}
+
+/* ===== Primary button ===== */
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-unelevated-button {
   --mdc-filled-button-container-color: #2563eb;
   --mdc-filled-button-label-text-color: #ffffff;
@@ -67,7 +118,7 @@
   --mdc-filled-button-disabled-label-text-color: #ffffff;
 }
 
-/* Actions area */
+/* ===== Dialog actions ===== */
 ::ng-deep .cdk-overlay-pane.client-edit-light .mat-mdc-dialog-actions {
   background: #f5f5f5;
   border-top: 1px solid #f1f5f9;
