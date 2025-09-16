@@ -1,5 +1,7 @@
 # CRUD Client — Full Stack (Angular 17 + Spring Boot 3, Java 21)
 
+![Architecture diagram](misc/crud_client_architecture.png)
+
 A small end-to-end CRUD app for managing clients, with:
 - **Frontend:** Angular 17 (standalone components), Angular Material, XLSX Excel parsing
 - **Backend:** Spring Boot 3 (Java 21), REST + SSE events, JPA
