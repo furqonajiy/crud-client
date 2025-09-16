@@ -80,11 +80,15 @@ table[mat-table] {
 }
 
 .mat-mdc-row:hover {
-  background: #f9fafb;
+  background: #f5f5f5;
 }
 
 :where(td.mat-mdc-cell) {
   color: #111827;
+}
+
+.row-clickable {
+  cursor: pointer;
 }
 
 /* Checkbox look */
