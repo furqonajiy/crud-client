@@ -1,4 +1,3 @@
-// src/app/components/client/client.component.spec.ts
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { of, Subject } from 'rxjs';

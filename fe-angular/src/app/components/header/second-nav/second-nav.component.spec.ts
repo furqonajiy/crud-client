@@ -39,7 +39,6 @@ describe('SecondNavComponent (Option A href check)', () => {
     expect(aria).toBe('Rabobank Home');
   });
 
-  // ✅ Option A: Assert via rendered href (no private API usage)
   it('logo link points to "/client" (href)', () => {
     const logoLinkDe = fixture.debugElement.query(By.css('.logo a.logo-link'));
     const href = (logoLinkDe.nativeElement as HTMLAnchorElement).getAttribute('href');
@@ -50,7 +49,6 @@ describe('SecondNavComponent (Option A href check)', () => {
     const imgDe = fixture.debugElement.query(By.css('.logo a.logo-link img'));
     expect(imgDe).withContext('Missing logo <img> element').not.toBeNull();
 
-    // src may be absolute; check it contains "logo" to be resilient
     const src = (imgDe.nativeElement as HTMLImageElement).getAttribute('src')
       ?? (imgDe.nativeElement as HTMLImageElement).src;
     expect(src).withContext('Logo <img> src should include "logo"').toContain('logo');

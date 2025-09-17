@@ -1,4 +1,3 @@
-// header.component.spec.ts
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,8 +12,8 @@ describe('HeaderComponent (standalone)', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        HeaderComponent,                    // under test (imports FirstNav & SecondNav)
-        RouterTestingModule.withRoutes([]), // in case child navs use routerLink
+        HeaderComponent,
+        RouterTestingModule.withRoutes([]),
         NoopAnimationsModule,
       ],
     }).compileComponents();
