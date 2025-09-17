@@ -1,10 +1,14 @@
+// app.component.spec.ts
 import { TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 import { AppComponent } from './app.component';
 
-describe('AppComponent', () => {
+describe('AppComponent (standalone)', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent],
+      imports: [AppComponent, NoopAnimationsModule],
+      providers: [provideRouter([])],
     }).compileComponents();
   });
 
@@ -14,16 +18,17 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'fe-angular' title`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('fe-angular');
-  });
-
-  it('should render title', () => {
+  it('should render header component', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, fe-angular');
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('app-header')).toBeTruthy();
+  });
+
+  it('should include a router-outlet', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('router-outlet')).toBeTruthy();
   });
 });
