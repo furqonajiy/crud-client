@@ -18,15 +18,14 @@ The result is a **fast, collaborative, and robust** CRUD experience that stays i
 - Required Features
 - Optional Features
 - Value-Added Features
-- Setup (How to run)
+- Future Feature Improvements 
+- Setup 
+- Run Application
 - API Overview
-- Bulk Import Payloads
-- Events (SSE)
-- Testing & Coverage
+- Error Handling
 - Thought Process (Design Insights)
-- Potential Future Improvements
 - Challenges & Solutions
-- Troubleshooting
+
 
 ## Features
 
@@ -163,7 +162,7 @@ Verify if Angular 17 already installed
 - Open the frontend folder (e.g., `crud-client/fe-angular`) in VS Code:
 - Open Terminal in VS Code, make sure you are in the correct path
 
-**3. Install and set up UI & data libraries**
+**4. Install and set up UI & data libraries**
 <br>Add Angular Material
 
     ng add @angular/material
@@ -180,7 +179,7 @@ Add list
 
     npm i flag-icons
 
-**4. Run the Angular app**
+**5. Run the Angular app**
 
     ng serve -o
 
@@ -616,7 +615,7 @@ The result: **reliable APIs**, **predictable UX**, and **data you can trust**.
 
 ---
 
-## What We Validate (EMPHASIS)
+## What We Validate
 **1) Mandatory vs Optional Values**  
 - **Mandatory (must be provided):** `fullName`, `displayName`, `email`, `active`, `country`  
 - **Optional:** `details`, `location` (accepted if present, but still validated for length)
@@ -869,16 +868,11 @@ The result: **reliable APIs**, **predictable UX**, and **data you can trust**.
 ---
 
 ## Challenges & Solutions
-- **Styling CSS complexity (pagination & controls):**
-  Styling is tricky when multiple elements map to a single component (e.g., pagination arrows, buttons, labels, dropdown). Small CSS changes can unintentionally cascade.
+- **Styling CSS complexity (pagination & controls):** Styling is tricky when multiple elements map to a single component (e.g., pagination arrows, buttons, labels, dropdown). Small CSS changes can unintentionally cascade.
   ➜ **Solution:** Encapsulate styles with component-level scoping, prefer Angular Material theming APIs over ad-hoc CSS, target **stable** class hooks (or `::ng-deep` sparingly when necessary), and document a minimal, robust set of overrides (arrows, buttons, labels, select).
 
-## PostgreSQL 16 → 17 Port Mismatch (Gotcha & Fix)
+- **PostgreSQL 16 → 17 Port Mismatch:** PostgreSQL 16 was already installed. After installing **PostgreSQL 17**, connections started failing. Root cause: **PostgreSQL 17 installs as a *separate* cluster with its *own port*** (it does not replace/retire 16). We were still trying to connect to the **old port** (e.g., `5432`) while the 17 cluster was listening on another port (commonly `5433`, but this varies by installer/OS).
 
-- **What happened**  
-  PostgreSQL 16 was already installed. After installing **PostgreSQL 17**, connections started failing. Root cause: **PostgreSQL 17 installs as a *separate* cluster with its *own port*** (it does not replace/retire 16). We were still trying to connect to the **old port** (e.g., `5432`) while the 17 cluster was listening on another port (commonly `5433`, but this varies by installer/OS).
-
-- **Takeaways**
   - Installing Postgres **17** does **not** “upgrade in place” your **16** install—it coexists by default and often uses a **different port**.  
   - Always **verify the port** and **update `application.yml`** (or your connection string) accordingly.
 
