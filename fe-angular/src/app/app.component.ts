@@ -10,5 +10,4 @@ import { HeaderComponent } from './components/header/header.component';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'fe-angular';
 }

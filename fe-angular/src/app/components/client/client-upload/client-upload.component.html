@@ -22,17 +22,17 @@
       </button>
     </div>
 
-    <p class="hint">Expected columns (sheet <code>Clients</code>):</p>
+    <p class="hint">Please fill sheet <code>Clients</code></p>
     <p class="hint">
-      <code>ID</code>, <code>Full Name</code>, <code>Display Name</code>, <code>Email</code>,
+      <code>Full Name</code>, <code>Display Name</code>, <code>Email</code>,
       <code>Details</code>, <code>Active</code>, <code>Location</code>, <code>Country</code>.<br />
-      Note: <code>ID</code> is ignored on import.
+      Note: <code>ID</code> currently ignored. In the future we will add logic upsert.
     </p>
 
     @if (rows().length) {
     <p class="summary" aria-live="polite">
-      Parsed <b>{{ rows().length }}</b> rows.
-      @if (imported()) { <span> Imported: {{ imported() }}</span> }
+      Showing Preview <b>{{ rows().length <= 5 ? rows().length : 5 }}</b> from <b>{{ rows().length }}</b> rows
+          @if (imported()) { <span> Imported: {{ imported() }}</span> }
     </p>
 
     <table class="preview">
@@ -56,6 +56,7 @@
       </tbody>
     </table>
     }
+
   </div>
 </mat-dialog-content>
 
